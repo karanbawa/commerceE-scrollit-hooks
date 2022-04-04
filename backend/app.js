@@ -10,7 +10,7 @@ const productsRoutes = require("./routes/products");
 const app = express();
 
 mongoose
-  .connect(
+  .connect(process.env.MONGODB_URI ||
     "mongodb+srv://admin:admin@cluster0.ws3kr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", { useNewUrlParser: true ,useUnifiedTopology: true }
 
   )
