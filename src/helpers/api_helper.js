@@ -24,7 +24,7 @@
 
   export async function post(url, data, config = {}) {
     return axiosApi
-      .post(`http://localhost:3000${url}`, { ...data }, { ...config })
+      .post(`${process.env.REACT_APP_AUTHDOMAIN}${url}`, { ...data }, { ...config })
       .then(response => response.data)
   }
 

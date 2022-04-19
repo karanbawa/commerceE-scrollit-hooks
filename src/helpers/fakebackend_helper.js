@@ -58,9 +58,8 @@ const postFakeProfile = data => post(url.POST_EDIT_PROFILE, data)
 
 // Register Method
 const postJwtRegister = (url, data) => {
-
   return axios
-    .post(`http://localhost:3000${url}`, data)
+    .post(`${process.env.REACT_APP_AUTHDOMAIN}${url}`, data, { headers: { "Content-Type": "application/json", "x-api-key": "GCMUDiuY5a7WvyUNt9n3QztToSHzK7Uj" } })
     .then(response => {
       if (response.status >= 200 || response.status <= 299) return response.data
       throw response.data
