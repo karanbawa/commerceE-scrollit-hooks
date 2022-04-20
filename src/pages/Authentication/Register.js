@@ -76,9 +76,12 @@ class Register extends Component {
                       <Formik
                         enableReinitialize={true}
                         initialValues={{
+                          firstName: (this.state && this.state.firstName) || "",
+                          lastName: (this.state && this.state.lastName) || "",
                           email: (this.state && this.state.email) || "",
+                          country: (this.state && this.state.country) || "",
                           password: (this.state && this.state.password) || "",
-                          username: (this.state && this.state.username) || "",
+                          confirmPassword: (this.state && this.state.confirmPassword) || "",
                         }}
                         validationSchema={Yup.object().shape({
                           email: Yup.string().required(
@@ -87,8 +90,8 @@ class Register extends Component {
                           password: Yup.string().required(
                             "Please Enter Valid Password"
                           ),
-                          username: Yup.string().required(
-                            "Please Enter Valid Username"
+                          confirmPassword: Yup.string().required(
+                            "Password do not match"
                           ),
                         })}
                         onSubmit={values => {
@@ -97,6 +100,46 @@ class Register extends Component {
                       >
                         {({ errors, status, touched }) => (
                           <Form className="form-horizontal">
+                            <div className="mb-3">
+                              <Label for="firstName" className="form-label">
+                              First Name
+                              </Label>
+                              <Field
+                                name="firstName"
+                                type="text"
+                                className={
+                                  "form-control" +
+                                  (errors.firstName && touched.firstName
+                                    ? " is-invalid"
+                                    : "")
+                                }
+                              />
+                              <ErrorMessage
+                                name="firstName"
+                                component="div"
+                                className="invalid-feedback"
+                              />
+                            </div>
+                            <div className="mb-3">
+                              <Label for="lastName" className="form-label">
+                              Last Name
+                              </Label>
+                              <Field
+                                name="lastName"
+                                type="text"
+                                className={
+                                  "form-control" +
+                                  (errors.lastName && touched.lastName
+                                    ? " is-invalid"
+                                    : "")
+                                }
+                              />
+                              <ErrorMessage
+                                name="lastName"
+                                component="div"
+                                className="invalid-feedback"
+                              />
+                            </div>
                             <div className="mb-3">
                               <Label for="email" className="form-label">
                                 Email
@@ -113,6 +156,26 @@ class Register extends Component {
                               />
                               <ErrorMessage
                                 name="email"
+                                component="div"
+                                className="invalid-feedback"
+                              />
+                            </div>
+                            <div className="mb-3">
+                              <Label for="country" className="form-label">
+                              Country
+                              </Label>
+                              <Field
+                                name="country"
+                                type="text"
+                                className={
+                                  "form-control" +
+                                  (errors.country && touched.country
+                                    ? " is-invalid"
+                                    : "")
+                                }
+                              />
+                              <ErrorMessage
+                                name="country"
                                 component="div"
                                 className="invalid-feedback"
                               />
@@ -139,21 +202,22 @@ class Register extends Component {
                               />
                             </div>
                             <div className="mb-3">
-                              <Label for="username" className="form-label">
-                                Username
+                              <Label for="confirmPassword" className="form-label">
+                              Confirm Password
                               </Label>
                               <Field
-                                name="username"
-                                type="text"
+                                name="confirmPassword"
+                                autoComplete="true"
+                                type="password"
                                 className={
                                   "form-control" +
-                                  (errors.username && touched.username
+                                  (errors.confirmPassword && touched.confirmPassword
                                     ? " is-invalid"
                                     : "")
                                 }
                               />
                               <ErrorMessage
-                                name="username"
+                                name="confirmPassword"
                                 component="div"
                                 className="invalid-feedback"
                               />
@@ -191,8 +255,8 @@ class Register extends Component {
                     </Link>{" "}
                   </p>
                   <p>
-                    © {new Date().getFullYear()} Skote. Crafted with{" "}
-                    <i className="mdi mdi-heart text-danger" /> by Themesbrand
+                    © {new Date().getFullYear()} Univolen. Crafted With{" "}
+                    <i className="mdi mdi-heart text-danger" /> by Univolen It solution
                   </p>
                 </div>
               </Col>
