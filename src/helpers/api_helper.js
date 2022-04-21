@@ -1,11 +1,9 @@
   import axios from "axios"
-  import accessToken from "./jwt-token-access/accessToken"
+  import accessToken from "./jwt-token-access/accessToken";
+  import { API_URL } from "./axios-headers";
 
   //pass new generated access token here
   const token = accessToken
-
-  //apply base url for axios
-  const API_URL = ""
 
   const axiosApi = axios.create({
     baseURL: API_URL,
@@ -24,7 +22,7 @@
 
   export async function post(url, data, config = {}) {
     return axiosApi
-      .post(`${process.env.REACT_APP_AUTHDOMAIN}${url}`, { ...data }, { ...config })
+      .post(url, { ...data }, { ...config })
       .then(response => response.data)
   }
 

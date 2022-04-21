@@ -1,6 +1,7 @@
 import axios from "axios"
 import { del, get, post, put } from "./api_helper"
 import * as url from "./url_helper"
+import { headers } from "./axios-headers"
 
 // Gets the logged in user data from local session
 const getLoggedInUser = () => {
@@ -58,8 +59,7 @@ const postFakeProfile = data => post(url.POST_EDIT_PROFILE, data)
 
 // Register Method
 const postJwtRegister = (url, data) => {
-  return axios
-    .post(`${process.env.REACT_APP_AUTHDOMAIN}${url}`, data, { headers: { "Content-Type": "application/json", "x-api-key": "GCMUDiuY5a7WvyUNt9n3QztToSHzK7Uj" } })
+  return post(`${process.env.REACT_APP_AUTHDOMAIN}${url}`, data, headers )
     .then(response => {
       if (response.status >= 200 || response.status <= 299) return response.data
       throw response.data
@@ -88,7 +88,7 @@ const postJwtRegister = (url, data) => {
 }
 
 // Login Method
-const postJwtLogin = data => post(url.POST_FAKE_JWT_LOGIN, data)
+const postJwtLogin = data => post(url.POST_FAKE_JWT_LOGIN, data, headers)
 
 // postForgetPwd
 const postJwtForgetPwd = data => post(url.POST_FAKE_JWT_PASSWORD_FORGET, data)
