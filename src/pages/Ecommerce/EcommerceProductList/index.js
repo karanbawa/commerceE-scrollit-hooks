@@ -32,105 +32,105 @@ import * as Yup from "yup";
 
 //Import Breadcrumb
 import Breadcrumbs from "components/Common/Breadcrumb";
-import {
-  getOrders,
-  addNewOrder,
-  updateOrder,
-  deleteOrder,
-} from "store/actions";
+import { getProductsTest } from "store/actions";
 
-import EcommerceOrdersModal from "./EcommerceOrdersModal";
+import EcommerceProductModal from "./EcommerceProductModal";
 import DeleteModal from "../../../components/Common/DeleteModal";
+import axios from "axios";
 
-class EcommerceOrders extends Component {
+class EcommerceProducts extends Component {
   constructor(props) {
     super(props);
     this.node = React.createRef();
     this.state = {
       viewmodal: false,
       modal: false,
-      orders: [],
-      order: "",
+      products: [],
+      product: {},
+      toggleSwitch: false,
       deleteModal: false,
-      EcommerceOrderColumns: [
+      EcommerceProductColumns: [
         {
           text: "id",
           dataField: "id",
           sort: true,
           hidden: true,
-          formatter: (cellContent, user) => <>{order.id}</>,
+          formatter: (cellContent, user) => <>{product.id}</>,
         },
         {
-          dataField: "orderId",
-          text: "Order ID",
+          dataField: "id",
+          text: "PRODUCT ID",
           sort: true,
           formatter: (cellContent, row) => (
             <Link to="#" className="text-body fw-bold">
-              {row.orderId}
+              {row.id}
             </Link>
           ),
         },
         {
-          dataField: "billingName",
-          text: "Billing Name",
+          dataField: "productName",
+          text: "Product Name",
           sort: true,
         },
         {
-          dataField: "orderdate",
+          dataField: "productCategory",
+          text: "Category",
+          sort: true,
+          // formatter: (cellContent, row) => this.handleValidDate(row.orderdate),
+        },
+        {
+          dataField: "productDate",
           text: "Date",
           sort: true,
-          formatter: (cellContent, row) => this.handleValidDate(row.orderdate),
+          formatter: (cellContent, row) =>
+            this.handleValidDate(row.productDate),
         },
         {
-          dataField: "total",
-          text: "Total",
+          dataField: "displayProduct",
+          text: "Display Product",
           sort: true,
-        },
-        {
-          dataField: "paymentStatus",
-          text: "Payment Status",
-          sort: true,
-          formatter: (cellContent, row) => (
-            <Badge
-              className={"font-size-12 badge-soft-" + row.badgeclass}
-              color={row.badgeclass}
-              pill
-            >
-              {row.paymentStatus}
-            </Badge>
+          formatter: () => (
+            <div className="form-check form-switch form-switch-md mb-3">
+              <input
+                type="checkbox"
+                className="form-check-input"
+                id="customSwitchsizemd"
+                defaultChecked
+                onClick={() => {
+                  this.setState({
+                    toggleSwitch: !this.state.toggleSwitch,
+                  });
+                }}
+              />
+              <label
+                className="form-check-label"
+                htmlFor="customSwitchsizemd"
+              ></label>
+            </div>
           ),
         },
         {
-          dataField: "paymentMethod",
-          isDummyField: true,
-          text: "Payment Method",
+          dataField: "productPrice",
+          text: "PriceCode",
           sort: true,
-          formatter: (cellContent, row) => (
-            <>
-              <i
-                className={
-                  row.paymentMethod !== "COD"
-                    ? "fab fa-cc-" +
-                      this.toLowerCase1(row.paymentMethod) +
-                      " me-1"
-                    : "fab fas fa-money-bill-alt me-1"
-                }
-              />{" "}
-              {row.paymentMethod}
-            </>
-          ),
         },
+
         {
           dataField: "view",
           isDummyField: true,
           text: "View Details",
           sort: true,
-          formatter: () => (
+          formatter: (cellContent, product) => (
             <Button
               type="button"
               color="primary"
               className="btn-sm btn-rounded"
-              onClick={this.toggleViewModal}
+              onClick={() => {
+                this.setState({
+                  product,
+                });
+                this.toggleViewModal();
+              }}
             >
               View Details
             </Button>
@@ -140,21 +140,21 @@ class EcommerceOrders extends Component {
           dataField: "action",
           isDummyField: true,
           text: "Action",
-          formatter: (cellContent, order) => (
+          formatter: (cellContent, product) => (
             <>
               <div className="d-flex gap-3">
                 <Link to="#" className="text-success">
                   <i
                     className="mdi mdi-pencil font-size-18"
                     id="edittooltip"
-                    onClick={() => this.handleOrderClick(order)}
+                    onClick={() => this.handleProductClick(product)}
                   />
                 </Link>
                 <Link to="#" className="text-danger">
                   <i
                     className="mdi mdi-delete font-size-18"
                     id="deletetooltip"
-                    onClick={() => this.onClickDelete(order)}
+                    onClick={() => this.onClickDelete(product)}
                   />
                 </Link>
               </div>
@@ -164,9 +164,9 @@ class EcommerceOrders extends Component {
       ],
     };
 
-    this.handleOrderClick = this.handleOrderClick.bind(this);
+    this.handleProductClick = this.handleProductClick.bind(this);
     this.toggle = this.toggle.bind(this);
-    this.handleOrderClicks = this.handleOrderClicks.bind(this);
+    this.handleAddProductClick = this.handleAddProductClick.bind(this);
     this.toLowerCase1 = this.toLowerCase1.bind(this);
     this.onClickDelete = this.onClickDelete.bind(this);
   }
@@ -176,18 +176,21 @@ class EcommerceOrders extends Component {
   }
 
   componentDidMount() {
-    const { orders, onGetOrders } = this.props;
-    if (orders && !orders.length) {
-      onGetOrders();
+    console.log(this.props);
+    let { products, onGetProducts } = this.props;
+
+    if (this.state.products && !this.state.products.length) {
+      onGetProducts();
     }
-    this.setState({ orders });
+    this.setState({ products });
+    console.log(products);
   }
 
   // eslint-disable-next-line no-unused-vars
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { orders } = this.props;
-    if (!isEmpty(orders) && size(prevProps.orders) !== size(orders)) {
-      this.setState({ order: {}, isEdit: false });
+    const { products } = this.props;
+    if (!isEmpty(products) && size(prevProps.products) !== size(products)) {
+      this.setState({ product: {}, isEdit: false });
     }
   }
 
@@ -197,8 +200,9 @@ class EcommerceOrders extends Component {
     }));
   }
 
-  handleOrderClicks = () => {
-    this.setState({ order: "", isEdit: false });
+  handleAddProductClick = history => {
+    history.push("/ecommerce-add-product");
+    this.setState({ product: "", isEdit: false });
     this.toggle();
   };
 
@@ -228,34 +232,34 @@ class EcommerceOrders extends Component {
     }));
   };
 
-  onClickDelete = order => {
-    this.setState({ order: order });
+  onClickDelete = product => {
+    this.setState({ product: product });
     this.setState({ deleteModal: true });
   };
 
-  handleDeleteOrder = () => {
-    const { onDeleteOrder } = this.props;
-    const { order } = this.state;
-    if (order.id !== undefined) {
-      onDeleteOrder(order);
+  handleDeleteProduct = () => {
+    const { onDeleteProduct } = this.props;
+    const { product } = this.state;
+    if (product.id !== undefined) {
+      onDeleteProduct(product);
       this.onPaginationPageChange(1);
       this.setState({ deleteModal: false });
     }
   };
 
-  handleOrderClick = arg => {
-    const order = arg;
+  handleProductClick = arg => {
+    const product = arg;
 
     this.setState({
       order: {
-        id: order.id,
-        orderId: order.orderId,
-        billingName: order.billingName,
-        orderdate: order.orderdate,
-        total: order.total,
-        paymentStatus: order.paymentStatus,
-        paymentMethod: order.paymentMethod,
-        badgeclass: order.badgeclass,
+        id: product.id,
+        productId: product.productId,
+        productName: product.productName,
+        productDate: product.productDate,
+        total: product.total,
+        paymentStatus: product.paymentStatus,
+        paymentMethod: product.paymentMethod,
+        badgeclass: product.badgeclass,
       },
       isEdit: true,
     });
@@ -269,20 +273,20 @@ class EcommerceOrders extends Component {
   };
 
   render() {
-    const { orders } = this.props;
+    const { products } = this.props;
 
-    const order = this.state.order;
+    const product = this.state.product;
 
     const { SearchBar } = Search;
 
     const { isEdit, deleteModal } = this.state;
 
-    const { onAddNewOrder, onUpdateOrder } = this.props;
+    const { onAddNewProduct, onUpdateProduct } = this.props;
 
     //pagination customization
     const pageOptions = {
       sizePerPage: 10,
-      totalSize: orders.length, // replace later with size(Order),
+      totalSize: products.length, // replace later with size(Order),
       custom: true,
     };
 
@@ -297,23 +301,26 @@ class EcommerceOrders extends Component {
       mode: "checkbox",
     };
 
+    const { history } = this.props;
+
     return (
       <React.Fragment>
         <DeleteModal
           show={deleteModal}
-          onDeleteClick={this.handleDeleteOrder}
+          onDeleteClick={this.handleDeleteProduct}
           onCloseClick={() => this.setState({ deleteModal: false })}
         />
-        <EcommerceOrdersModal
+        <EcommerceProductModal
           isOpen={this.state.viewmodal}
           toggle={this.toggleViewModal}
+          product={product}
         />
         <div className="page-content">
           <MetaTags>
-            <title>Orders | Skote - React Admin & Dashboard Template</title>
+            <title>Products</title>
           </MetaTags>
           <Container fluid>
-            <Breadcrumbs title="Ecommerce" breadcrumbItem="Orders" />
+            <Breadcrumbs title="Ecommerce" breadcrumbItem="Products" />
             <Row>
               <Col xs="12">
                 <Card>
@@ -321,14 +328,14 @@ class EcommerceOrders extends Component {
                     <PaginationProvider
                       pagination={paginationFactory(pageOptions || [])}
                       keyField="id"
-                      columns={this.state.EcommerceOrderColumns || []}
-                      data={orders || []}
+                      columns={this.state.EcommerceProductColumns || []}
+                      data={products || []}
                     >
                       {({ paginationProps, paginationTableProps }) => (
                         <ToolkitProvider
                           keyField="id"
-                          data={orders}
-                          columns={this.state.EcommerceOrderColumns || []}
+                          data={products}
+                          columns={this.state.EcommerceProductColumns || []}
                           bootstrap4
                           search
                         >
@@ -351,10 +358,12 @@ class EcommerceOrders extends Component {
                                       type="button"
                                       color="success"
                                       className="btn-rounded mb-2 me-2"
-                                      onClick={this.handleOrderClicks}
+                                      onClick={() =>
+                                        this.handleAddProductClick(history)
+                                      }
                                     >
                                       <i className="mdi mdi-plus me-1" /> Add
-                                      New Order
+                                      New Product
                                     </Button>
                                   </div>
                                 </Col>
@@ -379,37 +388,40 @@ class EcommerceOrders extends Component {
                                   className={this.props.className}
                                 >
                                   <ModalHeader toggle={this.toggle} tag="h4">
-                                    {!!isEdit ? "Edit Order" : "Add Order"}
+                                    {!!isEdit ? "Edit Product" : "Add Product"}
                                   </ModalHeader>
                                   <ModalBody>
                                     <Formik
                                       enableReinitialize={true}
                                       initialValues={{
-                                        orderId: (order && order.orderId) || "",
-                                        billingName:
-                                          (order && order.billingName) || "",
-                                        orderdate:
-                                          (order && order.orderdate) || "",
-                                        total: (order && order.total) || "",
+                                        productId:
+                                          (product && product.productId) || "",
+                                        productName:
+                                          (product && product.productName) ||
+                                          "",
+                                        productdate:
+                                          (product && product.productDate) ||
+                                          "",
+                                        total: (product && product.total) || "",
                                         paymentStatus:
-                                          (order && order.paymentStatus) ||
+                                          (product && product.paymentStatus) ||
                                           "Paid",
                                         badgeclass:
-                                          (order && order.badgeclass) ||
+                                          (product && product.badgeclass) ||
                                           "success",
                                         paymentMethod:
-                                          (order && order.paymentMethod) ||
+                                          (product && product.paymentMethod) ||
                                           "Mastercard",
                                       }}
                                       validationSchema={Yup.object().shape({
-                                        orderId: Yup.string().required(
-                                          "Please Enter Your Order Id"
+                                        productId: Yup.string().required(
+                                          "Please Enter Your product Id"
                                         ),
-                                        billingName: Yup.string().required(
-                                          "Please Enter Your Billing Name"
+                                        productName: Yup.string().required(
+                                          "Please Enter Your product Name"
                                         ),
-                                        orderdate: Yup.string().required(
-                                          "Please Enter Your Order Date"
+                                        productDate: Yup.string().required(
+                                          "Please Enter Your Product Date"
                                         ),
                                         total:
                                           Yup.string().required("Total Amount"),
@@ -425,27 +437,27 @@ class EcommerceOrders extends Component {
                                       })}
                                       onSubmit={values => {
                                         if (isEdit) {
-                                          const updateOrder = {
-                                            id: order ? order.id : 0,
-                                            orderId: values.orderId,
-                                            billingName: values.billingName,
-                                            orderdate: values.orderdate,
+                                          const updateProduct = {
+                                            id: product ? product.id : 0,
+                                            productId: values.productId,
+                                            productName: values.productName,
+                                            productDate: values.productDate,
                                             total: values.total,
                                             paymentStatus: values.paymentStatus,
                                             paymentMethod: values.paymentMethod,
                                             badgeclass: values.badgeclass,
                                           };
 
-                                          onUpdateOrder(updateOrder);
+                                          onUpdateProduct(onUpdateProduct);
                                         } else {
-                                          const newOrder = {
+                                          const newProduct = {
                                             id:
                                               Math.floor(
                                                 Math.random() * (30 - 20)
                                               ) + 20,
-                                            orderId: values["orderId"],
-                                            billingName: values["billingName"],
-                                            orderdate: values["orderdate"],
+                                            productId: values["productId"],
+                                            productName: values["productName"],
+                                            productDate: values["productDate"],
                                             total: values["total"],
                                             paymentStatus:
                                               values["paymentStatus"],
@@ -454,10 +466,12 @@ class EcommerceOrders extends Component {
                                             badgeclass: values["badgeclass"],
                                           };
 
-                                          onAddNewOrder(newOrder);
+                                          onAddNewProduct(newProduct);
                                         }
 
-                                        this.setState({ selectedOrder: null });
+                                        this.setState({
+                                          selectedProduct: null,
+                                        });
                                         this.toggle();
                                       }}
                                     >
@@ -467,7 +481,7 @@ class EcommerceOrders extends Component {
                                             <Col className="col-12">
                                               <div className="mb-3">
                                                 <Label className="form-label">
-                                                  Order Id
+                                                  Product Id
                                                 </Label>
                                                 <Field
                                                   name="orderId"
@@ -509,7 +523,7 @@ class EcommerceOrders extends Component {
                                               </div>
                                               <div className="mb-3">
                                                 <Label className="form-label">
-                                                  Order Date
+                                                  Product Date
                                                 </Label>
                                                 <Field
                                                   name="orderdate"
@@ -651,27 +665,28 @@ class EcommerceOrders extends Component {
   }
 }
 
-EcommerceOrders.propTypes = {
-  orders: PropTypes.array,
-  onGetOrders: PropTypes.func,
-  onAddNewOrder: PropTypes.func,
-  onDeleteOrder: PropTypes.func,
-  onUpdateOrder: PropTypes.func,
+EcommerceProducts.propTypes = {
+  products: PropTypes.array,
+  onGetProducts: PropTypes.func,
+  onAddNewProduct: PropTypes.func,
+  onDeleteProduct: PropTypes.func,
+  onUpdateProduct: PropTypes.func,
   className: PropTypes.any,
+  history: PropTypes.any,
 };
 
 const mapStateToProps = state => ({
-  orders: state.ecommerce.orders,
+  products: state.ecommerce.products,
 });
 
 const mapDispatchToProps = dispatch => ({
-  onGetOrders: () => dispatch(getOrders()),
-  onAddNewOrder: order => dispatch(addNewOrder(order)),
-  onUpdateOrder: order => dispatch(updateOrder(order)),
-  onDeleteOrder: order => dispatch(deleteOrder(order)),
+  onGetProducts: () => dispatch(getProductsTest()),
+  onAddNewProduct: product => dispatch(addNewProduct(product)),
+  onUpdateProduct: product => dispatch(updateProduct(product)),
+  onDeleteProduct: product => dispatch(deleteProduct(product)),
 });
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(EcommerceOrders));
+)(withRouter(EcommerceProducts));

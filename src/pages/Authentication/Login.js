@@ -25,11 +25,15 @@ import { apiError, loginUser, socialLogin } from "../../store/actions";
 import profile from "../../assets/images/profile-img.png";
 import logo from "../../assets/images/logo.svg";
 import lightlogo from "../../assets/images/logo-light.svg";
+import "../../assets/scss/custom/pages/_register.scss";
+import toastr from "toastr";
 
 class Login extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      show: false,
+    };
   }
 
   componentDidMount() {
@@ -71,6 +75,37 @@ class Login extends Component {
   };
 
   render() {
+    const showToast = (message, title) => {
+      toastr.options = {
+        positionClass: "toast-top-right",
+        newestOnTop: true,
+        extendedTimeOut: 1000,
+        showEasing: "swing",
+        hideEasing: "linear",
+        showMethod: "fadeIn",
+        hideMethod: "fadeOut",
+        showDuration: 300,
+        hideDuration: 1000,
+        timeOut: 5000,
+        closeButton: true,
+        debug: true,
+        preventDuplicates: true,
+        extendedTimeOut: 1000,
+      };
+      toastr.error(message, title);
+    };
+    let users = [
+      {
+        uid: 1,
+        username: "shravan",
+        role: "admin",
+        password: "Shravan@2001",
+        email: "s@gmail.com",
+      },
+    ];
+    const showPassword = () => {
+      this.setState({ show: !this.state.show });
+    };
     return (
       <React.Fragment>
         <div className="home-btn d-none d-sm-block">
@@ -124,35 +159,59 @@ class Login extends Component {
                       </Link>
                     </div>
                     <div className="p-2">
-                    {this.props.error && this.props.error ? (
-                      <Alert color="danger">{this.props.error}</Alert>
-                    ) : null}
+                      {this.props.error && this.props.error ? (
+                        <Alert color="danger">{this.props.error}</Alert>
+                      ) : null}
                       <Formik
                         enableReinitialize={true}
                         initialValues={{
-                          email:
-                            (this.state && this.state.email) ||
-                            "admin@themesbrand.com",
-                          password:
-                            (this.state && this.state.password) || "123456",
+                          email: (this.state && this.state.email) || "",
+                          password: (this.state && this.state.password) || "",
                         }}
                         validationSchema={Yup.object().shape({
-                          email: Yup.string().required(
-                            "Please Enter Your Email"
-                          ),
-                          password: Yup.string().required(
-                            "Please Enter Valid Password"
-                          ),
+                          email: Yup.string()
+                            .email("Invalid Email")
+                            .required("Please Enter Your Email"),
+                          password: Yup.string()
+                            .required("Please Enter your password")
+                            .matches(
+                              /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+                              "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
+                            )
+                            .min(8, "Must be greater than 8 characters")
+                            .max(16, "Must be less than 16 characters"),
                         })}
                         onSubmit={values => {
-                          this.props.loginUser(values, this.props.history);
+                          let { email, password } = values;
+                          email = email.toLowerCase();
+
+                          let obj1 = users.find(x => x.email == email);
+                          if (obj1 == null) {
+                            showToast(
+                              "Wrong email or password",
+                              "Login failed"
+                            );
+                          } else {
+                            console.log(obj1.password, password);
+                            if (obj1.password == password) {
+                              this.props.loginUser(values, this.props.history);
+                              console.log(values);
+                            } else {
+                              showToast(
+                                "Wrong email or password",
+                                "Login failed"
+                              );
+                            }
+                          }
                         }}
                       >
                         {({ errors, status, touched }) => (
-                          
                           <Form className="form-horizontal">
                             <div className="mb-3">
-                              <Label for="email" className="form-label">
+                              <Label
+                                for="email"
+                                className="form-label required"
+                              >
                                 Email
                               </Label>
                               <Field
@@ -172,13 +231,16 @@ class Login extends Component {
                               />
                             </div>
                             <div className="mb-3">
-                              <Label for="password" className="form-label">
+                              <Label
+                                for="password"
+                                className="form-label required"
+                              >
                                 Password
                               </Label>
                               <div className="input-group auth-pass-inputgroup">
                                 <Field
                                   name="password"
-                                  type="password"
+                                  type={this.state.show ? "text" : "password"}
                                   autoComplete="true"
                                   className={
                                     "form-control" +
@@ -191,17 +253,23 @@ class Login extends Component {
                                   className="btn btn-light "
                                   type="button"
                                   id="password-addon"
+                                  onClick={showPassword}
                                 >
                                   <i className="mdi mdi-eye-outline"></i>
                                 </button>
+                                <ErrorMessage
+                                  name="password"
+                                  component="div"
+                                  className="invalid-feedback"
+                                />
                               </div>
                               <ErrorMessage
-                              name="password"
-                              component="div"
-                              className="invalid-feedback"
-                            />
+                                name="password"
+                                component="div"
+                                className="invalid-feedback"
+                              />
                             </div>
-                            
+
                             <div className="form-check">
                               <input
                                 type="checkbox"
@@ -222,7 +290,7 @@ class Login extends Component {
                                 type="submit"
                               >
                                 Log In
-                              </button> 
+                              </button>
                             </div>
 
                             <div className="mt-4 text-center">
