@@ -1,10 +1,10 @@
-import React,{Component} from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Card, CardBody, Col, Row } from "reactstrap";
 import { Link } from "react-router-dom";
 import StarRatings from "react-star-ratings";
 import { map } from "lodash";
-import images from "assets/images";
+import images from "../../../assets/images";
 
 class RecentProducts extends Component {
   constructor(props) {

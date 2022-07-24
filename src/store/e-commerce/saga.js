@@ -15,6 +15,9 @@ import {
   DELETE_CUSTOMER,
   UPDATE_CUSTOMER,
   GET_PRODUCTS_TEST,
+  IMPORT_CUSTOMERS,
+  IMPORT_CUSTOMERSDB,
+  DELETE_CUSTOMER_ALL,
 } from "./actionTypes";
 import {
   getCartDataFail,
@@ -43,6 +46,12 @@ import {
   deleteCustomerFail,
   getProductsTestSuccess,
   getProductsTestFail,
+  importCustomersSuccess,
+  importCustomersFail,
+  importCustomersSuccessdb,
+  importCustomersFaildb,
+  deleteAllcustomersSuccess,
+  deleteAllcustomersFail,
 } from "./actions";
 
 //Include Both Helper File with needed methods
@@ -60,6 +69,9 @@ import {
   addNewCustomer,
   updateCustomer,
   deleteCustomer,
+  importCustomers,
+  importCustomersdb,
+  deleteAllCustomers,
 } from "helpers/fakebackend_helper";
 
 function* fetchProducts() {
@@ -143,6 +155,24 @@ function* fetchCustomers() {
   }
 }
 
+function* fetchImportCustomers() {
+  try {
+    const response = yield call(importCustomers);
+    yield put(importCustomersSuccess(response));
+  } catch (error) {
+    yield put(importCustomersFail(error));
+  }
+}
+
+function* fetchImportCustomersdb({ payload: customers }) {
+  try {
+    const response = yield call(importCustomersdb, customers);
+    yield put(importCustomersSuccessdb(response));
+  } catch (error) {
+    yield put(importCustomersFaildb(error));
+  }
+}
+
 function* fetchShops() {
   try {
     const response = yield call(getShops);
@@ -179,6 +209,15 @@ function* onDeleteCustomer({ payload: customer }) {
   }
 }
 
+function* onDeleteAll() {
+  try {
+    const response = yield call(deleteAllCustomers);
+    yield put(deleteAllcustomersSuccess(response));
+  } catch (error) {
+    yield put(deleteAllcustomersFail(error));
+  }
+}
+
 function* ecommerceSaga() {
   yield takeEvery(GET_PRODUCTS, fetchProducts);
   yield takeEvery(GET_PRODUCTS_TEST, fetchProductsTest);
@@ -189,10 +228,13 @@ function* ecommerceSaga() {
   yield takeEvery(DELETE_ORDER, onDeleteOrder);
   yield takeEvery(GET_CART_DATA, fetchCartData);
   yield takeEvery(GET_CUSTOMERS, fetchCustomers);
+  yield takeEvery(IMPORT_CUSTOMERS, fetchImportCustomers);
+  yield takeEvery(IMPORT_CUSTOMERSDB, fetchImportCustomersdb);
   yield takeEvery(GET_SHOPS, fetchShops);
   yield takeEvery(ADD_NEW_CUSTOMER, onAddNewCustomer);
   yield takeEvery(UPDATE_CUSTOMER, onUpdateCustomer);
   yield takeEvery(DELETE_CUSTOMER, onDeleteCustomer);
+  yield takeEvery(DELETE_CUSTOMER_ALL, onDeleteAll);
 }
 
 export default ecommerceSaga;

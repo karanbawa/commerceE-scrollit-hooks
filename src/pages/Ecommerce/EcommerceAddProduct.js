@@ -5,6 +5,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckSquare, faCoffee } from "@fortawesome/fontawesome-free-solid";
 import { Fragment } from "react"; // import Fragment from React
 import { FaCaretDown } from "react-icons/fa";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import EditModal from "components/Common/EditModal";
 import {
   Button,
   Card,
@@ -76,7 +80,10 @@ const showToast = (message, title, statuscode) => {
 class EcommerceAddProduct extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
+      editModal: false,
+      productInfo: {},
       selectedFiles: [],
       metaKeyWords: null,
       productCategory: "INR",
@@ -89,6 +96,37 @@ class EcommerceAddProduct extends Component {
       setdisabled: true,
     };
     this.handleMulti2 = this.handleMulti2.bind(this);
+  }
+
+  componentDidMount() {
+    console.log(this.props);
+    this.props.history.product &&
+      this.setState({
+        selectedFiles: this.props.history.product.productImages,
+        metaKeyWords: this.props.history.product.productSeachKeywords,
+        productCategory: this.props.history.product.productCategory,
+        productName: this.props.history.product.productName,
+        brandName: "",
+        productDescription: "",
+        metaTitle: this.props.history.product.metaTitle,
+        productPrice: this.props.history.product.productPrice,
+        productCurrency: this.props.history.product.productCurrency,
+      });
+    if (this.props.history.location.pathname === "/ecommerce-add-product") {
+      this.props.history.product = {};
+      this.props.history.push("/ecommerce-add-product");
+      this.setState({
+        selectedFiles: [],
+        metaKeyWords: null,
+        productCategory: "INR",
+        productName: "",
+        brandName: "",
+        productDescription: "",
+        metaTitle: "",
+        productPrice: "",
+        productCurrency: "",
+      });
+    }
   }
 
   handleMulti2 = metaKeyWords => {
@@ -118,18 +156,17 @@ class EcommerceAddProduct extends Component {
     this.setState(prevState => ({
       selectedFiles: prevState.selectedFiles.concat(files),
     }));
-    this.state.selectedFiles.forEach(element => {
-      element.imageBase64 = "";
-    });
-    this.state.selectedFiles.map(file => {
-      const img = file.preview;
 
-      this.toDataURL(img).then(dataUrl => {
-        file.imageBase64 = dataUrl;
-      });
-    });
+    // this.state.selectedFiles.forEach(element => {
+    //   element.imageBase64 = "";
+    // });
+    // this.state.selectedFiles.map(file => {
+    //   const img = file.preview;
 
-    // this.setState({ selectedFiles: files });
+    //   this.toDataURL(img).then(dataUrl => {
+    //     file.imageBase64 = dataUrl;
+    //   });
+    // });
   };
 
   formatBytes = (bytes, decimals = 2) => {
@@ -194,6 +231,38 @@ class EcommerceAddProduct extends Component {
       { value: "WA", label: "Washington" },
     ];
     const { metaKeyWords } = this.state;
+    const { isEdit, editModal } = this.state;
+
+    const onClickEdit = e => {
+      e.preventDefault();
+      this.setState({ editModal: true });
+    };
+
+    const editHandler = e => {
+      e.preventDefault();
+      const editprodcutDetails = {
+        id: this.props.history.product.id,
+        productName: this.state.productName.toLowerCase(),
+        productCategory: this.state.productCategory.toLowerCase(),
+        // brandName: this.state.brandName.toLowerCase(),
+        productDescription: this.state.productDescription.toLowerCase(),
+        productPrice: this.state.productPrice,
+        productCurrency: this.state.productCurrency,
+        productImages: this.state.selectedFiles,
+        metaTitle: this.state.metaTitle.toLowerCase(),
+        metaKeyWords: this.state.metaKeyWords,
+        productDate: "2019-08-29",
+      };
+      const res = this.props.products.find((item, index) => {
+        if (item.id == this.props.history.product.id) {
+          this.props.products[index] = editprodcutDetails;
+        }
+      });
+
+      this.setState({ editModal: false });
+      console.log(this.props.products);
+      showToast("Edit successfull", "Success", 200);
+    };
 
     const submitHandler = e => {
       e.preventDefault();
@@ -202,12 +271,13 @@ class EcommerceAddProduct extends Component {
         productName: this.state.productName.toLowerCase(),
         productCategory: this.state.productCategory.toLowerCase(),
         brandName: this.state.brandName.toLowerCase(),
-        productDescription: this.state.productDescription.toLowerCase,
+        productDescription: this.state.productDescription.toLowerCase(),
         productPrice: this.state.productPrice,
         productCurrency: this.state.productCurrency,
         productImages: this.state.selectedFiles,
         metaTitle: this.state.metaTitle.toLowerCase(),
         metaKeyWords: this.state.metaKeyWords,
+        priceCode: 1,
       };
       try {
         let axiosConfig = {
@@ -254,8 +324,22 @@ class EcommerceAddProduct extends Component {
         productCurrency: "",
       });
     };
+    const remove = file => {
+      const newFiles = [...this.state.selectedFiles];
+      newFiles.splice(file, 1);
+      this.setState({ selectedFiles: newFiles });
+    };
+
     return (
       <React.Fragment>
+        <EditModal
+          show={editModal}
+          onEditClick={editHandler}
+          onCloseClick={() => {
+            showToast("Edit failed", "Error", 500);
+            this.setState({ editModal: false });
+          }}
+        />
         <div className="page-content">
           <MetaTags>
             <title>
@@ -264,7 +348,16 @@ class EcommerceAddProduct extends Component {
           </MetaTags>
           <Container fluid>
             {/* Render Breadcrumb */}
-            <Breadcrumbs title="Ecommerce" breadcrumbItem="Add Product" />
+            <Breadcrumbs
+              title="Ecommerce"
+              breadcrumbItem={
+                this.props.history.product &&
+                this.props.history.location.pathname ==
+                  "/ecommerce-edit-product"
+                  ? "Edit Product"
+                  : "Add Product"
+              }
+            />
 
             <Row>
               <Col xs="12">
@@ -320,10 +413,10 @@ class EcommerceAddProduct extends Component {
                               >
                                 {/* <FaCaretDown /> */}
                                 <option>
-                                  Select Currency{" "}
-                                  <span>
+                                  Select Currency
+                                  {/* <span>
                                     <i className="fas fa-ad"></i>
-                                  </span>
+                                  </span> */}
                                 </option>
                                 <option value="INR">INR</option>
                                 <option value="AED">AED</option>
@@ -379,9 +472,9 @@ class EcommerceAddProduct extends Component {
                       <CardTitle className="mb-3 h4">Product Images</CardTitle>
                       <Form className="dropzone">
                         <Dropzone
-                          onDrop={acceptedFiles =>
-                            this.handleAcceptedFiles(acceptedFiles)
-                          }
+                          onDrop={acceptedFiles => {
+                            this.handleAcceptedFiles(acceptedFiles);
+                          }}
                         >
                           {({ getRootProps, getInputProps }) => (
                             <div>
@@ -410,7 +503,7 @@ class EcommerceAddProduct extends Component {
                                 className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
                                 key={i + "-file"}
                               >
-                                <div className="p-2">
+                                <div className="p-2 d-flex justify-content-between w-25">
                                   <Row className="align-items-center">
                                     <Col className="col-auto">
                                       <img
@@ -421,6 +514,7 @@ class EcommerceAddProduct extends Component {
                                         src={f.preview}
                                       />
                                     </Col>
+
                                     <Col>
                                       <Link
                                         to="#"
@@ -433,6 +527,15 @@ class EcommerceAddProduct extends Component {
                                       </p>
                                     </Col>
                                   </Row>
+                                  <button
+                                    className="avatar-sm rounded-circle border-white bg-light"
+                                    onClick={e => {
+                                      e.preventDefault();
+                                      remove(f);
+                                    }}
+                                  >
+                                    X
+                                  </button>
                                 </div>
                               </Card>
                             );
@@ -490,21 +593,41 @@ class EcommerceAddProduct extends Component {
                           </div>
                         </Col> */}
                         </Row>
-                        <Button
-                          type="submit"
-                          color="primary"
-                          className="me-1"
-                          disabled={
-                            !this.state.productName ||
-                            !this.state.productCategory ||
-                            !this.state.productPrice
-                              ? true
-                              : ""
-                          }
-                          onClick={submitHandler}
-                        >
-                          Add Product
-                        </Button>{" "}
+                        {this.props.history.product &&
+                        this.props.history.location.pathname ==
+                          "/ecommerce-edit-product" ? (
+                          <Button
+                            type="submit"
+                            color="primary"
+                            className="me-1"
+                            disabled={
+                              !this.state.productName ||
+                              !this.state.productCategory ||
+                              !this.state.productPrice
+                                ? true
+                                : ""
+                            }
+                            onClick={e => onClickEdit(e)}
+                          >
+                            Edit Product
+                          </Button>
+                        ) : (
+                          <Button
+                            type="submit"
+                            color="primary"
+                            className="me-1"
+                            disabled={
+                              !this.state.productName ||
+                              !this.state.productCategory ||
+                              !this.state.productPrice
+                                ? true
+                                : ""
+                            }
+                            onClick={submitHandler}
+                          >
+                            Add Product
+                          </Button>
+                        )}{" "}
                         <Button
                           type="submit"
                           color="secondary"
@@ -524,5 +647,23 @@ class EcommerceAddProduct extends Component {
     );
   }
 }
+EcommerceAddProduct.propTypes = {
+  products: PropTypes.array,
+  className: PropTypes.any,
+  history: PropTypes.any,
+  product: PropTypes.object,
+};
 
-export default EcommerceAddProduct;
+const mapStateToProps = state => ({
+  products: state.ecommerce.products,
+  product: state.ecommerce.product,
+});
+
+// const mapDispatchToProps = dispatch => ({
+//   onGetProducts: () => dispatch(getProductsTest()),
+//   onAddNewProduct: product => dispatch(addNewProduct(product)),
+//   onUpdateProduct: product => dispatch(updateProduct(product)),
+//   onDeleteProduct: product => dispatch(deleteProduct(product)),
+// });
+
+export default connect(mapStateToProps)(withRouter(EcommerceAddProduct));

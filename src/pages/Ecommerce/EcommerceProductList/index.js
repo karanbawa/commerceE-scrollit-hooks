@@ -12,8 +12,14 @@ import paginationFactory, {
 import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import { Link } from "react-router-dom";
 import * as moment from "moment";
+import { priceCodes } from "../../../common/data/ecommerce";
+import Select from "react-select";
+import Dropzone from "react-dropzone";
+import EcommerceAddProduct from "../EcommerceAddProduct";
 
 import {
+  InputGroup,
+  Input,
   Button,
   Card,
   CardBody,
@@ -37,13 +43,15 @@ import { getProductsTest } from "store/actions";
 import EcommerceProductModal from "./EcommerceProductModal";
 import DeleteModal from "../../../components/Common/DeleteModal";
 import axios from "axios";
+import { propTypes } from "react-bootstrap-editable";
 
-class EcommerceProducts extends Component {
+class ProductList extends Component {
   constructor(props) {
     super(props);
     this.node = React.createRef();
     this.state = {
       viewmodal: false,
+      selectedFiles: [],
       modal: false,
       products: [],
       product: {},
@@ -111,8 +119,10 @@ class EcommerceProducts extends Component {
         },
         {
           dataField: "productPrice",
-          text: "PriceCode",
+          text: "Price",
           sort: true,
+          formatter: (cellContent, row) =>
+            this.handleValidPrice(row.productPrice, row.priceCode),
         },
 
         {
@@ -129,6 +139,7 @@ class EcommerceProducts extends Component {
                 this.setState({
                   product,
                 });
+
                 this.toggleViewModal();
               }}
             >
@@ -147,7 +158,9 @@ class EcommerceProducts extends Component {
                   <i
                     className="mdi mdi-pencil font-size-18"
                     id="edittooltip"
-                    onClick={() => this.handleProductClick(product)}
+                    onClick={() => {
+                      this.handleProductClick(product);
+                    }}
                   />
                 </Link>
                 <Link to="#" className="text-danger">
@@ -169,28 +182,87 @@ class EcommerceProducts extends Component {
     this.handleAddProductClick = this.handleAddProductClick.bind(this);
     this.toLowerCase1 = this.toLowerCase1.bind(this);
     this.onClickDelete = this.onClickDelete.bind(this);
+    this.handleMulti2 = this.handleMulti2.bind(this);
   }
 
   toLowerCase1(str) {
     return str.toLowerCase();
   }
 
+  handleMulti2 = metaKeyWords => {
+    this.setState({ metaKeyWords });
+  };
+
+  toDataURL = url =>
+    fetch(url)
+      .then(response => response.blob())
+      .then(
+        blob =>
+          new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+          })
+      );
+
+  handleAcceptedFiles = files => {
+    files.map(file =>
+      Object.assign(file, {
+        preview: URL.createObjectURL(file),
+        formattedSize: this.formatBytes(file.size),
+      })
+    );
+    this.setState(prevState => ({
+      selectedFiles: prevState.selectedFiles.concat(files),
+    }));
+    this.state.selectedFiles.forEach(element => {
+      element.imageBase64 = "";
+    });
+    this.state.selectedFiles.map(file => {
+      const img = file.preview;
+
+      this.toDataURL(img).then(dataUrl => {
+        file.imageBase64 = dataUrl;
+      });
+    });
+
+    this.setState({ selectedFiles: files });
+  };
+
+  formatBytes = (bytes, decimals = 2) => {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  };
+
+  removeFile = file => {
+    const newFiles = [...this.state.selectedFiles]; // make a var for the new array
+    newFiles.splice(file, 1); // remove the file from the array
+    this.setState({
+      selectedFiles: newFiles,
+    }); // update the state
+  };
+
   componentDidMount() {
-    console.log(this.props);
     let { products, onGetProducts } = this.props;
 
     if (this.state.products && !this.state.products.length) {
       onGetProducts();
     }
     this.setState({ products });
-    console.log(products);
   }
 
   // eslint-disable-next-line no-unused-vars
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { products } = this.props;
+    const { products, product } = this.props;
+    console.log(this.props);
     if (!isEmpty(products) && size(prevProps.products) !== size(products)) {
-      this.setState({ product: {}, isEdit: false });
+      this.setState({ isEdit: false, products, product: {} });
     }
   }
 
@@ -238,33 +310,30 @@ class EcommerceProducts extends Component {
   };
 
   handleDeleteProduct = () => {
-    const { onDeleteProduct } = this.props;
-    const { product } = this.state;
-    if (product.id !== undefined) {
-      onDeleteProduct(product);
-      this.onPaginationPageChange(1);
-      this.setState({ deleteModal: false });
-    }
+    let { product, products } = this.state;
+    console.log(product);
+
+    products = products.filter(item => item.id != product.id);
+    this.setState({ products: products });
+    console.log(products);
+
+    // if (product.id !== undefined) {
+    // onDeleteProduct(product);
+    //   this.onPaginationPageChange(1);
+    this.setState({ deleteModal: false });
+    // }
   };
 
   handleProductClick = arg => {
-    const product = arg;
-
-    this.setState({
-      order: {
-        id: product.id,
-        productId: product.productId,
-        productName: product.productName,
-        productDate: product.productDate,
-        total: product.total,
-        paymentStatus: product.paymentStatus,
-        paymentMethod: product.paymentMethod,
-        badgeclass: product.badgeclass,
-      },
-      isEdit: true,
+    // const product = arg;
+    // console.log("hii" + product);
+    // this.setState((prevState, props) => ({ product }));
+    this.setState({ product: arg }, () => {
+      this.props.history.product = arg;
+      // console.log(this.props);
+      // console.log(this.props.history);
+      this.props.history.push("/ecommerce-edit-product");
     });
-
-    this.toggle();
   };
 
   handleValidDate = date => {
@@ -272,16 +341,21 @@ class EcommerceProducts extends Component {
     return date1;
   };
 
-  render() {
-    const { products } = this.props;
+  handleValidPrice = (price, pricecode) => {
+    const currency = priceCodes.find(
+      priceitem => priceitem.priceCode == pricecode
+    );
+    const finalPrice = `${currency.priceLabel}  ${price}`;
+    return finalPrice;
+  };
 
-    const product = this.state.product;
+  render() {
+    const { products, product } = this.state;
+    console.log(product);
 
     const { SearchBar } = Search;
 
     const { isEdit, deleteModal } = this.state;
-
-    const { onAddNewProduct, onUpdateProduct } = this.props;
 
     //pagination customization
     const pageOptions = {
@@ -383,266 +457,6 @@ class EcommerceProducts extends Component {
                                   headerWrapperClasses={"table-light"}
                                   ref={this.node}
                                 />
-                                <Modal
-                                  isOpen={this.state.modal}
-                                  className={this.props.className}
-                                >
-                                  <ModalHeader toggle={this.toggle} tag="h4">
-                                    {!!isEdit ? "Edit Product" : "Add Product"}
-                                  </ModalHeader>
-                                  <ModalBody>
-                                    <Formik
-                                      enableReinitialize={true}
-                                      initialValues={{
-                                        productId:
-                                          (product && product.productId) || "",
-                                        productName:
-                                          (product && product.productName) ||
-                                          "",
-                                        productdate:
-                                          (product && product.productDate) ||
-                                          "",
-                                        total: (product && product.total) || "",
-                                        paymentStatus:
-                                          (product && product.paymentStatus) ||
-                                          "Paid",
-                                        badgeclass:
-                                          (product && product.badgeclass) ||
-                                          "success",
-                                        paymentMethod:
-                                          (product && product.paymentMethod) ||
-                                          "Mastercard",
-                                      }}
-                                      validationSchema={Yup.object().shape({
-                                        productId: Yup.string().required(
-                                          "Please Enter Your product Id"
-                                        ),
-                                        productName: Yup.string().required(
-                                          "Please Enter Your product Name"
-                                        ),
-                                        productDate: Yup.string().required(
-                                          "Please Enter Your Product Date"
-                                        ),
-                                        total:
-                                          Yup.string().required("Total Amount"),
-                                        paymentStatus: Yup.string().required(
-                                          "Please Enter Your Payment Status"
-                                        ),
-                                        badgeclass: Yup.string().required(
-                                          "Please Enter Your Badge Class"
-                                        ),
-                                        paymentMethod: Yup.string().required(
-                                          "Please Enter Your Payment Method"
-                                        ),
-                                      })}
-                                      onSubmit={values => {
-                                        if (isEdit) {
-                                          const updateProduct = {
-                                            id: product ? product.id : 0,
-                                            productId: values.productId,
-                                            productName: values.productName,
-                                            productDate: values.productDate,
-                                            total: values.total,
-                                            paymentStatus: values.paymentStatus,
-                                            paymentMethod: values.paymentMethod,
-                                            badgeclass: values.badgeclass,
-                                          };
-
-                                          onUpdateProduct(onUpdateProduct);
-                                        } else {
-                                          const newProduct = {
-                                            id:
-                                              Math.floor(
-                                                Math.random() * (30 - 20)
-                                              ) + 20,
-                                            productId: values["productId"],
-                                            productName: values["productName"],
-                                            productDate: values["productDate"],
-                                            total: values["total"],
-                                            paymentStatus:
-                                              values["paymentStatus"],
-                                            paymentMethod:
-                                              values["paymentMethod"],
-                                            badgeclass: values["badgeclass"],
-                                          };
-
-                                          onAddNewProduct(newProduct);
-                                        }
-
-                                        this.setState({
-                                          selectedProduct: null,
-                                        });
-                                        this.toggle();
-                                      }}
-                                    >
-                                      {({ errors, status, touched }) => (
-                                        <Form>
-                                          <Row>
-                                            <Col className="col-12">
-                                              <div className="mb-3">
-                                                <Label className="form-label">
-                                                  Product Id
-                                                </Label>
-                                                <Field
-                                                  name="orderId"
-                                                  type="text"
-                                                  className={
-                                                    "form-control" +
-                                                    (errors.orderId &&
-                                                    touched.orderId
-                                                      ? " is-invalid"
-                                                      : "")
-                                                  }
-                                                />
-                                                <ErrorMessage
-                                                  name="orderId"
-                                                  component="div"
-                                                  className="invalid-feedback"
-                                                />
-                                              </div>
-                                              <div className="mb-3">
-                                                <Label className="form-label">
-                                                  Billing Name
-                                                </Label>
-                                                <Field
-                                                  name="billingName"
-                                                  type="text"
-                                                  className={
-                                                    "form-control" +
-                                                    (errors.billingName &&
-                                                    touched.billingName
-                                                      ? " is-invalid"
-                                                      : "")
-                                                  }
-                                                />
-                                                <ErrorMessage
-                                                  name="billingName"
-                                                  component="div"
-                                                  className="invalid-feedback"
-                                                />
-                                              </div>
-                                              <div className="mb-3">
-                                                <Label className="form-label">
-                                                  Product Date
-                                                </Label>
-                                                <Field
-                                                  name="orderdate"
-                                                  type="date"
-                                                  className={
-                                                    "form-control" +
-                                                    (errors.orderdate &&
-                                                    touched.orderdate
-                                                      ? " is-invalid"
-                                                      : "")
-                                                  }
-                                                />
-                                                <ErrorMessage
-                                                  name="orderdate"
-                                                  component="div"
-                                                  className="invalid-feedback"
-                                                />
-                                              </div>
-                                              <div className="mb-3">
-                                                <Label className="form-label">
-                                                  Total
-                                                </Label>
-                                                <Field
-                                                  name="total"
-                                                  type="text"
-                                                  className={
-                                                    "form-control" +
-                                                    (errors.total &&
-                                                    touched.total
-                                                      ? " is-invalid"
-                                                      : "")
-                                                  }
-                                                />
-                                                <ErrorMessage
-                                                  name="total"
-                                                  component="div"
-                                                  className="invalid-feedback"
-                                                />
-                                              </div>
-                                              <div className="mb-3">
-                                                <Label className="form-label">
-                                                  Total
-                                                </Label>
-                                                <Field
-                                                  name="paymentStatus"
-                                                  as="select"
-                                                  className={
-                                                    "form-control" +
-                                                    (errors.paymentStatus &&
-                                                    touched.paymentStatus
-                                                      ? " is-invalid"
-                                                      : "")
-                                                  }
-                                                >
-                                                  <option>Paid</option>
-                                                  <option>Chargeback</option>
-                                                  <option>Refund</option>
-                                                </Field>
-                                              </div>
-                                              <div className="mb-3">
-                                                <Label className="form-label">
-                                                  Badge Class
-                                                </Label>
-                                                <Field
-                                                  name="badgeclass"
-                                                  as="select"
-                                                  className={
-                                                    "form-control" +
-                                                    (errors.badgeclass &&
-                                                    touched.badgeclass
-                                                      ? " is-invalid"
-                                                      : "")
-                                                  }
-                                                >
-                                                  <option>success</option>
-                                                  <option>danger</option>
-                                                  <option>warning</option>
-                                                </Field>
-                                              </div>
-                                              <div className="mb-3">
-                                                <Label className="form-label">
-                                                  Payment Method
-                                                </Label>
-                                                <Field
-                                                  name="paymentMethod"
-                                                  as="select"
-                                                  className={
-                                                    "form-control" +
-                                                    (errors.paymentMethod &&
-                                                    touched.paymentMethod
-                                                      ? " is-invalid"
-                                                      : "")
-                                                  }
-                                                >
-                                                  <option>Mastercard</option>
-                                                  <option>Visa</option>
-                                                  <option>Paypal</option>
-                                                  <option>COD</option>
-                                                </Field>
-                                              </div>
-                                            </Col>
-                                          </Row>
-                                          <Row>
-                                            <Col>
-                                              <div className="text-end">
-                                                <button
-                                                  type="submit"
-                                                  className="btn btn-success save-user"
-                                                >
-                                                  Save
-                                                </button>
-                                              </div>
-                                            </Col>
-                                          </Row>
-                                        </Form>
-                                      )}
-                                    </Formik>
-                                  </ModalBody>
-                                </Modal>
                               </div>
                               <div className="pagination pagination-rounded justify-content-end mb-2">
                                 <PaginationListStandalone
@@ -665,7 +479,7 @@ class EcommerceProducts extends Component {
   }
 }
 
-EcommerceProducts.propTypes = {
+ProductList.propTypes = {
   products: PropTypes.array,
   onGetProducts: PropTypes.func,
   onAddNewProduct: PropTypes.func,
@@ -673,10 +487,12 @@ EcommerceProducts.propTypes = {
   onUpdateProduct: PropTypes.func,
   className: PropTypes.any,
   history: PropTypes.any,
+  product: PropTypes.object,
 };
 
 const mapStateToProps = state => ({
   products: state.ecommerce.products,
+  product: state.ecommerce.product,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -689,4 +505,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(EcommerceProducts));
+)(withRouter(ProductList));

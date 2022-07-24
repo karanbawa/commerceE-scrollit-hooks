@@ -38,6 +38,13 @@ import {
   DELETE_CUSTOMER_FAIL,
   GET_PRODUCTS_TEST_SUCCESS,
   GET_PRODUCTS_TEST_FAIL,
+  IMPORT_CUSTOMERS,
+  IMPORT_CUSTOMERS_SUCCESS,
+  IMPORT_CUSTOMERS_FAIL,
+  IMPORT_CUSTOMERSDB,
+  IMPORT_CUSTOMERSDB_SUCCESS,
+  IMPORT_CUSTOMERSDB_FAIL,
+  DELETE_CUSTOMER_ALL_SUCCESS,
 } from "./actionTypes";
 
 export const getProducts = () => ({
@@ -170,6 +177,49 @@ export const getCustomersFail = error => ({
   payload: error,
 });
 
+export const importCustomers = () => ({
+  type: IMPORT_CUSTOMERS,
+});
+
+export const importCustomersSuccess = customers => ({
+  type: IMPORT_CUSTOMERS_SUCCESS,
+  payload: customers,
+});
+
+export const importCustomersFail = error => ({
+  type: IMPORT_CUSTOMERS_FAIL,
+  payload: error,
+});
+
+export const importCustomersdb = customers => ({
+  type: IMPORT_CUSTOMERSDB,
+  payload: customers,
+});
+
+export const deleteAllcustomers = () => ({
+  type: DELETE_CUSTOMER_ALL,
+});
+
+export const deleteAllcustomersSuccess = customers => ({
+  type: DELETE_CUSTOMER_ALL_SUCCESS,
+  payload: customers,
+});
+
+export const deleteAllcustomersFail = error => ({
+  type: DELETE_CUSTOMER_FAIL,
+  payload: error,
+});
+
+export const importCustomersSuccessdb = customers => ({
+  type: IMPORT_CUSTOMERSDB_SUCCESS,
+  payload: customers,
+});
+
+export const importCustomersFaildb = error => ({
+  type: IMPORT_CUSTOMERSDB_FAIL,
+  payload: error,
+});
+
 export const getShops = () => ({
   type: GET_SHOPS,
 });
@@ -189,9 +239,9 @@ export const addNewCustomer = customer => ({
   payload: customer,
 });
 
-export const addCustomerSuccess = customer => ({
+export const addCustomerSuccess = customers => ({
   type: ADD_CUSTOMER_SUCCESS,
-  payload: customer,
+  payload: customers,
 });
 
 export const addCustomerFail = error => ({
@@ -204,9 +254,9 @@ export const updateCustomer = customer => ({
   payload: customer,
 });
 
-export const updateCustomerSuccess = customer => ({
+export const updateCustomerSuccess = customers => ({
   type: UPDATE_CUSTOMER_SUCCESS,
-  payload: customer,
+  payload: customers,
 });
 
 export const updateCustomerFail = error => ({
@@ -219,9 +269,9 @@ export const deleteCustomer = customer => ({
   payload: customer,
 });
 
-export const deleteCustomerSuccess = customer => ({
+export const deleteCustomerSuccess = customers => ({
   type: DELETE_CUSTOMER_SUCCESS,
-  payload: customer,
+  payload: customers,
 });
 
 export const deleteCustomerFail = error => ({

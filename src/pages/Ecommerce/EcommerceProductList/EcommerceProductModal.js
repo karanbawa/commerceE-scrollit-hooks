@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import {
-  Container,
   Button,
   Modal,
   ModalBody,
   ModalFooter,
   ModalHeader,
-  Table,
   Row,
   Col,
   TabContent,
@@ -15,20 +13,12 @@ import {
   Nav,
   NavItem,
   NavLink,
-  Card,
-  CardBody,
 } from "reactstrap";
-import { connect } from "react-redux";
-import { getProductDetail } from "../../../store/e-commerce/actions";
-import img7 from "../../../assets/images/product/img-7.png";
-import img4 from "../../../assets/images/product/img-4.png";
 import { Link } from "react-router-dom";
-import Breadcrumbs from "components/Common/Breadcrumb";
 
 import classnames from "classnames";
 
 import { isEmpty } from "lodash";
-import { string } from "yup/lib/locale";
 
 class EcommerceProductModal extends Component {
   constructor(props) {
@@ -76,45 +66,40 @@ class EcommerceProductModal extends Component {
             <ModalBody>
               <React.Fragment>
                 {!isEmpty(product) && (
-                  <div className="product-detai-imgs">
-                    <div className="d-flex flex-column justify-content-center align-items-center ">
+                  <div className="product-detai-imgs justify-content-center">
+                    <div className="d-flex flex-column justify-content-center align-items-center">
                       <Col md={{ size: 7, offset: 1 }} xs="9">
-                        <TabContent activeTab={this.state.activeTab}>
-                          <TabPane tabId="1">
-                            <div>
-                              <img
-                                src={product.productImages[0]}
-                                alt=""
-                                id="expandedImg1"
-                                className="img-fluid mx-auto d-block"
-                              />
-                            </div>
-                          </TabPane>
-                          <TabPane tabId="2">
-                            <div>
-                              <img
-                                src={product.productImages[1]}
-                                id="expandedImg2"
-                                alt=""
-                                className="img-fluid mx-auto d-block"
-                              />
-                            </div>
-                          </TabPane>
-                          <TabPane tabId="3">
-                            <div>
-                              <img
-                                src={product.productImages[2]}
-                                id="expandedImg3"
-                                alt=""
-                                className="img-fluid mx-auto d-block"
-                              />
-                            </div>
-                          </TabPane>
-                        </TabContent>
+                        {product.productImages.length == 1 ? (
+                          <div>
+                            <img
+                              src={product.productImages[0]}
+                              alt=""
+                              id="expandedImg1"
+                              className="img-fluid mx-auto d-block  "
+                              style={{ maxHeight: "300px" }}
+                            />
+                          </div>
+                        ) : (
+                          <TabContent activeTab={this.state.activeTab}>
+                            {product.productImages.map((image, index) => (
+                              <TabPane tabId={`${index + 1}`} key={index}>
+                                <div>
+                                  <img
+                                    src={image}
+                                    alt=""
+                                    id={`expandedImg${index + 1}`}
+                                    className="img-fluid mx-auto d-block "
+                                    style={{ maxHeight: "300px" }}
+                                  />
+                                </div>
+                              </TabPane>
+                            ))}
+                          </TabContent>
+                        )}
                       </Col>
                       <div className=" mt-4 ">
                         <Nav className="" pills>
-                          {product.productImages.map((image, index) => (
+                          {/* {product.productImages.map((image, index) => (
                             <>
                               <NavItem key={index}>
                                 <NavLink
@@ -131,12 +116,12 @@ class EcommerceProductModal extends Component {
                                     onClick={() => {
                                       this.imageShow(image, index + 1);
                                     }}
-                                    className="avatar-md"
+                                    className="avatar-sm"
                                   />
                                 </NavLink>
                               </NavItem>
                             </>
-                          ))}
+                          ))} */}
                         </Nav>
                       </div>
                       <div className="mt-4 mx-4">
@@ -164,16 +149,18 @@ class EcommerceProductModal extends Component {
                         </p>
                         <Row className="mb-3 row">
                           <Col className=" d-flex flex-wrap justify-content-between col-md-6">
-                            {product.productSeachKeywords.map((item, index) => (
-                              <>
-                                <div>
-                                  <p className="text-muted">
-                                    <i className="fa fa-caret-right  font-size-16 align-middle text-primary me-2"></i>
-                                    {item}
-                                  </p>
-                                </div>
-                              </>
-                            ))}
+                            {product?.productSeachKeywords.map(
+                              (item, index) => (
+                                <>
+                                  <div key={index}>
+                                    <p className="text-muted">
+                                      <i className="fa fa-caret-right  font-size-16 align-middle text-primary me-2"></i>
+                                      {item}
+                                    </p>
+                                  </div>
+                                </>
+                              )
+                            )}
                           </Col>
                         </Row>
                       </div>

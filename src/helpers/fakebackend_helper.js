@@ -2,6 +2,31 @@ import axios from "axios";
 import { del, get, post, put } from "./api_helper";
 import * as url from "./url_helper";
 import { headers } from "./axios-headers";
+import toastr from "toastr";
+
+const showToast = (message, title, statuscode) => {
+  toastr.options = {
+    positionClass: "toast-top-right",
+    newestOnTop: true,
+    extendedTimeOut: 1000,
+    showEasing: "swing",
+    hideEasing: "linear",
+    showMethod: "fadeIn",
+    hideMethod: "fadeOut",
+    showDuration: 300,
+    hideDuration: 1000,
+    timeOut: 5000,
+    closeButton: true,
+    debug: true,
+    preventDuplicates: true,
+    extendedTimeOut: 1000,
+  };
+  if (statuscode == 200) {
+    toastr.success(message, title);
+  } else {
+    toastr.error(message, title);
+  }
+};
 
 // Gets the logged in user data from local session
 const getLoggedInUser = () => {
@@ -164,14 +189,90 @@ export const getCartData = () => get(url.GET_CART_DATA);
 export const getCustomers = () => get(url.GET_CUSTOMERS);
 
 // add customer
-export const addNewCustomer = customer => post(url.ADD_NEW_CUSTOMER, customer);
+export const addNewCustomer = customer => {
+  console.log(`${process.env.REACT_APP_AUTHDOMAIN}/v1${url.ADD_NEW_CUSTOMER}`);
+  return axios
+    .post(
+      `${process.env.REACT_APP_AUTHDOMAIN}/v1${url.ADD_NEW_CUSTOMER}`,
+      customer,
+      headers
+    )
+    .then(response => {
+      return response.data.data.customers;
+    });
+};
 
 // update customer
-export const updateCustomer = customer => put(url.UPDATE_CUSTOMER, customer);
+export const updateCustomer = customer => {
+  let { id, ...customerInfo } = customer;
+
+  // console.log(
+  //   `${process.env.REACT_APP_AUTHDOMAIN}/v1${url.UPDATE_CUSTOMER}/${customer.id}`
+  // );
+  return axios
+    .put(
+      `${process.env.REACT_APP_AUTHDOMAIN}/v1${url.UPDATE_CUSTOMER}/${customer.id}`,
+      customerInfo,
+      headers
+    )
+    .then(response => {
+      return response.data.data.customers;
+    });
+};
+
+export const deleteAllCustomers = () => {
+  return axios
+    .delete(
+      `${process.env.REACT_APP_AUTHDOMAIN}/v1${url.DELETE_CUSTOMER_ALL}`,
+      headers
+    )
+    .then((res, error) => {
+      console.log(res.data.data.customers);
+      return res.data.data.customers;
+    });
+};
+
+export const importCustomersdb = customers => {
+  const customerData = {
+    customerInfo: customers,
+  };
+  return axios
+    .post(
+      `${process.env.REACT_APP_AUTHDOMAIN}/v1${url.IMPORT_CUSTOMERS}`,
+      customerData,
+      headers
+    )
+    .then(response => {
+      console.log(response.statuscode);
+      return response.data.data.customers;
+    });
+};
+
+//import customers from sheet
+export const importCustomers = () => {
+  return axios
+    .get(
+      `${process.env.REACT_APP_AUTHDOMAIN}/v1${url.IMPORT_CUSTOMERS}`,
+      headers
+    )
+    .then((res, error) => {
+      return res.data.data.customers;
+    });
+};
 
 // delete customer
-export const deleteCustomer = customer =>
-  del(url.DELETE_CUSTOMER, { headers: { customer } });
+export const deleteCustomer = customer => {
+  return axios
+    .delete(
+      `${process.env.REACT_APP_AUTHDOMAIN}/v1${url.DELETE_CUSTOMER}/${customer._id}`,
+      headers
+    )
+    .then((res, error) => {
+      console.log(res.data.data.customers);
+      return res.data.data.customers;
+    });
+};
+// del(url.DELETE_CUSTOMER, { headers: { customer } });
 
 // get shops
 export const getShops = () => get(url.GET_SHOPS);

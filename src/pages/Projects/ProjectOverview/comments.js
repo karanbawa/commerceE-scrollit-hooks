@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Card, CardBody, CardTitle, Media } from "reactstrap";
 import { Link } from "react-router-dom";
 import { map } from "lodash";
-import images from "assets/images";
+import images from "../../../assets/images";
 
 class Comments extends Component {
   constructor(props) {

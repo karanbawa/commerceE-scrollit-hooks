@@ -1,10 +1,10 @@
-import React,{Component} from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { map } from "lodash";
 import { Badge, Card, CardBody, Col } from "reactstrap";
-import images from "assets/images";
-import companies from "assets/images/companies";
+import images from "../../assets/images";
+import companies from "../../assets/images/companies";
 
 class CardProject extends Component {
   constructor(props) {

@@ -110,11 +110,12 @@
     "simplebar-react": "^2.3.6",
     "toastr": "^2.1.4",
     "tslib": "^2.0.0",
+    "xlsx": "^0.18.5",
     "yup": "^0.32.11",
     "zone.js": "~0.11.3"
   },
   "scripts": {
-    "start": "set PORT=3005 && react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts --max_old_space_size=8000 build",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",

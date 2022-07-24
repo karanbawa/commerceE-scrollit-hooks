@@ -1,20 +1,20 @@
-import React, { Component } from "react"
-import PropTypes from 'prop-types'
-import { Link } from "react-router-dom"
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 import {
   Card,
   CardBody,
   CardFooter,
   Col,
   UncontrolledTooltip,
-} from "reactstrap"
-import { size, map } from "lodash"
+} from "reactstrap";
+import { size, map } from "lodash";
 
-import images from "assets/images"
+import images from "../../assets/images";
 
 class CardContact extends Component {
   render() {
-    const user = this.props.user
+    const user = this.props.user;
     return (
       <React.Fragment>
         <Col xl="3" sm="6">
@@ -116,12 +116,12 @@ class CardContact extends Component {
           </Card>
         </Col>
       </React.Fragment>
-    )
+    );
   }
 }
 
 CardContact.propTypes = {
-  user: PropTypes.object
-}
+  user: PropTypes.object,
+};
 
-export default CardContact
+export default CardContact;

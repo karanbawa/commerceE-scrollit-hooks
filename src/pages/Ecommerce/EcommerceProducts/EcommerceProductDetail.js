@@ -24,7 +24,7 @@ import { isEmpty } from "lodash";
 import StarRatings from "react-star-ratings";
 
 //Import Product Images
-import { productImages } from "../../../assets/images/product/";
+import { productImages } from "../../../assets/images/product";
 
 //Import Breadcrumb
 import Breadcrumbs from "components/Common/Breadcrumb";

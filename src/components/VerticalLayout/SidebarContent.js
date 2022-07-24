@@ -193,9 +193,19 @@ class SidebarContent extends Component {
                   <li>
                     <Link to="/ecommerce-shops">{this.props.t("Shops")}</Link>
                   </li>
-                  <li>
+                  <li className={this.props.history.product && ""}>
                     <Link to="/ecommerce-add-product">
                       {this.props.t("Add Product")}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/ecommerce-add-productnew">
+                      {this.props.t("Add Product V2")}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/addproductthree">
+                      {this.props.t("Add Product v3")}
                     </Link>
                   </li>
                   <li>
@@ -836,6 +846,8 @@ SidebarContent.propTypes = {
   location: PropTypes.object,
   t: PropTypes.any,
   type: PropTypes.string,
+  history: PropTypes.any,
+  product: PropTypes.object,
 };
 
 export default withRouter(withTranslation()(SidebarContent));

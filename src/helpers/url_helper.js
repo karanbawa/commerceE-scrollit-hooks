@@ -47,9 +47,12 @@ export const GET_CART_DATA = "/cart";
 
 //CUSTOMERS
 export const GET_CUSTOMERS = "/customers";
-export const ADD_NEW_CUSTOMER = "/add/customer";
-export const UPDATE_CUSTOMER = "/update/customer";
-export const DELETE_CUSTOMER = "/delete/customer";
+export const ADD_NEW_CUSTOMER = "/customer/add";
+export const UPDATE_CUSTOMER = "/customer/update";
+export const DELETE_CUSTOMER = "/customer/delete";
+export const IMPORT_CUSTOMERS = "/customer/importcustomers";
+export const IMPORT_CUSTOMERSDB = "/customer/importcustomers";
+export const DELETE_CUSTOMER_ALL = "/customer/deleteall";
 
 //SHOPS
 export const GET_SHOPS = "/shops";

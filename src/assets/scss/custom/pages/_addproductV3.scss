@@ -1,0 +1,343 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700;800&family=Urbanist:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap");
+
+.add-card {
+  height: 150px;
+  width: 30%;
+}
+
+.page-content {
+  background-color: #f1f5f7;
+}
+
+.dropzone {
+  width: 104px;
+  height: 104px;
+  min-height: 0px !important;
+  border: 1px solid black !important;
+  background-color: #cad7d856 !important;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 2px 6px 2px !important;
+}
+
+.dropzone-big {
+  width: 40%;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+}
+
+.plus-sign {
+  font-size: 50px;
+  font-weight: 100;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+#avatar {
+  height: 440px;
+  width: 400px;
+}
+
+#avatar img {
+  height: 100%;
+  max-width: 100%;
+  display: block;
+  margin: auto;
+}
+
+.remove-btn {
+  position: absolute;
+  font-size: 25px;
+  width: 30px;
+  margin-top: -85px;
+  margin-left: 70px;
+  background-color: transparent;
+  opacity: 1;
+  border: none;
+  color: yellow;
+}
+
+.remove-btn-big {
+  position: absolute;
+  font-size: 25px;
+  width: 30px;
+  margin-left: 85%;
+  margin-top: -140px;
+  background-color: transparent;
+  opacity: 1;
+  border: none;
+  color: yellow;
+  opacity: 0.9;
+}
+
+.remove-btn-big:hover {
+  background: rgba(116, 116, 116, 0.7);
+  border-radius: 55%;
+}
+
+.remove-btn:hover {
+  background: rgba(116, 116, 116, 0.7);
+  border-radius: 55%;
+}
+
+.cross-arrow {
+  color: yellow;
+  font-size: 38px;
+  font-weight: 100;
+  margin-top: 30px;
+  margin-left: 35px;
+  opacity: 0.7;
+  cursor: all-scroll;
+}
+
+.cross-big {
+  color: yellow;
+  font-size: 50px;
+  font-weight: 300;
+  margin-left: 26%;
+  margin-top: 55px;
+  opacity: 0.9;
+  cursor: all-scroll;
+}
+
+.overlay {
+  background: rgba(25, 14, 96, 0.7);
+  height: 104px;
+  width: 104px;
+  position: absolute;
+  margin-left: 17px;
+  opacity: 0;
+  border-radius: 6px;
+  -webkit-transition: all 0.2s ease-in-out 0s;
+  -moz-transition: all 0.2s ease-in-out 0s;
+  transition: all 0.2s ease-in-out 0s;
+}
+
+.overlay-big {
+  background: rgba(25, 14, 96, 0.7);
+  height: 237px;
+  width: 220px;
+  position: absolute;
+  border-radius: 6px;
+  opacity: 0;
+  -webkit-transition: all 0.2s ease-in-out 0s;
+  -moz-transition: all 0.2s ease-in-out 0s;
+  transition: all 0.2s ease-in-out 0s;
+}
+
+.product-lg-img {
+  border-radius: 6px;
+  overflow: hidden;
+  top: 0.9375rem;
+  bottom: 0.9375rem;
+  right: 0.9375rem;
+  left: 0.93rem;
+  border-radius: 6px;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+  // box-shadow: 0 0 15px 0 rgb(22 45 60 / 8%);
+  // box-shadow: 0 0 15px 0 rgb(22 45 60 / 8%);
+}
+.product-lg-img:hover .overlay-big {
+  opacity: 1;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px,
+    rgba(0, 0, 0, 0.22) 0px 10px 10px;
+}
+
+.dropzone-big:hover {
+  background-color: #4dabb656;
+}
+
+.product-images-sm {
+  border-radius: 6px;
+}
+
+.img-cont-sm {
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+}
+
+.img-cont-sm:hover,
+.dropzone:hover {
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px,
+    rgba(0, 0, 0, 0.22) 0px 10px 10px;
+}
+.product-images-sm:hover .overlay {
+  opacity: 1;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  // background-color: rgb(216, 155, 81);
+  margin-top: -22px;
+}
+
+.second-cont {
+  margin-top: -60px;
+  width: 95%;
+  margin-left: 35px;
+}
+
+.dropzone-big:hover {
+  background-color: #4dabb656;
+}
+
+.one-cont {
+  background-color: #d9afd9;
+  background-image: linear-gradient(0deg, #eec2ee 0%, #94d3db 100%);
+  height: 210px;
+  width: 100%;
+}
+
+.nav-text {
+  color: rgb(245, 243, 243);
+  font-family: "Quicksand", sans-serif;
+  font-weight: 400;
+  padding-right: 15px;
+  margin-left: 8px;
+}
+
+.nav-text-2 {
+  color: white;
+  font-family: "Quicksand", sans-serif;
+  font-weight: 500;
+}
+
+.main-nav {
+  margin: 50px;
+}
+
+.main-title {
+  margin-left: 55px;
+  margin-top: -40px;
+  font-weight: 700;
+  color: white;
+  font-family: "Quicksand", sans-serif;
+  font-size: 40px;
+}
+
+.r-btns {
+  font-size: x-large;
+}
+
+.btn-save {
+  margin-left: -90px;
+  background-color: transparent;
+  border: 0.5px solid white;
+  border-radius: 20px;
+  padding: 5px 22px 5px 22px;
+  color: white;
+}
+
+.btn-cont {
+  margin-right: 60px;
+  margin-top: -20px;
+}
+
+.dot-btn {
+  background-color: transparent;
+  border: 0.5px solid white;
+  color: white;
+  padding: 0px 10px 0px 10px;
+}
+
+.btn-save:hover,
+.dot-btn:hover {
+  background-color: rgb(218, 216, 216);
+}
+
+.basic-info {
+  letter-spacing: 3px;
+  color: black;
+  font-weight: 100;
+}
+
+.name-input {
+  height: 38px;
+  width: 100%;
+  border: 1px solid rgba(35, 216, 216, 0.433);
+  border-radius: 5px;
+}
+
+::placeholder {
+  opacity: 0.4;
+}
+
+.name-cont {
+  width: 60%;
+}
+
+.ribbon-cont {
+  width: 32%;
+}
+
+input:hover {
+  background-color: #4dabb656;
+}
+
+input:focus {
+  border: 1px solid rgba(15, 129, 129, 0.433);
+}
+
+.ribbon-input {
+  height: 38px;
+  width: 100%;
+  border: 0.5px solid rgba(35, 216, 216, 0.638);
+  border-radius: 5px;
+}
+
+.text-editor {
+  width: 95%;
+  border: 0.5px solid rgba(35, 216, 216, 0.638);
+}
+
+.price-input {
+  height: 38px;
+  width: 30%;
+  border: 0.5px solid rgba(35, 216, 216, 0.638);
+  border-radius: 5px;
+}
+
+.btn-group {
+  background-color: #4dabb656;
+  width: 80px;
+
+  justify-content: space-between;
+}
+
+.dis-input,
+.sale-input {
+  height: 38px;
+  width: 80%;
+  border: 0.5px solid rgba(35, 216, 216, 0.638);
+  border-radius: 5px;
+}
+
+.input-display {
+  display: none;
+}
+
+.unit-display {
+  display: none;
+}
+
+.i1 {
+  width: 60%;
+  height: 38px;
+  border: 0.5px solid rgba(35, 216, 216, 0.638);
+  border-radius: 5px;
+}
+
+.i2 {
+  width: 30%;
+  height: 38px;
+  border: 0.5px solid rgba(35, 216, 216, 0.638);
+  border-radius: 5px;
+}
+
+.i3 {
+  width: 80%;
+  height: 38px;
+  border: 0.5px solid rgba(35, 216, 216, 0.638);
+  border-radius: 5px;
+}

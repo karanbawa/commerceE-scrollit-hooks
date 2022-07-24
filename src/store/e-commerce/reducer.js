@@ -24,8 +24,14 @@ import {
   UPDATE_CUSTOMER_FAIL,
   DELETE_CUSTOMER_SUCCESS,
   DELETE_CUSTOMER_FAIL,
+  IMPORT_CUSTOMERS_SUCCESS,
+  IMPORT_CUSTOMERS_FAIL,
+  IMPORT_CUSTOMERSDB_SUCCESS,
+  IMPORT_CUSTOMERSDB_FAIL,
   GET_PRODUCTS_TEST_SUCCESS,
   GET_PRODUCTS_TEST_FAIL,
+  DELETE_CUSTOMER_ALL_SUCCESS,
+  DELETE_CUSTOMER_ALL_FAIL,
 } from "./actionTypes";
 
 const INIT_STATE = {
@@ -166,10 +172,16 @@ const Ecommerce = (state = INIT_STATE, action) => {
         error: action.payload,
       };
 
+    // case ADD_CUSTOMER_SUCCESS:
+    //   return {
+    //     ...state,
+    //     customers: [...state.customers, action.payload],
+    //   };
+
     case ADD_CUSTOMER_SUCCESS:
       return {
         ...state,
-        customers: [...state.customers, action.payload],
+        customers: action.payload,
       };
 
     case ADD_CUSTOMER_FAIL:
@@ -178,14 +190,20 @@ const Ecommerce = (state = INIT_STATE, action) => {
         error: action.payload,
       };
 
+    // case UPDATE_CUSTOMER_SUCCESS:
+    //   return {
+    //     ...state,
+    //     customers: state.customers.map(customer =>
+    //       customer.id.toString() === action.payload.id.toString()
+    //         ? { customer, ...action.payload }
+    //         : customer
+    //     ),
+    //   };
+
     case UPDATE_CUSTOMER_SUCCESS:
       return {
         ...state,
-        customers: state.customers.map(customer =>
-          customer.id.toString() === action.payload.id.toString()
-            ? { customer, ...action.payload }
-            : customer
-        ),
+        customers: action.payload,
       };
 
     case UPDATE_CUSTOMER_FAIL:
@@ -194,15 +212,57 @@ const Ecommerce = (state = INIT_STATE, action) => {
         error: action.payload,
       };
 
+    // case DELETE_CUSTOMER_SUCCESS:
+    //   return {
+    //     ...state,
+    //     customers: state.customers.filter(
+    //       customer => customer.id.toString() !== action.payload.id.toString()
+    //     ),
+    //   };
+
     case DELETE_CUSTOMER_SUCCESS:
       return {
         ...state,
-        customers: state.customers.filter(
-          customer => customer.id.toString() !== action.payload.id.toString()
-        ),
+        customers: action.payload,
       };
 
     case DELETE_CUSTOMER_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      };
+
+    case DELETE_CUSTOMER_ALL_SUCCESS:
+      return {
+        ...state,
+        customers: action.payload,
+      };
+
+    case DELETE_CUSTOMER_ALL_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      };
+
+    case IMPORT_CUSTOMERS_SUCCESS:
+      return {
+        ...state,
+        customers: action.payload,
+      };
+
+    case IMPORT_CUSTOMERS_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      };
+
+    case IMPORT_CUSTOMERSDB_SUCCESS:
+      return {
+        ...state,
+        customers: [...state.customers, action.payload],
+      };
+
+    case IMPORT_CUSTOMERSDB_FAIL:
       return {
         ...state,
         error: action.payload,

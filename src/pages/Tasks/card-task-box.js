@@ -1,18 +1,18 @@
-import React, { Component } from "react"
-import PropTypes from 'prop-types'
-import { Link } from "react-router-dom"
-import classNames from "classnames"
-import { Card, CardBody } from "reactstrap"
-import { map, size } from "lodash"
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
+import classNames from "classnames";
+import { Card, CardBody } from "reactstrap";
+import { map, size } from "lodash";
 
 //Import Images
-import images from "assets/images"
+import images from "../../assets/images";
 
-import { statusClasses } from "common/data/tasks"
+import { statusClasses } from "common/data/tasks";
 
 class CardTaskBox extends Component {
   render() {
-    const { data } = this.props
+    const { data } = this.props;
     return (
       <React.Fragment>
         <Card className="task-box">
@@ -41,38 +41,34 @@ class CardTaskBox extends Component {
                 data.members,
                 (member, index) =>
                   index < 2 && (
-                    <div className="avatar-group-item"  key={index}>
-                    <Link
-                      to="#"
-                      className="d-inline-block"
-                
-                    >
-                      {member.userImg ? (
-                        <img
-                          src={images[member.userImg]}
-                          className="rounded-circle avatar-xs"
-                          alt=""
-                        />
-                      ) : (
-                        <div className="avatar-xs">
-                          <span className="avatar-title rounded-circle bg-info text-white font-size-16">
-                            {member.username.charAt(0)}
-                          </span>
-                        </div>
-                      )}
-                    </Link>
+                    <div className="avatar-group-item" key={index}>
+                      <Link to="#" className="d-inline-block">
+                        {member.userImg ? (
+                          <img
+                            src={images[member.userImg]}
+                            className="rounded-circle avatar-xs"
+                            alt=""
+                          />
+                        ) : (
+                          <div className="avatar-xs">
+                            <span className="avatar-title rounded-circle bg-info text-white font-size-16">
+                              {member.username.charAt(0)}
+                            </span>
+                          </div>
+                        )}
+                      </Link>
                     </div>
                   )
               )}
               {size(data.members) > 2 && (
                 <div className="avatar-group-item">
-                <Link to="#" className="d-inline-block">
-                  <div className="avatar-xs">
-                    <span className="avatar-title rounded-circle bg-info text-white font-size-16">
-                      {size(data.members) - 2} +
-                    </span>
-                  </div>
-                </Link>
+                  <Link to="#" className="d-inline-block">
+                    <div className="avatar-xs">
+                      <span className="avatar-title rounded-circle bg-info text-white font-size-16">
+                        {size(data.members) - 2} +
+                      </span>
+                    </div>
+                  </Link>
                 </div>
               )}
             </div>
@@ -84,12 +80,12 @@ class CardTaskBox extends Component {
           </CardBody>
         </Card>
       </React.Fragment>
-    )
+    );
   }
 }
 
 CardTaskBox.propTypes = {
-  data: PropTypes.object
-}
+  data: PropTypes.object,
+};
 
-export default CardTaskBox
+export default CardTaskBox;
