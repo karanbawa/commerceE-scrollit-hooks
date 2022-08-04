@@ -198,11 +198,7 @@ class SidebarContent extends Component {
                       {this.props.t("Add Product")}
                     </Link>
                   </li>
-                  <li>
-                    <Link to="/ecommerce-add-productnew">
-                      {this.props.t("Add Product V2")}
-                    </Link>
-                  </li>
+                  
                   <li>
                     <Link to="/addproductthree">
                       {this.props.t("Add Product v3")}

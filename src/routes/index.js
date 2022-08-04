@@ -171,7 +171,6 @@ import ContactsProfile from "../pages/Contacts/ContactsProfile/contacts-profile"
 import BlogList from "../pages/Blog/BlogList/index";
 import BlogGrid from "../pages/Blog/BlogGrid/index";
 import BlogDetails from "../pages/Blog/BlogDetails";
-import AddProductV2 from "pages/Ecommerce/AddProductV2";
 
 const authProtectedRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -210,7 +209,7 @@ const authProtectedRoutes = [
   { path: "/ecommerce-checkout", component: EcommerceCheckout },
   { path: "/ecommerce-shops", component: EcommerceShops },
   { path: "/ecommerce-add-product", component: EcommerceAddProduct },
-  { path: "/ecommerce-add-productnew", component: AddProductV2 },
+
   { path: "/addproductthree", component: AddproductV3 },
   { path: "/ecommerce-edit-product", component: EcommerceAddProduct },
   { path: "/ecommerce-product-list", component: ProductList },
