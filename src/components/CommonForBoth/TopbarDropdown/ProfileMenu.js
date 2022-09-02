@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import {
   Dropdown,
   DropdownToggle,
@@ -18,31 +18,31 @@ import { connect } from "react-redux";
 
 const getUserName = () => {
   if (localStorage.getItem("authUser")) {
-    const obj = JSON.parse(localStorage.getItem("authUser"))
+    const obj = JSON.parse(localStorage.getItem("authUser"));
     return obj;
   }
-}
+};
 
 class ProfileMenu extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       menu: false,
       name: "Admin",
-    }
-    this.toggle = this.toggle.bind(this)
+    };
+    this.toggle = this.toggle.bind(this);
   }
 
   toggle() {
     this.setState(prevState => ({
       menu: !prevState.menu,
-    }))
+    }));
   }
 
   componentDidMount() {
     const userData = getUserName();
     if (userData) {
-      this.setState({ name: userData.username })
+      this.setState({ name: userData.firstName });
     }
   }
 
@@ -50,7 +50,7 @@ class ProfileMenu extends Component {
     if (prevProps.success !== this.props.success) {
       const userData = getUserName();
       if (userData) {
-        this.setState({ name: userData.username })
+        this.setState({ name: userData.firstName });
       }
     }
   }
@@ -104,20 +104,20 @@ class ProfileMenu extends Component {
           </DropdownMenu>
         </Dropdown>
       </React.Fragment>
-    )
+    );
   }
 }
 
 ProfileMenu.propTypes = {
   t: PropTypes.any,
-  success: PropTypes.string
-}
+  success: PropTypes.string,
+};
 
 const mapStateToProps = state => {
-  const { success } = state.Profile
-  return { success }
-}
+  const { success } = state.Profile;
+  return { success };
+};
 
 export default withRouter(
   connect(mapStateToProps, {})(withTranslation()(ProfileMenu))
-)
+);

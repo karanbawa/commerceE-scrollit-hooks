@@ -31,8 +31,8 @@ import DeleteModal from "components/Common/DeleteModal";
 import { map } from "lodash";
 
 //Import Image
-import images from "assets/images";
-import companies from "assets/images/companies";
+import images from "../../assets/images";
+import companies from "../../assets/images/companies";
 
 import {
   getProjects,
@@ -74,7 +74,7 @@ class ProjectsList extends Component {
     }));
   };
 
-  onClickDelete = (project) => {
+  onClickDelete = project => {
     this.setState({ project: project });
     this.setState({ deleteModal: true });
   };
@@ -376,7 +376,7 @@ class ProjectsList extends Component {
                                       className={
                                         "form-control" +
                                         (errors.description &&
-                                          touched.description
+                                        touched.description
                                           ? " is-invalid"
                                           : "")
                                       }

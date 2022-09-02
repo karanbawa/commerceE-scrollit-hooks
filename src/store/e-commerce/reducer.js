@@ -1,3 +1,4 @@
+import { GET_PRODUCTS_TEST } from "helpers/url_helper";
 import {
   GET_CART_DATA_FAIL,
   GET_CART_DATA_SUCCESS,
@@ -23,7 +24,15 @@ import {
   UPDATE_CUSTOMER_FAIL,
   DELETE_CUSTOMER_SUCCESS,
   DELETE_CUSTOMER_FAIL,
-} from "./actionTypes"
+  IMPORT_CUSTOMERS_SUCCESS,
+  IMPORT_CUSTOMERS_FAIL,
+  IMPORT_CUSTOMERSDB_SUCCESS,
+  IMPORT_CUSTOMERSDB_FAIL,
+  GET_PRODUCTS_TEST_SUCCESS,
+  GET_PRODUCTS_TEST_FAIL,
+  DELETE_CUSTOMER_ALL_SUCCESS,
+  DELETE_CUSTOMER_ALL_FAIL,
+} from "./actionTypes";
 
 const INIT_STATE = {
   products: [],
@@ -33,7 +42,7 @@ const INIT_STATE = {
   customers: [],
   shops: [],
   error: {},
-}
+};
 
 const Ecommerce = (state = INIT_STATE, action) => {
   switch (action.type) {
@@ -41,49 +50,61 @@ const Ecommerce = (state = INIT_STATE, action) => {
       return {
         ...state,
         products: action.payload,
-      }
+      };
 
     case GET_PRODUCTS_FAIL:
       return {
         ...state,
         error: action.payload,
-      }
+      };
 
     case GET_PRODUCT_DETAIL_SUCCESS:
       return {
         ...state,
         product: action.payload,
-      }
+      };
 
     case GET_PRODUCT_DETAIL_FAIL:
       return {
         ...state,
         error: action.payload,
-      }
+      };
+
+    case GET_PRODUCTS_TEST_SUCCESS:
+      return {
+        ...state,
+        products: action.payload,
+      };
+
+    case GET_PRODUCTS_TEST_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      };
 
     case GET_ORDERS_SUCCESS:
       return {
         ...state,
         orders: action.payload,
-      }
+      };
 
     case GET_ORDERS_FAIL:
       return {
         ...state,
         error: action.payload,
-      }
+      };
 
     case ADD_ORDER_SUCCESS:
       return {
         ...state,
         orders: [...state.orders, action.payload],
-      }
+      };
 
     case ADD_ORDER_FAIL:
       return {
         ...state,
         error: action.payload,
-      }
+      };
 
     case UPDATE_ORDER_SUCCESS:
       return {
@@ -93,13 +114,13 @@ const Ecommerce = (state = INIT_STATE, action) => {
             ? { order, ...action.payload }
             : order
         ),
-      }
+      };
 
     case UPDATE_ORDER_FAIL:
       return {
         ...state,
         error: action.payload,
-      }
+      };
 
     case DELETE_ORDER_SUCCESS:
       return {
@@ -107,95 +128,149 @@ const Ecommerce = (state = INIT_STATE, action) => {
         orders: state.orders.filter(
           order => order.id.toString() !== action.payload.id.toString()
         ),
-      }
+      };
 
     case DELETE_ORDER_FAIL:
       return {
         ...state,
         error: action.payload,
-      }
+      };
 
     case GET_CART_DATA_SUCCESS:
       return {
         ...state,
         cartData: action.payload,
-      }
+      };
 
     case GET_CART_DATA_FAIL:
       return {
         ...state,
         error: action.payload,
-      }
+      };
 
     case GET_CUSTOMERS_SUCCESS:
       return {
         ...state,
         customers: action.payload,
-      }
+      };
 
     case GET_CUSTOMERS_FAIL:
       return {
         ...state,
         error: action.payload,
-      }
+      };
 
     case GET_SHOPS_SUCCESS:
       return {
         ...state,
         shops: action.payload,
-      }
+      };
 
     case GET_SHOPS_FAIL:
       return {
         ...state,
         error: action.payload,
-      }
+      };
 
-      case ADD_CUSTOMER_SUCCESS:
-        return {
-          ...state,
-          customers: [...state.customers, action.payload],
-        }
-  
-      case ADD_CUSTOMER_FAIL:
-        return {
-          ...state,
-          error: action.payload,
-        }
-  
-        case UPDATE_CUSTOMER_SUCCESS:
-          return {
-            ...state,
-            customers: state.customers.map(customer =>
-              customer.id.toString() === action.payload.id.toString()
-                ? { customer, ...action.payload }
-                : customer
-            ),
-          }
-    
-        case UPDATE_CUSTOMER_FAIL:
-          return {
-            ...state,
-            error: action.payload,
-          }
-    
-        case DELETE_CUSTOMER_SUCCESS:
-          return {
-            ...state,
-            customers: state.customers.filter(
-              customer => customer.id.toString() !== action.payload.id.toString()
-            ),
-          }
-    
-        case DELETE_CUSTOMER_FAIL:
-          return {
-            ...state,
-            error: action.payload,
-          }
+    // case ADD_CUSTOMER_SUCCESS:
+    //   return {
+    //     ...state,
+    //     customers: [...state.customers, action.payload],
+    //   };
+
+    case ADD_CUSTOMER_SUCCESS:
+      return {
+        ...state,
+        customers: action.payload,
+      };
+
+    case ADD_CUSTOMER_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      };
+
+    // case UPDATE_CUSTOMER_SUCCESS:
+    //   return {
+    //     ...state,
+    //     customers: state.customers.map(customer =>
+    //       customer.id.toString() === action.payload.id.toString()
+    //         ? { customer, ...action.payload }
+    //         : customer
+    //     ),
+    //   };
+
+    case UPDATE_CUSTOMER_SUCCESS:
+      return {
+        ...state,
+        customers: action.payload,
+      };
+
+    case UPDATE_CUSTOMER_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      };
+
+    // case DELETE_CUSTOMER_SUCCESS:
+    //   return {
+    //     ...state,
+    //     customers: state.customers.filter(
+    //       customer => customer.id.toString() !== action.payload.id.toString()
+    //     ),
+    //   };
+
+    case DELETE_CUSTOMER_SUCCESS:
+      return {
+        ...state,
+        customers: action.payload,
+      };
+
+    case DELETE_CUSTOMER_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      };
+
+    case DELETE_CUSTOMER_ALL_SUCCESS:
+      return {
+        ...state,
+        customers: action.payload,
+      };
+
+    case DELETE_CUSTOMER_ALL_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      };
+
+    case IMPORT_CUSTOMERS_SUCCESS:
+      return {
+        ...state,
+        customers: action.payload,
+      };
+
+    case IMPORT_CUSTOMERS_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      };
+
+    case IMPORT_CUSTOMERSDB_SUCCESS:
+      return {
+        ...state,
+        customers: [...state.customers, action.payload],
+      };
+
+    case IMPORT_CUSTOMERSDB_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      };
 
     default:
-      return state
+      return state;
   }
-}
+};
 
-export default Ecommerce
+export default Ecommerce;

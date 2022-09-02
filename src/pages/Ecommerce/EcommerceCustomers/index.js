@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import MetaTags from "react-meta-tags";
 import { connect } from "react-redux";
 import { isEmpty, size } from "lodash";
+import * as xlsx from "xlsx";
 import {
   Button,
   Card,
@@ -33,12 +34,15 @@ import Breadcrumbs from "components/Common/Breadcrumb";
 import DeleteModal from "components/Common/DeleteModal";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import EditModal from "components/Common/EditModal";
 
 import {
   getCustomers,
   addNewCustomer,
   updateCustomer,
   deleteCustomer,
+  importCustomers,
+  importCustomersdb,
 } from "store/e-commerce/actions";
 
 class EcommerceCustomers extends Component {
@@ -46,16 +50,23 @@ class EcommerceCustomers extends Component {
     super(props);
     this.node = React.createRef();
     this.state = {
+      editModal: false,
       customers: [],
       customer: "",
+      excelFile: {},
+      convertedFile: [],
       deleteModal: false,
+      selected: [],
+      isRowSelected: false,
       EcommerceCustomerColumns: [
         {
           text: "id",
-          dataField: "id",
+          dataField: "_id",
           sort: true,
           hidden: true,
-          formatter: (cellContent, user) => <>{row.id}</>,
+          formatter: (cellContent, user) => {
+            <>{row._id}</>;
+          },
         },
         {
           dataField: "username",
@@ -138,9 +149,14 @@ class EcommerceCustomers extends Component {
   }
 
   componentDidMount() {
-    const { customers, onGetCustomers } = this.props;
+    const {
+      customers,
+      onGetCustomers,
+      onImportCustomersdb,
+      onImportCustomers,
+    } = this.props;
     if (customers && !customers.length) {
-      onGetCustomers();
+      onImportCustomers();
     }
     this.setState({ customers });
   }
@@ -148,6 +164,7 @@ class EcommerceCustomers extends Component {
   // eslint-disable-next-line no-unused-vars
   componentDidUpdate(prevProps, prevState, snapshot) {
     const { customers } = this.props;
+
     if (!isEmpty(customers) && size(prevProps.customers) !== size(customers)) {
       this.setState({ customers: {}, isEdit: false });
     }
@@ -184,18 +201,19 @@ class EcommerceCustomers extends Component {
     }));
   };
 
-  onClickDelete = (customer) => {
+  onClickDelete = customer => {
     this.setState({ customer: customer });
     this.setState({ deleteModal: true });
   };
 
   handleDeleteCustomer = () => {
-    const { onDeleteCustomer } = this.props;
+    const { onDeleteCustomer, onImportCustomers } = this.props;
     const { customer } = this.state;
-    if (customer.id !== undefined) {
+    if (customer._id !== undefined) {
       onDeleteCustomer(customer);
       this.onPaginationPageChange(1);
       this.setState({ deleteModal: false });
+      onImportCustomers();
     }
   };
 
@@ -204,7 +222,7 @@ class EcommerceCustomers extends Component {
 
     this.setState({
       customer: {
-        id: customer.id,
+        _id: customer._id,
         username: customer.username,
         phone: customer.phone,
         email: customer.email,
@@ -224,6 +242,36 @@ class EcommerceCustomers extends Component {
     return date1;
   };
 
+  handleOnSelect = (row, isSelect) => {
+    this.setState({
+      isRowSelected: isSelect,
+    });
+    if (isSelect) {
+      this.setState(() => ({
+        selected: [...this.state.selected, row.id],
+      }));
+    } else {
+      this.setState(() => ({
+        selected: this.state.selected.filter(x => x !== row.id),
+      }));
+    }
+  };
+
+  handleOnSelectAll = (isSelect, rows) => {
+    const ids = rows.map(r => r.id);
+    if (isSelect) {
+      this.setState(() => ({
+        selected: ids,
+      }));
+    } else {
+      this.setState(() => ({
+        selected: [],
+      }));
+    }
+  };
+
+  handleDeleteAll = () => {};
+
   /* Insert,Update Delete data */
 
   render() {
@@ -231,9 +279,15 @@ class EcommerceCustomers extends Component {
 
     const customer = this.state.customer;
 
-    const { isEdit,deleteModal } = this.state;
+    const { isEdit, deleteModal } = this.state;
+    const inputFile = React.createRef();
 
-    const { onAddNewCustomer, onUpdateCustomer } = this.props;
+    const {
+      onAddNewCustomer,
+      onUpdateCustomer,
+      onImportCustomers,
+      onImportCustomersdb,
+    } = this.props;
 
     //pagination customization
     const pageOptions = {
@@ -244,15 +298,77 @@ class EcommerceCustomers extends Component {
 
     const defaultSorted = [
       {
-        dataField: "id",
+        dataField: "_id",
         order: "desc",
       },
     ];
+
+    const { editModal } = this.state;
+
+    const onClickEdit = e => {
+      this.setState({ editModal: true });
+    };
+
+    const editHandler = e => {
+      e.preventDefault();
+
+      this.setState({ editModal: false });
+    };
 
     const { SearchBar } = Search;
 
     const selectRow = {
       mode: "checkbox",
+      // clickToSelect: true,
+      // selected: this.state.selected,
+      // onSelect: this.handleOnSelect,
+      // // onSelectAll: this.handleOnSelectAll,
+      // clickToEdit: true,
+    };
+
+    const handleConvertedFile = (file, e) => {
+      this.setState({ convertedFile: file });
+      onClickEdit(e);
+    };
+
+    const excelToJson = (selectedFile, e) => {
+      if (selectedFile) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const data = e.target.result;
+          const workbook = xlsx.read(data, { type: "array" });
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+          const json = xlsx.utils.sheet_to_json(worksheet);
+          handleConvertedFile(json, e);
+        };
+        reader.readAsArrayBuffer(e.target.files[0]);
+      }
+    };
+
+    const afterEditClicked = e => {
+      e.preventDefault();
+      onImportCustomersdb(this.state.convertedFile);
+      onImportCustomers();
+      this.setState({ editModal: false });
+    };
+
+    const handleUploadedFile = (selectedFile, e) => {
+      excelToJson(selectedFile, e);
+    };
+
+    const onFileChange = event => {
+      const file = event.target.files[0];
+      handleUploadedFile(file, event);
+    };
+
+    const handleCustomersInput = event => {
+      inputFile.current.click();
+    };
+
+    const updatePage = () => {
+      onImportCustomers();
+      this.setState({ isEdit: false });
     };
 
     return (
@@ -261,6 +377,16 @@ class EcommerceCustomers extends Component {
           show={deleteModal}
           onDeleteClick={this.handleDeleteCustomer}
           onCloseClick={() => this.setState({ deleteModal: false })}
+        />
+        <EditModal
+          show={editModal}
+          onEditClick={e => {
+            afterEditClicked(e);
+          }}
+          onCloseClick={() => {
+            showToast("Edit failed", "Error", 500);
+            this.setState({ editModal: false });
+          }}
         />
         <div className="page-content">
           <MetaTags>
@@ -299,7 +425,24 @@ class EcommerceCustomers extends Component {
                                   </div>
                                 </Col>
                                 <Col sm="8">
-                                  <div className="text-sm-end">
+                                  <div className=" text-sm-end">
+                                    <Button
+                                      type="button"
+                                      color="success"
+                                      className="btn-rounded mb-2 me-2"
+                                      onClick={handleCustomersInput}
+                                    >
+                                      <input
+                                        type="file"
+                                        name=""
+                                        id=""
+                                        ref={inputFile}
+                                        onChange={onFileChange}
+                                        style={{ display: "none" }}
+                                      />
+                                      <i className="mdi mdi-plus me-1" /> Import
+                                      Customers
+                                    </Button>
                                     <Button
                                       type="button"
                                       color="success"
@@ -309,6 +452,21 @@ class EcommerceCustomers extends Component {
                                       <i className="mdi mdi-plus me-1" /> New
                                       Customers
                                     </Button>
+                                    {this.state.isRowSelected ? (
+                                      <>
+                                        <Button
+                                          type="button"
+                                          color="success"
+                                          className="btn-rounded mb-2 me-2"
+                                          onClick={this.handleDeleteAll}
+                                        >
+                                          {" "}
+                                          Delete All
+                                        </Button>
+                                      </>
+                                    ) : (
+                                      <></>
+                                    )}
                                   </div>
                                 </Col>
                               </Row>
@@ -363,7 +521,7 @@ class EcommerceCustomers extends Component {
                                         username: Yup.string().required(
                                           "Please Enter Your Name"
                                         ),
-                                        phone: Yup.string().required(
+                                        phone: Yup.number().required(
                                           "Please Enter Your Phone"
                                         ),
                                         email: Yup.string().required(
@@ -372,7 +530,7 @@ class EcommerceCustomers extends Component {
                                         address: Yup.string().required(
                                           "Please Enter Your Address"
                                         ),
-                                        rating: Yup.string().required(
+                                        rating: Yup.number().required(
                                           "Please Enter Your Rating"
                                         ),
                                         walletBalance: Yup.string().required(
@@ -384,8 +542,8 @@ class EcommerceCustomers extends Component {
                                       })}
                                       onSubmit={values => {
                                         if (isEdit) {
-                                          const updateCustomer = {
-                                            id: customer.id,
+                                          const updatedCustomer = {
+                                            id: customer._id,
                                             username: values.username,
                                             phone: values.phone,
                                             email: values.email,
@@ -394,14 +552,10 @@ class EcommerceCustomers extends Component {
                                             walletBalance: values.walletBalance,
                                             joiningDate: values.joiningDate,
                                           };
-
-                                          onUpdateCustomer(updateCustomer);
+                                          onUpdateCustomer(updatedCustomer);
+                                          updatePage();
                                         } else {
                                           const newCustomer = {
-                                            id:
-                                              Math.floor(
-                                                Math.random() * (30 - 20)
-                                              ) + 20,
                                             username: values["username"],
                                             phone: values["phone"],
                                             email: values["email"],
@@ -435,7 +589,7 @@ class EcommerceCustomers extends Component {
                                                   className={
                                                     "form-control" +
                                                     (errors.username &&
-                                                      touched.username
+                                                    touched.username
                                                       ? " is-invalid"
                                                       : "")
                                                   }
@@ -456,7 +610,7 @@ class EcommerceCustomers extends Component {
                                                   className={
                                                     "form-control" +
                                                     (errors.phone &&
-                                                      touched.phone
+                                                    touched.phone
                                                       ? " is-invalid"
                                                       : "")
                                                   }
@@ -478,7 +632,7 @@ class EcommerceCustomers extends Component {
                                                   className={
                                                     "form-control" +
                                                     (errors.email &&
-                                                      touched.email
+                                                    touched.email
                                                       ? " is-invalid"
                                                       : "")
                                                   }
@@ -501,7 +655,7 @@ class EcommerceCustomers extends Component {
                                                   className={
                                                     "form-control" +
                                                     (errors.address &&
-                                                      touched.address
+                                                    touched.address
                                                       ? " is-invalid"
                                                       : "")
                                                   }
@@ -523,7 +677,7 @@ class EcommerceCustomers extends Component {
                                                   className={
                                                     "form-control" +
                                                     (errors.rating &&
-                                                      touched.rating
+                                                    touched.rating
                                                       ? " is-invalid"
                                                       : "")
                                                   }
@@ -545,7 +699,7 @@ class EcommerceCustomers extends Component {
                                                   className={
                                                     "form-control" +
                                                     (errors.walletBalance &&
-                                                      touched.walletBalance
+                                                    touched.walletBalance
                                                       ? " is-invalid"
                                                       : "")
                                                   }
@@ -567,7 +721,7 @@ class EcommerceCustomers extends Component {
                                                   className={
                                                     "form-control" +
                                                     (errors.joiningDate &&
-                                                      touched.joiningDate
+                                                    touched.joiningDate
                                                       ? " is-invalid"
                                                       : "")
                                                   }
@@ -626,6 +780,8 @@ EcommerceCustomers.propTypes = {
   onDeleteCustomer: PropTypes.func,
   onUpdateCustomer: PropTypes.func,
   className: PropTypes.any,
+  onImportCustomers: PropTypes.func,
+  onImportCustomersdb: PropTypes.func,
 };
 
 const mapStateToProps = ({ ecommerce }) => ({
@@ -634,6 +790,9 @@ const mapStateToProps = ({ ecommerce }) => ({
 
 const mapDispatchToProps = dispatch => ({
   onGetCustomers: () => dispatch(getCustomers()),
+  onImportCustomers: () => dispatch(importCustomers()),
+  onImportCustomersdb: customers => dispatch(importCustomersdb(customers)),
+  onDeleteAll: () => dispatch(deleteAllcustomers()),
   onAddNewCustomer: customer => dispatch(addNewCustomer(customer)),
   onUpdateCustomer: customer => dispatch(updateCustomer(customer)),
   onDeleteCustomer: customer => dispatch(deleteCustomer(customer)),

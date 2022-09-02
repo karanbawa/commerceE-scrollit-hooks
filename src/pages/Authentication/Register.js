@@ -1,8 +1,16 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Alert, Card, CardBody, Col, Container, Row, Label } from "reactstrap";
+import "../../assets/scss/custom/pages/_register.scss";
 
-import { Formik, Field, Form, ErrorMessage } from "formik";
+import {
+  Formik,
+  Field,
+  Form,
+  ErrorMessage,
+  useFormik,
+  useFormikContext,
+} from "formik";
 import * as Yup from "yup";
 
 // action
@@ -19,11 +27,62 @@ import { Link } from "react-router-dom";
 // import images
 import profileImg from "../../assets/images/profile-img.png";
 import logoImg from "../../assets/images/logo.svg";
+import { values } from "lodash";
+import toastr from "toastr";
+
+const showToast = (message, title) => {
+  toastr.options = {
+    positionClass: "toast-top-right",
+    newestOnTop: true,
+    extendedTimeOut: 1000,
+    showEasing: "swing",
+    hideEasing: "linear",
+    showMethod: "fadeIn",
+    hideMethod: "fadeOut",
+    showDuration: 300,
+    hideDuration: 1000,
+    timeOut: 5000,
+    closeButton: true,
+    debug: true,
+    preventDuplicates: true,
+    extendedTimeOut: 1000,
+  };
+  toastr.error(message, title);
+};
+
+const usersList = [
+  {
+    firstName: "shravan",
+    lastName: "thombre",
+    email: "s@gmail.com",
+    password: "123456",
+    isActive: "true",
+    isVerifiedMail: "false",
+  },
+  {
+    firstName: "mandar",
+    lastName: "rane",
+    email: "m@gmail.com",
+    password: "123456",
+    isActive: "true",
+    isVerifiedMail: "false",
+  },
+  {
+    firstName: "anurag",
+    lastName: "roy",
+    email: "a@gmail.com",
+    password: "123456",
+    isActive: "true",
+    isVerifiedMail: "true",
+  },
+];
 
 class Register extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      InputValue: "",
+    };
   }
 
   componentDidMount() {
@@ -32,6 +91,11 @@ class Register extends Component {
   }
 
   render() {
+    const HandleUpperCase = (value, setFieldValue, fieldName) => {
+      const formatted_value = value.charAt(0).toUpperCase() + value.slice(1);
+      setFieldValue(fieldName, formatted_value);
+    };
+
     return (
       <React.Fragment>
         <div className="home-btn d-none d-sm-block">
@@ -79,30 +143,92 @@ class Register extends Component {
                           firstName: (this.state && this.state.firstName) || "",
                           lastName: (this.state && this.state.lastName) || "",
                           email: (this.state && this.state.email) || "",
-                          country: (this.state && this.state.country) || "",
+                          phoneNumber:
+                            (this.state && this.state.phoneNumber) || "",
                           password: (this.state && this.state.password) || "",
-                          confirmPassword: (this.state && this.state.confirmPassword) || "",
+                          confirmPassword:
+                            (this.state && this.state.confirmPassword) || "",
                         }}
                         validationSchema={Yup.object().shape({
-                          email: Yup.string().required(
-                            "Please Enter Your Email"
+                          firstName: Yup.string().required(
+                            "Please enter firstname"
                           ),
-                          password: Yup.string().required(
-                            "Please Enter Valid Password"
+                          lastName: Yup.string().required(
+                            "Please enter your lastname"
                           ),
-                          confirmPassword: Yup.string().required(
-                            "Password do not match"
+                          email: Yup.string()
+                            .email("Invalid email")
+                            .required("Please Enter Your Email"),
+                          phoneNumber: Yup.string()
+                            .required()
+                            .matches(/^[0-9]+$/, "Must be only digits")
+                            .min(10, "Must be exactly 10 digits")
+                            .max(10, "Must be exactly 10 digits"),
+                          password: Yup.string()
+                            .required("Please Enter your password")
+                            .matches(
+                              /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+                              "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
+                            )
+                            .min(8, "Must be greater than 8 characters")
+                            .max(16, "Must be less than 16 characters"),
+                          confirmPassword: Yup.string().test(
+                            "passwords-match",
+                            "Password do not match",
+                            function (value) {
+                              return this.parent.password === value;
+                            }
                           ),
                         })}
                         onSubmit={values => {
-                          this.props.registerUser(values);
+                          // this.props.registerUser(values);
+                          let {
+                            confirmPassword,
+                            firstName,
+                            lastName,
+                            email,
+                            ...otherData
+                          } = values;
+                          firstName = firstName.toLowerCase();
+                          lastName = lastName.toLowerCase();
+                          email = email.toLowerCase();
+                          const userData = {
+                            firstName,
+                            lastName,
+                            email,
+                            ...otherData,
+                          };
+
+                          let obj = usersList.find(
+                            x => x.email == userData.email
+                          );
+
+                          if (obj == null) {
+                            console.log(userData);
+                          } else {
+                            showToast(
+                              "user already registered with this email",
+                              "Signup Failed"
+                            );
+                          }
                         }}
                       >
-                        {({ errors, status, touched }) => (
+                        {({
+                          values,
+                          errors,
+                          status,
+                          touched,
+                          setFieldValue,
+                          handleChange,
+                          isValid,
+                        }) => (
                           <Form className="form-horizontal">
                             <div className="mb-3">
-                              <Label for="firstName" className="form-label">
-                              First Name
+                              <Label
+                                for="firstName"
+                                className="form-label required"
+                              >
+                                First Name
                               </Label>
                               <Field
                                 name="firstName"
@@ -113,6 +239,15 @@ class Register extends Component {
                                     ? " is-invalid"
                                     : "")
                                 }
+                                value={values.firstName}
+                                onChange={e => {
+                                  handleChange(e);
+                                  HandleUpperCase(
+                                    e.target.value,
+                                    setFieldValue,
+                                    "firstName"
+                                  );
+                                }}
                               />
                               <ErrorMessage
                                 name="firstName"
@@ -121,18 +256,30 @@ class Register extends Component {
                               />
                             </div>
                             <div className="mb-3">
-                              <Label for="lastName" className="form-label">
-                              Last Name
+                              <Label
+                                for="lastName"
+                                className="form-label required"
+                              >
+                                Last Name
                               </Label>
                               <Field
                                 name="lastName"
                                 type="text"
                                 className={
-                                  "form-control" +
+                                  "form-control required" +
                                   (errors.lastName && touched.lastName
                                     ? " is-invalid"
                                     : "")
                                 }
+                                value={values.lastName}
+                                onChange={e => {
+                                  handleChange(e);
+                                  HandleUpperCase(
+                                    e.target.value,
+                                    setFieldValue,
+                                    "lastName"
+                                  );
+                                }}
                               />
                               <ErrorMessage
                                 name="lastName"
@@ -141,7 +288,10 @@ class Register extends Component {
                               />
                             </div>
                             <div className="mb-3">
-                              <Label for="email" className="form-label">
+                              <Label
+                                for="email"
+                                className="form-label required"
+                              >
                                 Email
                               </Label>
                               <Field
@@ -161,27 +311,33 @@ class Register extends Component {
                               />
                             </div>
                             <div className="mb-3">
-                              <Label for="country" className="form-label">
-                              Country
+                              <Label
+                                for="phoneNumber"
+                                className="form-label required"
+                              >
+                                Mobile Number
                               </Label>
                               <Field
-                                name="country"
+                                name="phoneNumber"
                                 type="text"
                                 className={
                                   "form-control" +
-                                  (errors.country && touched.country
-                                    ? " is-invalid"
+                                  (errors.phoneNumber && touched.phoneNumber
+                                    ? " mobile number is-invalid"
                                     : "")
                                 }
                               />
                               <ErrorMessage
-                                name="country"
+                                name="phoneNumber"
                                 component="div"
                                 className="invalid-feedback"
                               />
                             </div>
                             <div className="mb-3">
-                              <Label for="password" className="form-label">
+                              <Label
+                                for="password"
+                                className="form-label required"
+                              >
                                 Password
                               </Label>
                               <Field
@@ -202,8 +358,11 @@ class Register extends Component {
                               />
                             </div>
                             <div className="mb-3">
-                              <Label for="confirmPassword" className="form-label">
-                              Confirm Password
+                              <Label
+                                for="confirmPassword"
+                                className="form-label required"
+                              >
+                                Confirm Password
                               </Label>
                               <Field
                                 name="confirmPassword"
@@ -211,7 +370,8 @@ class Register extends Component {
                                 type="password"
                                 className={
                                   "form-control" +
-                                  (errors.confirmPassword && touched.confirmPassword
+                                  (errors.confirmPassword &&
+                                  touched.confirmPassword
                                     ? " is-invalid"
                                     : "")
                                 }
@@ -227,8 +387,9 @@ class Register extends Component {
                               <button
                                 className="btn btn-primary btn-block"
                                 type="submit"
+                                disabled={!isValid}
                               >
-                                Register
+                                Sign Up
                               </button>
                             </div>
 
@@ -256,7 +417,8 @@ class Register extends Component {
                   </p>
                   <p>
                     © {new Date().getFullYear()} Univolen. Crafted With{" "}
-                    <i className="mdi mdi-heart text-danger" /> by Univolen It solution
+                    <i className="mdi mdi-heart text-danger" /> by Univolen It
+                    solution
                   </p>
                 </div>
               </Col>

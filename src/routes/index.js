@@ -33,6 +33,8 @@ import EcommerceCart from "../pages/Ecommerce/EcommerceCart";
 import EcommerceCheckout from "../pages/Ecommerce/EcommerceCheckout";
 import EcommerceShops from "../pages/Ecommerce/EcommerceShops/index";
 import EcommerceAddProduct from "../pages/Ecommerce/EcommerceAddProduct";
+import ProductList from "pages/Ecommerce/EcommerceProductList/index";
+import AddproductV3 from "pages/Ecommerce/AddproductV3";
 
 //Email
 import EmailInbox from "../pages/Email/email-inbox";
@@ -207,6 +209,10 @@ const authProtectedRoutes = [
   { path: "/ecommerce-checkout", component: EcommerceCheckout },
   { path: "/ecommerce-shops", component: EcommerceShops },
   { path: "/ecommerce-add-product", component: EcommerceAddProduct },
+
+  { path: "/addproductthree", component: AddproductV3 },
+  { path: "/ecommerce-edit-product", component: EcommerceAddProduct },
+  { path: "/ecommerce-product-list", component: ProductList },
 
   //Email
   { path: "/email-inbox", component: EmailInbox },

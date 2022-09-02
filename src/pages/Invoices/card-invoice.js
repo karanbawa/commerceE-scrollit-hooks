@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { Card, CardBody, Col, Row, UncontrolledTooltip } from "reactstrap";
-import images from "assets/images";
+import images from "../../assets/images";
 
 class CardInvoice extends Component {
   constructor(props) {

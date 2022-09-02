@@ -28,6 +28,25 @@ import product6a from "../../assets/images/product/img-6.png";
 import product6b from "../../assets/images/product/Pro-17.png";
 import product6c from "../../assets/images/product/Pro-17a.png";
 
+const priceCodes = [
+  {
+    priceCode: 0,
+    priceLabel: "₹",
+    priceCurrency: "Rupees",
+  },
+  {
+    priceCode: 1,
+    priceLabel: "$",
+    priceCurrency: "Dollar",
+  },
+  {
+    priceCode: 2,
+    priceLabel: "€",
+    priceCurrency: "Euros",
+  },
+  {},
+];
+
 const productsData = [
   {
     id: 1,
@@ -256,7 +275,7 @@ const productsData = [
       { image: "product13", color: "Black" },
     ],
   },
-]
+];
 
 const recentProducts = [
   {
@@ -286,7 +305,7 @@ const recentProducts = [
     oldPrice: 138,
     newPrice: 135,
   },
-]
+];
 
 const comments = [
   {
@@ -323,7 +342,7 @@ const comments = [
       "Everyone realizes why a new common language would be desirable.",
     date: "05 Oct, 2019",
   },
-]
+];
 
 const discountData = [
   { label: "Less than 10%", value: 0 },
@@ -332,7 +351,7 @@ const discountData = [
   { label: "30% or more", value: 30 },
   { label: "40% or more", value: 40 },
   { label: "50% or more", value: 50 },
-]
+];
 
 const orders = [
   {
@@ -478,7 +497,7 @@ const orders = [
     methodIcon: "fa-cc-mastercard",
     paymentMethod: "Mastercard",
   },
-]
+];
 
 const cartData = {
   products: [
@@ -544,7 +563,7 @@ const cartData = {
     estimatedTax: "$ 19.22",
     total: "$ 1744.22",
   },
-}
+};
 
 const customerData = [
   {
@@ -677,7 +696,7 @@ const customerData = [
     walletBalance: "$4,523",
     joiningDate: "2019-10-04",
   },
-]
+];
 
 const shops = [
   {
@@ -752,7 +771,7 @@ const shops = [
     balance: "12,356",
     profileLink: "#",
   },
-]
+];
 
 export {
   productsData,
@@ -763,4 +782,5 @@ export {
   shops,
   customerData,
   cartData,
-}
+  priceCodes,
+};
