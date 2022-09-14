@@ -23,7 +23,14 @@ import Dropzone from "react-dropzone"
 import Breadcrumbs from "../../components/Common/Breadcrumb"
 
 const EcommerceAddProduct = () => {
-  const [selectedFiles, setselectedFiles] = useState([])
+  const [selectedFiles, setselectedFiles] = useState([]);
+  const [productCategory, setProductCategory] = useState("INR");
+  const [productCurrency, setProductCurrency] = useState("");
+  const [productName, setProductName] = useState("");
+  const [brandName, setBrandName] = useState("");
+  const [productDescription, setProductDescription] = useState("");
+  const [metaTitle, setMetaTitle] = useState("");
+  const [productPrice, setProductPrice] = useState("");
 
   const options = [
     { value: "AK", label: "Alaska" },
@@ -42,18 +49,49 @@ const EcommerceAddProduct = () => {
       })
     )
 
-    setselectedFiles(files)
+    setselectedFiles((previousState) => {
+      return [...previousState, files];
+    })
   }
 
   function formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return "0 Bytes"
-    const k = 1024
-    const dm = decimals < 0 ? 0 : decimals
-    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i]
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
   }
+
+  const productCategoryChange = event => {
+    setProductCategory(event.target.value);
+  };
+
+  const productCurrencyChange = event => {
+    setProductCurrency(event.target.value);
+  };
+
+  const productNameChange = event => {
+    setProductName(event.target.value);
+  };
+
+  const brandNameChange = event => {
+    setBrandName(event.target.value);
+  };
+
+  const productDescriptionChange = event => {
+    setProductDescription(event.target.value);
+  };
+
+  const metaTitleChange = event => {
+    setMetaTitle(event.target.value);
+  };
+
+  const productPriceChange = event => {
+    setProductPrice(event.target.value);
+  };
+
 
   return (
     <React.Fragment>
