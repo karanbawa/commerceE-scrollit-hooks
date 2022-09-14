@@ -64,9 +64,13 @@ const Dashboard = props => {
   ];
 
   useEffect(() => {
-    setTimeout(() => {
+    let timer1 = setTimeout(() => {
       setSubscribemodal(true);
     }, 2000);
+
+    return () => {
+      clearTimeout(timer1);
+    };
   }, []);
 
   const [periodData, setPeriodData] = useState([]);

@@ -48,7 +48,7 @@ let users = [
     uid: 1,
     username: "admin",
     role: "admin",
-    password: "123456",
+    password: "Karanbawab1@",
     email: "admin@scrollit.com",
   },
 ];

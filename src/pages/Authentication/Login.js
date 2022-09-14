@@ -37,14 +37,19 @@ const Login = props => {
 
     initialValues: {
       email: "admin@scrollit.com" || '',
-      password: "123456" || '',
+      password: "Karanbawab1@" || '',
     },
     validationSchema: Yup.object({
-      email: Yup.string().required("Please Enter Your Email"),
-      password: Yup.string().required("Please Enter Your Password"),
+      email: Yup.string().email("Invalid Email").required("Please Enter Your Email"),
+      password: Yup.string().required("Please Enter Your Password").matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+        "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
+      )
+      .min(8, "Must be greater than 8 characters")
+      .max(16, "Must be less than 16 characters"),
     }),
     onSubmit: (values) => {
-      dispatch(loginUser(values, props.history));
+      dispatch(loginUser(values, props.history)); 
     }
   });
 
@@ -145,7 +150,7 @@ const Login = props => {
                       {error ? <Alert color="danger">{error}</Alert> : null}
 
                       <div className="mb-3">
-                        <Label className="form-label">Email</Label>
+                        <Label className="form-label required">Email</Label>
                         <Input
                           name="email"
                           className="form-control"
@@ -164,7 +169,7 @@ const Login = props => {
                       </div>
 
                       <div className="mb-3">
-                        <Label className="form-label">Password</Label>
+                        <Label className="form-label required">Password</Label>
                         <Input
                           name="password"
                           value={validation.values.password || ""}
