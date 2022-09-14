@@ -35,7 +35,7 @@ const Login = () => {
   return (
     <React.Fragment>
       <MetaTags>
-        <title>Login | Skote - React Admin & Dashboard Template</title>
+        <title>Login | Scrollit- React Admin & Dashboard Template</title>
       </MetaTags>
       <div className="home-btn d-none d-sm-block">
         <Link to="/" className="text-dark">
@@ -52,7 +52,7 @@ const Login = () => {
                     <Col className="col-7">
                       <div className="text-primary p-4">
                         <h5 className="text-primary">Welcome Back !</h5>
-                        <p>Sign in to continue to Skote.</p>
+                        <p>Sign in to continue to Scrollit.</p>
                       </div>
                     </Col>
                     <Col className="col-5 align-self-end">
@@ -208,8 +208,8 @@ const Login = () => {
                   </Link>{" "}
                 </p>
                 <p>
-                  © {new Date().getFullYear()} Skote. Crafted with{" "}
-                  <i className="mdi mdi-heart text-danger" /> by Themesbrand
+                  © {new Date().getFullYear()} Scrollit. Crafted with{" "}
+                  <i className="mdi mdi-heart text-danger" /> by Scrollit
                 </p>
               </div>
             </Col>

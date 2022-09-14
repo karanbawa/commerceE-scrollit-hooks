@@ -35,7 +35,7 @@ const LockScreen2 = (props) => {
     <React.Fragment>
       <div>
         <MetaTags>
-          <title>Lock Screen 2 | Skote - React Admin & Dashboard Template</title>
+          <title>Lock Screen 2 | Scrollit- React Admin & Dashboard Template</title>
         </MetaTags>
         <Container fluid className="p-0">
           <Row className="g-0">
@@ -133,9 +133,9 @@ const LockScreen2 = (props) => {
                       <p className="mb-0">
                         ©{" "}
                         {new Date().getFullYear()}{" "}
-                        Skote. Crafted with{" "}
+                        Scrollit. Crafted with{" "}
                         <i className="mdi mdi-heart text-danger"></i> by
-                        Themesbrand
+                        Scrollit
                       </p>
                     </div>
                   </div>

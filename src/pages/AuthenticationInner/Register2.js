@@ -36,7 +36,7 @@ const Register2 = () => {
     <React.Fragment>
       <div>
         <MetaTags>
-          <title>Register 2 | Skote - React Admin & Dashboard Template</title>
+          <title>Register 2 | Scrollit- React Admin & Dashboard Template</title>
         </MetaTags>
         <Container fluid className="p-0">
           <Row className="g-0">
@@ -66,7 +66,7 @@ const Register2 = () => {
                       <div>
                         <h5 className="text-primary">Register account</h5>
                         <p className="text-muted">
-                          Get your free Skote account now.
+                          Get your free Scrollit account now.
                         </p>
                       </div>
 
@@ -136,7 +136,7 @@ const Register2 = () => {
 
                           <div>
                             <p className="mb-0">
-                              By registering you agree to the Skote{" "}
+                              By registering you agree to the Scrollit{" "}
                               <a href="#" className="text-primary">
                                 Terms of Use
                               </a>
@@ -208,9 +208,9 @@ const Register2 = () => {
                       <p className="mb-0">
                         ©{" "}
                         { new Date().getFullYear()}
-                        Skote. Crafted with{" "}
+                        Scrollit. Crafted with{" "}
                         <i className="mdi mdi-heart text-danger"></i> by
-                        Themesbrand
+                        Scrollit
                       </p>
                     </div>
                   </div>

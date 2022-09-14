@@ -54,7 +54,7 @@ const UiDrawer = () => {
         <React.Fragment>
             <div className="page-content">
                 <MetaTags>
-                    <title>Drawer | Skote - React Admin & Dashboard Template</title>
+                    <title>Drawer | Scrollit- React Admin & Dashboard Template</title>
                 </MetaTags>
                 <div className="container-fluid">
                     <Breadcrumbs title="Ui Elements" breadcrumbItem="Offcanvas" />

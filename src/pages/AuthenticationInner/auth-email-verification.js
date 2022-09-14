@@ -12,7 +12,7 @@ const EmailVerification = () => {
     <React.Fragment>
       <div className="account-pages my-5 pt-sm-5">
         <MetaTags>
-          <title>Email Verification | Skote - React Admin & Dashboard Template</title>
+          <title>Email Verification | Scrollit- React Admin & Dashboard Template</title>
         </MetaTags>
         <Container>
           <Row>
@@ -78,8 +78,8 @@ const EmailVerification = () => {
                   </a>{" "}
                 </p>
                 <p>
-                  © {new Date().getFullYear()} Skote. Crafted with{" "}
-                  <i className="mdi mdi-heart text-danger"></i> by Themesbrand
+                  © {new Date().getFullYear()} Scrollit. Crafted with{" "}
+                  <i className="mdi mdi-heart text-danger"></i> by Scrollit
                 </p>
               </div>
             </Col>

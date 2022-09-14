@@ -36,7 +36,7 @@ const UiCards = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Cards | Skote - React Admin & Dashboard Template</title>
+          <title>Cards | Scrollit- React Admin & Dashboard Template</title>
         </MetaTags>
         <Container fluid={true}>
           <Breadcrumbs title="UI Elements" breadcrumbItem="Cards" />
@@ -44,7 +44,7 @@ const UiCards = () => {
           <Row>
             <Col mg={6} xl={3}>
               <Card>
-                <CardImg top className="img-fluid" src={img1} alt="Skote" />
+                <CardImg top className="img-fluid" src={img1} alt="Scrollit" />
                 <CardBody>
                   <CardTitle className="mt-0">Card title</CardTitle>
                   <CardText>
@@ -62,7 +62,7 @@ const UiCards = () => {
             </Col>
             <Col mg={6} xl={3}>
               <Card>
-                <CardImg top className="img-fluid" src={img2} alt="Skote" />
+                <CardImg top className="img-fluid" src={img2} alt="Scrollit" />
                 <CardBody>
                   <CardTitle className="mt-0">Card title</CardTitle>
                   <CardText>
@@ -87,7 +87,7 @@ const UiCards = () => {
 
             <Col mg={6} xl={3}>
               <Card>
-                <CardImg top className="img-fluid" src={img3} alt="Skote" />
+                <CardImg top className="img-fluid" src={img3} alt="Scrollit" />
                 <CardBody>
                   <CardText>
                     Some quick example text to build on the card title and make
@@ -104,7 +104,7 @@ const UiCards = () => {
                     Support card subtitle
                   </CardSubtitle>
                 </CardBody>
-                <CardImg className="img-fluid" src={img4} alt="Skote" />
+                <CardImg className="img-fluid" src={img4} alt="Scrollit" />
                 <CardBody>
                   <CardText>
                     Some quick example text to build on the card title and make
@@ -267,7 +267,7 @@ const UiCards = () => {
           <Row>
             <Col lg={4}>
               <Card>
-                <CardImg top className="img-fluid" src={img5} alt="Skote" />
+                <CardImg top className="img-fluid" src={img5} alt="Scrollit" />
                 <CardBody>
                   <CardTitle className="mt-0">Card title</CardTitle>
                   <CardText>
@@ -299,13 +299,13 @@ const UiCards = () => {
                     </small>
                   </CardText>
                 </CardBody>
-                <CardImg bottom className="img-fluid" src={img7} alt="Skote" />
+                <CardImg bottom className="img-fluid" src={img7} alt="Scrollit" />
               </Card>
             </Col>
 
             <Col lg={4}>
               <Card>
-                <CardImg className="img-fluid" src={img6} alt="Skote" />
+                <CardImg className="img-fluid" src={img6} alt="Scrollit" />
                 <CardImgOverlay>
                   <CardTitle className="text-white mt-0">Card title</CardTitle>
                   <CardText className="text-light">
@@ -328,7 +328,7 @@ const UiCards = () => {
               <Card>
                 <Row className="no-gutters align-items-center">
                   <Col md={4}>
-                    <CardImg className="img-fluid" src={img2} alt="Skote" />
+                    <CardImg className="img-fluid" src={img2} alt="Scrollit" />
                   </Col>
                   <Col md={8}>
                     <CardBody>
@@ -365,7 +365,7 @@ const UiCards = () => {
                     </CardBody>
                   </Col>
                   <Col md={4}>
-                    <CardImg className="img-fluid" src={img3} alt="Skote" />
+                    <CardImg className="img-fluid" src={img3} alt="Scrollit" />
                   </Col>
                 </Row>
               </Card>
@@ -523,7 +523,7 @@ const UiCards = () => {
               <CardDeck className="card-deck-wrapper">
                 <div className="card-group">
                   <Card className="mb-4">
-                    <CardImg top className="img-fluid" src={img4} alt="Skote" />
+                    <CardImg top className="img-fluid" src={img4} alt="Scrollit" />
                     <CardBody>
                       <CardTitle className="mt-0">Card title</CardTitle>
                       <CardText>
@@ -539,7 +539,7 @@ const UiCards = () => {
                     </CardBody>
                   </Card>
                   <Card className="mb-4">
-                    <CardImg top className="img-fluid" src={img5} alt="Skote" />
+                    <CardImg top className="img-fluid" src={img5} alt="Scrollit" />
                     <CardBody>
                       <CardTitle className="mt-0">Card title</CardTitle>
                       <CardText>
@@ -554,7 +554,7 @@ const UiCards = () => {
                     </CardBody>
                   </Card>
                   <Card className="mb-4">
-                    <CardImg top className="img-fluid" src={img6} alt="Skote" />
+                    <CardImg top className="img-fluid" src={img6} alt="Scrollit" />
                     <CardBody>
                       <CardTitle className="mt-0">Card title</CardTitle>
                       <CardText>
@@ -580,7 +580,7 @@ const UiCards = () => {
               <h4 className="my-3">Cards Columns</h4>
               <CardColumns>
                 <Card>
-                  <CardImg top src={img3} alt="Skote" />
+                  <CardImg top src={img3} alt="Scrollit" />
                   <CardBody>
                     <CardTitle>Card title that wraps to a new line</CardTitle>
                     <CardText>
@@ -605,7 +605,7 @@ const UiCards = () => {
                   </CardBody>
                 </Card>
                 <Card>
-                  <CardImg top src={img5} alt="Skote" />
+                  <CardImg top src={img5} alt="Scrollit" />
                   <CardBody>
                     <CardTitle>Card title</CardTitle>
                     <CardText>
@@ -646,7 +646,7 @@ const UiCards = () => {
                   </CardBody>
                 </Card>
                 <Card>
-                  <CardImg top src={img7} alt="Skote" />
+                  <CardImg top src={img7} alt="Scrollit" />
                 </Card>
                 <Card className="p-3 text-end">
                   <blockquote className="blockquote mb-0">

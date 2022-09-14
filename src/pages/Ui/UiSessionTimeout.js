@@ -72,7 +72,7 @@ class UiSessionTimeout extends Component {
       <React.Fragment>
         <div className="page-content">
           <MetaTags>
-            <title>Session Timeout | Skote - React Admin & Dashboard Template</title>
+            <title>Session Timeout | Scrollit- React Admin & Dashboard Template</title>
           </MetaTags>
           <Container fluid={true}>
             {this.state.timeralert}

@@ -32,7 +32,7 @@ const LockScreen = () => {
   return (
     <React.Fragment>
       <MetaTags>
-        <title>Lock Screen | Skote - React Admin & Dashboard Template</title>
+        <title>Lock Screen | Scrollit- React Admin & Dashboard Template</title>
       </MetaTags>
       <div className="home-btn d-none d-sm-block">
         <Link to="/" className="text-dark">
@@ -135,8 +135,8 @@ const LockScreen = () => {
                   </Link>{" "}
                 </p>
                 <p>
-                  © 2021 Skote. Crafted with{" "}
-                  <i className="mdi mdi-heart text-danger" /> by Themesbrand
+                  © 2021 Scrollit. Crafted with{" "}
+                  <i className="mdi mdi-heart text-danger" /> by Scrollit
                 </p>
               </div>
             </Col>

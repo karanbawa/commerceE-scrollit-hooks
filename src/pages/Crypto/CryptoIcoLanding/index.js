@@ -36,7 +36,7 @@ const CryptoIcoLanding = () => {
   return (
     <React.Fragment>
       <MetaTags>
-        <title>ICO Landing | Skote - React Admin & Dashboard Template</title>
+        <title>ICO Landing | Scrollit- React Admin & Dashboard Template</title>
       </MetaTags>
       {/* import navbar */}
       <Navbar navClass={navClass} imglight={imglight} />

@@ -18,7 +18,7 @@ const UiTypography = () => {
       <div className="page-content">
         <MetaTags>
           <title>
-            Typography | Skote - React Admin & Dashboard Template
+            Typography | Scrollit- React Admin & Dashboard Template
           </title>
         </MetaTags>
         <Container fluid={true}>

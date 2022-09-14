@@ -53,7 +53,7 @@ const TasksCreate = () => {
     <>
       <div className="page-content">
         <MetaTags>
-          <title>Create Task | Skote - React Admin & Dashboard Template</title>
+          <title>Create Task | Scrollit- React Admin & Dashboard Template</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumbs */}

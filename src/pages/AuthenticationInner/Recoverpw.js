@@ -41,7 +41,7 @@ const Recoverpw = () => {
     <React.Fragment>
       <div className="account-pages my-5 pt-sm-5">
         <MetaTags>
-          <title>Recover Password | Skote - React Admin & Dashboard Template</title>
+          <title>Recover Password | Scrollit- React Admin & Dashboard Template</title>
         </MetaTags>
         <Container>
           <Row className="justify-content-center">
@@ -52,7 +52,7 @@ const Recoverpw = () => {
                     <Col xs={7}>
                       <div className="text-primary p-4">
                         <h5 className="text-primary"> Reset Password</h5>
-                        <p>Re-Password with Skote.</p>
+                        <p>Re-Password with Scrollit.</p>
                       </div>
                     </Col>
                     <Col xs={5} className="align-self-end">
@@ -135,8 +135,8 @@ const Recoverpw = () => {
                   </Link>{" "}
                 </p>
                 <p>
-                  © {new Date().getFullYear()} Skote. Crafted with{" "}
-                  <i className="mdi mdi-heart text-danger"></i> by Themesbrand
+                  © {new Date().getFullYear()} Scrollit. Crafted with{" "}
+                  <i className="mdi mdi-heart text-danger"></i> by Scrollit
                 </p>
               </div>
             </Col>

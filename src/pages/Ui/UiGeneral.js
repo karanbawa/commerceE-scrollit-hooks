@@ -40,7 +40,7 @@ const UiGeneral = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>General | Skote - React Admin & Dashboard Template</title>
+          <title>General | Scrollit- React Admin & Dashboard Template</title>
         </MetaTags>
         <Container fluid={true}>
           <Breadcrumbs title="UI Elements" breadcrumbItem="General" />

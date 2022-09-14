@@ -63,7 +63,7 @@ const IconFontawesome = props => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Font awesome | Skote - React Admin & Dashboard Template</title>
+          <title>Font awesome | Scrollit- React Admin & Dashboard Template</title>
         </MetaTags>
         <Container fluid={true}>
           <Breadcrumbs title="Icons" breadcrumbItem="Font Awesome" />

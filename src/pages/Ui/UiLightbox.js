@@ -52,7 +52,7 @@ const UiLightbox = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Lightbox | Skote - React Admin & Dashboard Template</title>
+          <title>Lightbox | Scrollit- React Admin & Dashboard Template</title>
         </MetaTags>
         <Container fluid={true}>
           <Breadcrumbs title="UI Elements" breadcrumbItem="Lightbox" />
@@ -135,7 +135,7 @@ const UiLightbox = () => {
                             setisFits(true);
                           }}
                           className="img-fluid"
-                          alt="Skote"
+                          alt="Scrollit"
                           src={img2}
                           width="145"
                         />

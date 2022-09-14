@@ -323,7 +323,7 @@ const ContactsList = props => {
       />
       <div className="page-content">
         <MetaTags>
-          <title>User List | Skote - React Admin & Dashboard Template</title>
+          <title>User List | Scrollit- React Admin & Dashboard Template</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumbs */}

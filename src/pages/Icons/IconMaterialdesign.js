@@ -23473,7 +23473,7 @@ const IconMaterialdesign = props => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Material Design | Skote - React Admin & Dashboard Template</title>
+          <title>Material Design | Scrollit- React Admin & Dashboard Template</title>
         </MetaTags>
         <Container fluid>
           <Breadcrumbs title="Icons" breadcrumbItem="MDI" />

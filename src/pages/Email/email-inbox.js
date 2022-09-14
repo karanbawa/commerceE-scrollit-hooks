@@ -87,7 +87,7 @@ const EmailInbox = props => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Inbox | Skote - React Admin & Dashboard Template</title>
+          <title>Inbox | Scrollit- React Admin & Dashboard Template</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumbs */}
@@ -225,7 +225,7 @@ const EmailInbox = props => {
                       <img
                         className="d-flex me-3 rounded-circle"
                         src={avatar2}
-                        alt="skote"
+                        alt="Scrollit"
                         height="36"
                       />
                     </div>
@@ -239,7 +239,7 @@ const EmailInbox = props => {
                     <img
                       className="d-flex me-3 rounded-circle"
                       src={avatar3}
-                      alt="skote"
+                      alt="Scrollit"
                       height="36"
                     />
                     <div className="flex-grow-1 chat-user-box">
@@ -252,7 +252,7 @@ const EmailInbox = props => {
                     <img
                       className="d-flex me-3 rounded-circle"
                       src={avatar4}
-                      alt="skote"
+                      alt="Scrollit"
                       height="36"
                     />
                     <div className="flex-grow-1 chat-user-box">
@@ -265,7 +265,7 @@ const EmailInbox = props => {
                     <img
                       className="d-flex me-3 rounded-circle"
                       src={avatar6}
-                      alt="skote"
+                      alt="Scrollit"
                       height="36"
                     />
                     <div className="flex-grow-1 chat-user-box">

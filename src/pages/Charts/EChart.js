@@ -20,7 +20,7 @@ const EChart = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>E Chart | Skote - React Admin & Dashboard Template</title>
+          <title>E Chart | Scrollit- React Admin & Dashboard Template</title>
         </MetaTags>
         <Container fluid={true}>
           {/* Render Breadcrumb */}

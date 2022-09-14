@@ -45,7 +45,7 @@ const ProjectsGrid = props => {
       <div className="page-content">
         <MetaTags>
           <title>
-            Projects Grid | Skote - React Admin & Dashboard Template
+            Projects Grid | Scrollit- React Admin & Dashboard Template
           </title>
         </MetaTags>
         <Container fluid>

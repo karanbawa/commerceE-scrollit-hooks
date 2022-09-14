@@ -76,7 +76,7 @@ const PagesPricing = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Pricing | Skote - React Admin & Dashboard Template</title>
+          <title>Pricing | Scrollit- React Admin & Dashboard Template</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumbs */}

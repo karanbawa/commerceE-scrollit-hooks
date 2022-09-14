@@ -11,7 +11,7 @@ const ConfirmMail = () => {
   return (
     <React.Fragment>
       <MetaTags>
-        <title>Confirm Mail | Skote - React Admin & Dashboard Template</title>
+        <title>Confirm Mail | Scrollit- React Admin & Dashboard Template</title>
       </MetaTags>
       <div className="account-pages my-5 pt-sm-5">
 
@@ -67,8 +67,8 @@ const ConfirmMail = () => {
               </Card>
               <div className="mt-5 text-center">
                 <p>
-                  © {new Date().getFullYear()} Skote. Crafted with{" "}
-                  <i className="mdi mdi-heart text-danger"></i> by Themesbrand
+                  © {new Date().getFullYear()} Scrollit. Crafted with{" "}
+                  <i className="mdi mdi-heart text-danger"></i> by Scrollit
                 </p>
               </div>
             </Col>

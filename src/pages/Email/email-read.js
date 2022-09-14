@@ -22,7 +22,7 @@ const EmailRead = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Read Email | Skote - React Admin & Dashboard Template</title>
+          <title>Read Email | Scrollit- React Admin & Dashboard Template</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumbs */}
@@ -43,7 +43,7 @@ const EmailRead = () => {
                       <img
                         className="d-flex me-3 rounded-circle avatar-sm"
                         src={avatar2}
-                        alt="skote"
+                        alt="Scrollit"
                       />
                       <div className="flex-grow-1">
                         <h5 className="font-size-14 mt-1">
@@ -82,7 +82,7 @@ const EmailRead = () => {
                           <img
                             className="card-img-top img-fluid"
                             src={img3}
-                            alt="skote"
+                            alt="Scrollit"
                           />
                           <div className="py-2 text-center">
                             <Link to="" className="fw-medium">
@@ -96,7 +96,7 @@ const EmailRead = () => {
                           <img
                             className="card-img-top img-fluid"
                             src={img4}
-                            alt="skote"
+                            alt="Scrollit"
                           />
                           <div className="py-2 text-center">
                             <Link to="" className="fw-medium">

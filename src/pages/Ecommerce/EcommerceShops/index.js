@@ -30,7 +30,7 @@ const EcommerceShops = props => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Shops | Skote - React Admin & Dashboard Template</title>
+          <title>Shops | Scrollit- React Admin & Dashboard Template</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumb */}

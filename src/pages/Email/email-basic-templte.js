@@ -11,7 +11,7 @@ const EmailBasicTemplte = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Basic Action | Skote - React Admin & Dashboard Template</title>
+          <title>Basic Action | Scrollit- React Admin & Dashboard Template</title>
         </MetaTags>
         <div className="container-fluid">
           <Breadcrumbs title="Email Template" breadcrumbItem="Basic Action" />
@@ -282,7 +282,7 @@ const EmailBasicTemplte = () => {
                                         }}
                                         valign="top"
                                       >
-                                        <b>Skote</b>
+                                        <b>Scrollit</b>
                                         <p>Support Team</p>
                                       </td>
                                     </tr>
@@ -310,7 +310,7 @@ const EmailBasicTemplte = () => {
                                         }}
                                         valign="top"
                                       >
-                                        © {new Date().getFullYear()} Skote
+                                        © {new Date().getFullYear()} Scrollit
                                         </td>
                                     </tr>
                                   </tbody>

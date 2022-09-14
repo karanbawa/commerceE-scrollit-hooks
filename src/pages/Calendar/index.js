@@ -260,11 +260,11 @@ const Calender = props => {
       />
       <div className="page-content">
         <MetaTags>
-          <title>Calendar | Skote - React Admin & Dashboard Template</title>
+          <title>Calendar | Scrollit- React Admin & Dashboard Template</title>
         </MetaTags>
         <Container fluid={true}>
           {/* Render Breadcrumb */}
-          <Breadcrumbs title="Skote" breadcrumbItem="Calendar" />
+          <Breadcrumbs title="Scrollit" breadcrumbItem="Calendar" />
           <Row>
             <Col className="col-12">
               <Card>

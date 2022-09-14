@@ -163,11 +163,11 @@ const Chat = props => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Chat | Skote - React Admin & Dashboard Template</title>
+          <title>Chat | Scrollit- React Admin & Dashboard Template</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumb */}
-          <Breadcrumbs title="Skote" breadcrumbItem="Chat" />
+          <Breadcrumbs title="Scrollit" breadcrumbItem="Chat" />
 
           <Row>
             <Col lg="12">

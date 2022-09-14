@@ -55,7 +55,7 @@ const FormWizard = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Form Wizard | Skote - React Admin & Dashboard Template</title>
+          <title>Form Wizard | Scrollit- React Admin & Dashboard Template</title>
         </MetaTags>
         <Container fluid={true}>
           <Breadcrumbs title="Forms" breadcrumbItem="Form Wizard" />

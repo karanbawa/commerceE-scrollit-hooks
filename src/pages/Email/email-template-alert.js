@@ -11,7 +11,7 @@ const EmailAlertTemplte = props => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Alert Email | Skote - React Admin & Dashboard Template</title>
+          <title>Alert Email | Scrollit- React Admin & Dashboard Template</title>
         </MetaTags>
         <Container fluid>
           <Breadcrumbs title="Email Template" breadcrumbItem="Alert Email" />
@@ -310,7 +310,7 @@ const EmailAlertTemplte = props => {
                                         }}
                                         valign="top"
                                       >
-                                        Thanks for choosing <b>Skote</b>{" "}
+                                        Thanks for choosing <b>Scrollit</b>{" "}
                                         Admin.
                                       </td>
                                     </tr>
@@ -336,7 +336,7 @@ const EmailAlertTemplte = props => {
                                         }}
                                         valign="top"
                                       >
-                                        <b>Skote</b>
+                                        <b>Scrollit</b>
                                         <p>Support Team</p>
                                       </td>
                                     </tr>
@@ -364,7 +364,7 @@ const EmailAlertTemplte = props => {
                                         }}
                                         valign="top"
                                       >
-                                        © {new Date().getFullYear()} Skote
+                                        © {new Date().getFullYear()} Scrollit
                                       </td>
                                     </tr>
                                   </tbody>

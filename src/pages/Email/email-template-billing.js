@@ -10,7 +10,7 @@ const EmailTemplateBilling = props => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Billing Email | Skote - React Admin & Dashboard Template</title>
+          <title>Billing Email | Scrollit- React Admin & Dashboard Template</title>
         </MetaTags>
         <Container fluid>
           <Breadcrumbs
@@ -176,7 +176,7 @@ const EmailTemplateBilling = props => {
                                           Thanks for using{" "}
                                           <b style={{ fontWeight: "600" }}>
                                             {" "}
-                                            SKOTE
+                                            Scrollit
                                           </b>
                                           .
                                         </h2>
@@ -584,7 +584,7 @@ const EmailTemplateBilling = props => {
                                         align="center"
                                         valign="top"
                                       >
-                                        Skote Inc. 2896 Howell Rd,
+                                        Scrollit Inc. 2896 Howell Rd,
                                         Russellville, AR, 72823
                                       </td>
                                     </tr>
@@ -612,7 +612,7 @@ const EmailTemplateBilling = props => {
                                         }}
                                         valign="top"
                                       >
-                                        © {new Date().getFullYear()} Skote
+                                        © {new Date().getFullYear()} Scrollit
                                       </td>
                                     </tr>
                                   </tbody>
