@@ -115,7 +115,7 @@ const CryptoOrders = props => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Orders | Scrollit- React Admin & Dashboard Template</title>
+          <title>Orders | Scrollit</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumb */}

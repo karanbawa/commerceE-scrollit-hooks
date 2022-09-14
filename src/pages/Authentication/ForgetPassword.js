@@ -46,7 +46,7 @@ const ForgetPasswordPage = props => {
     <React.Fragment>
       <MetaTags>
         <title>
-          Forget Password | Scrollit- React Admin & Dashboard Template
+          Forget Password | Scrollit
         </title>
       </MetaTags>
       <div className="home-btn d-none d-sm-block">

@@ -143,7 +143,7 @@ const DatatableTables = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Data Tables | Scrollit- React Admin & Dashboard Template</title>
+          <title>Data Tables | Scrollit</title>
         </MetaTags>
         <div className="container-fluid">
           <Breadcrumbs title="Tables" breadcrumbItem="Data Tables" />

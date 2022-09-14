@@ -163,7 +163,7 @@ const Chat = props => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Chat | Scrollit- React Admin & Dashboard Template</title>
+          <title>Chat | Scrollit</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumb */}

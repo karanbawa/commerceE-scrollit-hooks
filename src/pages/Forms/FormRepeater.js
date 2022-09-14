@@ -52,7 +52,7 @@ const FormRepeater = () => {
       <div className="page-content">
         <MetaTags>
           <title>
-            Form Repeater | Scrollit- React Admin & Dashboard Template
+            Form Repeater | Scrollit
           </title>
         </MetaTags>
         <Container fluid={true}>

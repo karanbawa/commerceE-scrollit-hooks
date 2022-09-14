@@ -48,7 +48,7 @@ const DashboardSaas = props => {
       <div className="page-content">
         <MetaTags>
           <title>
-            Saas Dashboard | Scrollit- React Admin & Dashboard Template
+            Saas Dashboard | Scrollit
           </title>
         </MetaTags>
         <Container fluid>

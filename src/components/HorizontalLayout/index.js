@@ -39,7 +39,7 @@ const Layout = (props) => {
     let currentage = title.charAt(1).toUpperCase() + title.slice(2)
 
     document.title =
-      currentage + " | Scrollit- React Admin & Dashboard Template"
+      currentage + " | Scrollit"
   }, [props.location.pathname]);
 
   useEffect(() => {

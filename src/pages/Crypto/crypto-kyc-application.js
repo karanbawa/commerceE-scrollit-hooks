@@ -79,7 +79,7 @@ const CryptoKYCApplication = props => {
       <div className="page-content">
         <MetaTags>
           <title>
-            KYC Application | Scrollit- React Admin & Dashboard Template
+            KYC Application | Scrollit
           </title>
         </MetaTags>
         <Container fluid>

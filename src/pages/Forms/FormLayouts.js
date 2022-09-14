@@ -23,7 +23,7 @@ const FormLayouts = props => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Form Layouts | Scrollit- React Admin & Dashboard Template</title>
+          <title>Form Layouts | Scrollit</title>
         </MetaTags>
         <Container fluid={true}>
           <Breadcrumbs title="Forms" breadcrumbItem="Form Layouts" />

@@ -176,7 +176,7 @@ const CryptoExchange = props => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Exchange | Scrollit- React Admin & Dashboard Template</title>
+          <title>Exchange | Scrollit</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumb */}

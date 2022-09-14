@@ -22,7 +22,7 @@ const EmailRead = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Read Email | Scrollit- React Admin & Dashboard Template</title>
+          <title>Read Email | Scrollit</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumbs */}

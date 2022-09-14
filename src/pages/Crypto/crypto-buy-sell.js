@@ -44,7 +44,7 @@ const CryptoBuySell = props => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Buy/Sell | Scrollit- React Admin & Dashboard Template</title>
+          <title>Buy/Sell | Scrollit</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumb */}

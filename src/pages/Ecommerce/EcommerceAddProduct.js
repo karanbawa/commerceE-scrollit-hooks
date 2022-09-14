@@ -59,7 +59,7 @@ const EcommerceAddProduct = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Add Product | Scrollit- React Admin & Dashboard Template</title>
+          <title>Add Product | Scrollit</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumb */}

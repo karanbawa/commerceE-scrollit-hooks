@@ -41,7 +41,7 @@ const Recoverpw = () => {
     <React.Fragment>
       <div className="account-pages my-5 pt-sm-5">
         <MetaTags>
-          <title>Recover Password | Scrollit- React Admin & Dashboard Template</title>
+          <title>Recover Password | Scrollit</title>
         </MetaTags>
         <Container>
           <Row className="justify-content-center">

@@ -154,7 +154,7 @@ function UiTabsAccordions(props) {
       <div className="page-content">
         <MetaTags>
           <title>
-            Tabs & Accordions | Scrollit- React Admin & Dashboard Template
+            Tabs & Accordions | Scrollit
           </title>
         </MetaTags>
         <Container fluid={true}>

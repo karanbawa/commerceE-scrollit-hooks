@@ -88,7 +88,7 @@ const index = props => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Blog Dashboard | Scrollit- React Admin & Dashboard Template</title>
+          <title>Blog Dashboard | Scrollit</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumb */}

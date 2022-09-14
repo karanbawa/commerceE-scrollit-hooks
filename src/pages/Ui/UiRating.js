@@ -40,7 +40,7 @@ const UiRating = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Rating | Scrollit- React Admin & Dashboard Template</title>
+          <title>Rating | Scrollit</title>
         </MetaTags>
         <Container fluid={true}>
           <Breadcrumbs title="UI Elements" breadcrumbItem="Rating" />

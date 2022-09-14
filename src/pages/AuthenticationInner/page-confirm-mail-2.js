@@ -13,7 +13,7 @@ const ConfirmMail2 = () => {
     <React.Fragment>
       <div>
         <MetaTags>
-          <title>Confirm Mail 2 | Scrollit- React Admin & Dashboard Template</title>
+          <title>Confirm Mail 2 | Scrollit</title>
         </MetaTags>
         <Container fluid className="p-0">
           <Row className="row g-0">

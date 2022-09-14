@@ -49,7 +49,7 @@ const ProjectsCreate = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Create New Projects | Scrollit- React Admin & Dashboard Template</title>
+          <title>Create New Projects | Scrollit</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumbs */}

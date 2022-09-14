@@ -29,7 +29,7 @@ const UiImages = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Images | Scrollit- React Admin & Dashboard Template</title>
+          <title>Images | Scrollit</title>
         </MetaTags>
         <Container fluid={true}>
           <Breadcrumbs title="UI Elements" breadcrumbItem="Images" />

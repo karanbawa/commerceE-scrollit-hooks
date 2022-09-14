@@ -42,7 +42,7 @@ const PagesTimeline = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Timeline | Scrollit- React Admin & Dashboard Template</title>
+          <title>Timeline | Scrollit</title>
         </MetaTags>
         <div className="container-fluid">
           {/* Render Breadcrumbs */}

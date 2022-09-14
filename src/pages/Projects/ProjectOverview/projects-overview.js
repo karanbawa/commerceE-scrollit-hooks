@@ -44,7 +44,7 @@ const ProjectsOverview = props => {
       <div className="page-content">
         <MetaTags>
           <title>
-            Project Overview | Scrollit- React Admin & Dashboard Template
+            Project Overview | Scrollit
           </title>
         </MetaTags>
         <Container fluid>

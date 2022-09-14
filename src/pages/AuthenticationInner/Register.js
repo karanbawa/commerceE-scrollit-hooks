@@ -37,7 +37,7 @@ const Register = () => {
   return (
     <React.Fragment>
       <MetaTags>
-        <title>Register | Scrollit- React Admin & Dashboard Template</title>
+        <title>Register | Scrollit</title>
       </MetaTags>
       <div className="home-btn d-none d-sm-block">
         <Link to="/" className="text-dark">

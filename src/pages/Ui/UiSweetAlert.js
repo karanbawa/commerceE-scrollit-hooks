@@ -83,7 +83,7 @@ const UiSweetAlert = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Sweet-Alert | Scrollit- React Admin & Dashboard Template</title>
+          <title>Sweet-Alert | Scrollit</title>
         </MetaTags>
         <Container fluid={true}>
           <Breadcrumbs title="UI Elements" breadcrumbItem="Sweet-Alert" />

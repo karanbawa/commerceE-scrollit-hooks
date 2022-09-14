@@ -35,7 +35,7 @@ const LockScreen2 = (props) => {
     <React.Fragment>
       <div>
         <MetaTags>
-          <title>Lock Screen 2 | Scrollit- React Admin & Dashboard Template</title>
+          <title>Lock Screen 2 | Scrollit</title>
         </MetaTags>
         <Container fluid className="p-0">
           <Row className="g-0">

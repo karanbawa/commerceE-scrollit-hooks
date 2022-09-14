@@ -52,7 +52,7 @@ const ContactsProfile = props => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Profile | Scrollit- React Admin & Dashboard Template</title>
+          <title>Profile | Scrollit</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumbs */}

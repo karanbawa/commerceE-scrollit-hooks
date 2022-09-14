@@ -19,7 +19,7 @@ const ReCharts = () => {
             <React.Fragment>
                 <div className="page-content">
                     <MetaTags>
-                        <title>Re Chart | Scrollit- React Admin & Dashboard Template</title>
+                        <title>Re Chart | Scrollit</title>
                     </MetaTags>
                     <div className="container-fluid">
                         <Breadcrumbs title="Charts" breadcrumbItem="Re Chart" />

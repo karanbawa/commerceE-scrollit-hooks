@@ -15,7 +15,7 @@ const PagesMaintenance = () => {
     <React.Fragment>
       <section className="my-5 pt-sm-5">
         <MetaTags>
-          <title>Maintenance | Scrollit- React Admin & Dashboard Template</title>
+          <title>Maintenance | Scrollit</title>
         </MetaTags>
         <Container>
           <Row>

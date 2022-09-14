@@ -11,7 +11,7 @@ const EmailAlertTemplte = props => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Alert Email | Scrollit- React Admin & Dashboard Template</title>
+          <title>Alert Email | Scrollit</title>
         </MetaTags>
         <Container fluid>
           <Breadcrumbs title="Email Template" breadcrumbItem="Alert Email" />

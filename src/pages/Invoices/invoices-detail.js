@@ -43,7 +43,7 @@ const InvoiceDetail = props => {
       <div className="page-content">
         <MetaTags>
           <title>
-            Invoice Detail | Scrollit- React Admin & Dashboard Template
+            Invoice Detail | Scrollit
           </title>
         </MetaTags>
         <Container fluid>

@@ -31,7 +31,7 @@ const FormXeditable = () => {
       <div className="page-content">
         <MetaTags>
           <title>
-            Form Xeditable | Scrollit- React Admin & Dashboard Template
+            Form Xeditable | Scrollit
           </title>
         </MetaTags>
         <Container fluid={true}>

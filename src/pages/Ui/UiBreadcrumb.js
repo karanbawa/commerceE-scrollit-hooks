@@ -19,7 +19,7 @@ function UiBreadcrumb(props) {
         <React.Fragment>
             <div className="page-content">
                 <MetaTags>
-                    <title>Breadcrumb | Scrollit- React Admin & Dashboard Template</title>
+                    <title>Breadcrumb | Scrollit</title>
                 </MetaTags>
                 <Container fluid={true}>
                     <Breadcrumbs title="UI Elements" breadcrumbItem="Breadcrumb" />

@@ -113,7 +113,7 @@ const EcommerceCart = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Cart | Scrollit- React Admin & Dashboard Template</title>
+          <title>Cart | Scrollit</title>
         </MetaTags>
         <Container fluid>
           <Breadcrumbs title="Ecommerce" breadcrumbItem="Cart" />

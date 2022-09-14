@@ -30,7 +30,7 @@ const ForgetPassword2 = () => {
     <React.Fragment>
       <div>
         <MetaTags>
-          <title>Forget Password 2 | Scrollit- React Admin & Dashboard Template</title>
+          <title>Forget Password 2 | Scrollit</title>
         </MetaTags>
         <Container fluid className="p-0">
           <Row className="g-0">

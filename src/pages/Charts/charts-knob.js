@@ -31,7 +31,7 @@ const ChartsKnob = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Jquery Knob charts | Scrollit- React Admin & Dashboard Template</title>
+          <title>Jquery Knob charts | Scrollit</title>
         </MetaTags>
         <Container fluid>
           <Breadcrumbs title="Charts" breadcrumbItem="Jquery Knob charts" />

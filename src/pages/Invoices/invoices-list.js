@@ -30,7 +30,7 @@ const InvoicesList = props => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Invoice List | Scrollit- React Admin & Dashboard Template</title>
+          <title>Invoice List | Scrollit</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumbs */}

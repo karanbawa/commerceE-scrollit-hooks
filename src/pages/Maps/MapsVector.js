@@ -19,7 +19,7 @@ const MapsVector = () => {
     <React.Fragment>
       <div className="page-content">
       <MetaTags>
-          <title>Vector Maps | Scrollit- React Admin & Dashboard Template</title>
+          <title>Vector Maps | Scrollit</title>
         </MetaTags>
         <Container fluid={true}>
           <Breadcrumbs title="Maps" breadcrumbItem="Vector Maps" />

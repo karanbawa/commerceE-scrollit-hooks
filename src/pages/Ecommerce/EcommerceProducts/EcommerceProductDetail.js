@@ -133,7 +133,7 @@ const EcommerceProductDetail = props => {
       <div className="page-content">
         <MetaTags>
           <title>
-            Product Detail | Scrollit- React Admin & Dashboard Template
+            Product Detail | Scrollit
           </title>
         </MetaTags>
         <Container fluid>

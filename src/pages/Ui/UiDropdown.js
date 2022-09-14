@@ -50,7 +50,7 @@ const UiDropdown = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Dropdowns | Scrollit- React Admin & Dashboard Template</title>
+          <title>Dropdowns | Scrollit</title>
         </MetaTags>
         <Container fluid={true}>
           <Breadcrumbs title="UI Elements" breadcrumbItem="Dropdowns" />

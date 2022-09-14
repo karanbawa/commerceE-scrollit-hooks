@@ -87,7 +87,7 @@ const EmailInbox = props => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Inbox | Scrollit- React Admin & Dashboard Template</title>
+          <title>Inbox | Scrollit</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumbs */}

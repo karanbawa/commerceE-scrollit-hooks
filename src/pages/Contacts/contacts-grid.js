@@ -33,7 +33,7 @@ const ContactsGrid = props => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>User Grid | Scrollit- React Admin & Dashboard Template</title>
+          <title>User Grid | Scrollit</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumbs */}

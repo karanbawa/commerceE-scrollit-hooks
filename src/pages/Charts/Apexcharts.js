@@ -23,7 +23,7 @@ const Apexchart = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Apex Charts | Scrollit- React Admin & Dashboard Template</title>
+          <title>Apex Charts | Scrollit</title>
         </MetaTags>
         <div className="container-fluid">
           <Breadcrumbs title="Charts" breadcrumbItem="Apex Charts" />

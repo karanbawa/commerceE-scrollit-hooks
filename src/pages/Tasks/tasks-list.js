@@ -33,7 +33,7 @@ const TasksList = props => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Task List | Scrollit- React Admin & Dashboard Template</title>
+          <title>Task List | Scrollit</title>
         </MetaTags>
         <Container fluid>
           <Breadcrumbs title="Tasks" breadcrumbItem="Task List" />

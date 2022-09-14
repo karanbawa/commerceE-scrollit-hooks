@@ -32,7 +32,7 @@ const LockScreen = () => {
   return (
     <React.Fragment>
       <MetaTags>
-        <title>Lock Screen | Scrollit- React Admin & Dashboard Template</title>
+        <title>Lock Screen | Scrollit</title>
       </MetaTags>
       <div className="home-btn d-none d-sm-block">
         <Link to="/" className="text-dark">

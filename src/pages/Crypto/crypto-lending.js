@@ -90,7 +90,7 @@ const CryptoLending = props => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Lending | Scrollit- React Admin & Dashboard Template</title>
+          <title>Lending | Scrollit</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumb */}

@@ -191,7 +191,7 @@ const ProjectsList = () => {
       <div className="page-content">
         <MetaTags>
           <title>
-            Projects List | Scrollit- React Admin & Dashboard Template
+            Projects List | Scrollit
           </title>
         </MetaTags>
         <Container fluid>

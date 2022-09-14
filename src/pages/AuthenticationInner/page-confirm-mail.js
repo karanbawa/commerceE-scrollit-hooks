@@ -11,7 +11,7 @@ const ConfirmMail = () => {
   return (
     <React.Fragment>
       <MetaTags>
-        <title>Confirm Mail | Scrollit- React Admin & Dashboard Template</title>
+        <title>Confirm Mail | Scrollit</title>
       </MetaTags>
       <div className="account-pages my-5 pt-sm-5">
 

@@ -10,7 +10,7 @@ const PagesStarter = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Starter Page | Scrollit- React Admin & Dashboard Template</title>
+          <title>Starter Page | Scrollit</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumbs */}

@@ -23,7 +23,7 @@ const ChartistChart = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Chartist Charts | Scrollit- React Admin & Dashboard Template</title>
+          <title>Chartist Charts | Scrollit</title>
         </MetaTags>
         <Container fluid={true}>
           <Breadcrumbs title="Charts" breadcrumbItem="Chartist Charts" />

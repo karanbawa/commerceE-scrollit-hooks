@@ -98,7 +98,7 @@ class DualListbox extends Component {
             <React.Fragment>
                 <div className="page-content">
                     <MetaTags>
-                        <title>Transfer List | Scrollit- React Admin & Dashboard Template</title>
+                        <title>Transfer List | Scrollit</title>
                     </MetaTags>
                     <div className="container-fluid">
                         <Breadcrumbs title="Forms" breadcrumbItem="Transfer List" />

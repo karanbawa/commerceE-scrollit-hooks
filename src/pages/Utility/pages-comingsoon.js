@@ -38,7 +38,7 @@ const PagesComingsoon = () => {
   return (
     <React.Fragment>
       <MetaTags>
-        <title>Coming Soon | Scrollit- React Admin & Dashboard Template</title>
+        <title>Coming Soon | Scrollit</title>
       </MetaTags>
       <div className="home-btn d-none d-sm-block">
         <Link to="/" className="text-white">

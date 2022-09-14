@@ -74,7 +74,7 @@ const EcommerceCheckout = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Checkout | Scrollit- React Admin & Dashboard Template</title>
+          <title>Checkout | Scrollit</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumb */}

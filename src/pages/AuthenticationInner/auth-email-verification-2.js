@@ -12,7 +12,7 @@ const EmailVerification2 = () => {
     <React.Fragment>
       <div>
       <MetaTags>
-          <title>Email Verification 2 | Scrollit- React Admin & Dashboard Template</title>
+          <title>Email Verification 2 | Scrollit</title>
         </MetaTags>
         <Container fluid className="p-0">
           <Row className="g-0">

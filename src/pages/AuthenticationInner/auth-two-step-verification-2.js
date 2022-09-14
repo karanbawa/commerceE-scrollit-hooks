@@ -16,7 +16,7 @@ const TwostepVerification2 = () => {
     <React.Fragment>
       <div>
       <MetaTags>
-          <title>Two Step Verification 2 | Scrollit- React Admin & Dashboard Template</title>
+          <title>Two Step Verification 2 | Scrollit</title>
         </MetaTags>
         <div className="container-fluid p-0">
           <div className="row g-0">

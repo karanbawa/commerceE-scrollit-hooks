@@ -19,7 +19,7 @@ const UiGrid = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Grid | Scrollit- React Admin & Dashboard Template</title>
+          <title>Grid | Scrollit</title>
         </MetaTags>
         <Container fluid={true}>
           <Breadcrumbs title="UI Elements" breadcrumbItem="Grid" />

@@ -211,7 +211,7 @@ const FormValidations = () => {
       <div className="page-content">
         <MetaTags>
           <title>
-            Form Validation | Scrollit- React Admin & Dashboard Template
+            Form Validation | Scrollit
           </title>
         </MetaTags>
         <Container fluid={true}>

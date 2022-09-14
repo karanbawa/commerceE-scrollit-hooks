@@ -79,7 +79,7 @@ const DragDropTables = () => {
         <React.Fragment>
             <div className="page-content">
                 <MetaTags>
-                    <title>Drag & Drop Tables | Scrollit- React Admin & Dashboard Template</title>
+                    <title>Drag & Drop Tables | Scrollit</title>
                 </MetaTags>
                 <div className="container-fluid">
                     <Breadcrumbs title="Tables" breadcrumbItem="Drag & Drop Tables" />

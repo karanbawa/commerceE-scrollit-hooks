@@ -260,7 +260,7 @@ const Calender = props => {
       />
       <div className="page-content">
         <MetaTags>
-          <title>Calendar | Scrollit- React Admin & Dashboard Template</title>
+          <title>Calendar | Scrollit</title>
         </MetaTags>
         <Container fluid={true}>
           {/* Render Breadcrumb */}
