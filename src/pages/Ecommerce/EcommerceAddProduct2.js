@@ -1,57 +1,32 @@
-import React, { Component } from "react";
-import MetaTags from "react-meta-tags";
+import React, { useEffect, useRef, useState } from "react"
+import { Link } from "react-router-dom"
 import "../../assets/scss/custom/pages/_addproductV3.scss";
-import Dropzone from "react-dropzone";
-import { connect } from "react-redux";
-import { Link, withRouter } from "react-router-dom";
+import MetaTags from 'react-meta-tags';
 import { Editor } from "react-draft-wysiwyg";
+import BootstrapTable from "react-bootstrap-table-next";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 import {
+  Button,
   Card,
   CardBody,
+  CardSubtitle,
   CardTitle,
   Col,
-  InputGroup,
   Container,
   Form,
   FormGroup,
   Input,
   Label,
-  Nav,
-  NavItem,
-  NavLink,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  Badge,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
   Row,
-  Button,
-  Modal,
-  ModalBody,
-  ModalHeader,
-} from "reactstrap";
-import Select from "react-select";
-import classNames from "classnames";
-import BootstrapTable from "react-bootstrap-table-next";
-// const columns = [
-//   {
-//     dataField: "variant",
-//     text: "Variant",
-//   },
-//   {
-//     dataField: "name",
-//     text: `Price difference (+/-) `,
-//   },
-//   {
-//     dataField: "price",
-//     text: "Product Price",
-//   },
-// ];
+  Modal
+} from "reactstrap"
+import Select from "react-select"
+import Dropzone from "react-dropzone"
+
+//Import Breadcrumb
+import Breadcrumbs from "../../components/Common/Breadcrumb"
+
 const tempData = [
   {
     variant: "Black | large",
@@ -108,249 +83,273 @@ const optionGroup2 = [
     ],
   },
 ];
-export class EcommerceAddProduct extends Component {
-  _isMounted = false;
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedFiles: [],
-      toggleSwitchLarge: false,
-      toggleSwitchLarge2: false,
-      modal_large: false,
-      showNav: false,
-      showData: this.displayData,
-      customTextList: [],
-      periodType: "color",
-      selectedMulti: null,
-      setOption: "list",
-      imgOptionModal: false,
-      selectedOptionsList: [],
-      toggleSwitchLarge3: false,
-      connect_modal: false,
-      selectedImgOptionIndex: null,
-      selectedImgOptionList: [],
-      currentOption: "",
-      tog_inventory_modal: false,
-      selectedGroup: null,
-      inventoryProducts: [],
-      productConnectedImages: [],
-      selectedItem: {},
-      seletedSubItem: {},
-      price: 0,
-      priceDiff: 0,
-      columns: [
-        {
-          dataField: "productColor",
-          text: "Variant",
-          formatter: (cellContent, row) => {
-            return (
-              <div>{`${row.productColor ? row.productColor : ""}|${
-                row.productSize
-              }`}</div>
-            );
-          },
-        },
-        {
-          dataField: "priceDiff",
-          text: `Price difference (+/-) `,
-          style: {
-            width: "20%",
-            paddingRight: "50px",
-          },
-          formatter: (cellContent, row) => {
-            return (
-              <input
-                type="text"
-                name=""
-                id=""
-                className=" price-input h4 p-3 mt-1 w-100 "
-                placeholder=""
-                value={this.state.priceDiff}
-                onChange={event => {
-                  this.setState({
-                    priceDiff: event.target.value,
-                  });
-                }}
-              />
-            );
-          },
-        },
-        {
-          dataField: "productPrice",
-          text: "Variant Price",
-        },
-        {
-          dataField: "costOfGoods",
-          text: "Cost of goods",
-          style: {
-            width: "12%",
-          },
-          formatter: () => {
-            return (
-              <input
-                type="text"
-                name=""
-                id=""
-                className="i3 h4 p-3 mt-1 w-100"
-                placeholder="0"
-              />
-            );
-          },
-        },
-        {
-          dataField: "sku",
-          text: "SKU",
-          headerAlign: "center",
-          style: {
-            width: "16%",
+const EcommerceAddProduct = () => {
+  const isMounted = useRef(false);
+  const [selectedFiles, setselectedFiles] = useState([]);
+  // const selectedFiles = useRef([]);
+  const [toggleSwitchLarge, setToggleSwitchLarge] = useState(false);
+  const [toggleSwitchLarge2, setToggleSwitchLarge2] = useState(false);
+  const [modal_large, setModal_large] = useState(false);
+  const [showNav, setShowNav] = useState(false);
+  const [customTextList, setCustomTextList] = useState([]);
+  const [periodType, setPeriodType] = useState("color");
+  const [selectedMulti, setSelectedMulti] = useState(null);
+  const [setOption, setSetOption] = useState("list");
+  const [imgOptionModal, setImgOptionModal] = useState(false);
+  const [selectedOptionsList, setSelectedOptionsList] = useState([]);
+  const [toggleSwitchLarge3, setToggleSwitchLarge3] = useState(false);
+  const [connect_modal, setConnect_modal] = useState(false);
+  const [selectedImgOptionIndex, setSelectedImgOptionIndex] = useState(null);
+  const [selectedImgOptionList, setSelectedImgOptionList] = useState([]);
+  const [currentOption, setCurrentOption] = useState("");
+  const [tog_inventory_modal, setTog_inventory_modal] = useState(false);
+  const [selectedGroup, setSelectedGroup] = useState(null);
+  const [inventoryProducts, setInventoryProducts] = useState([]);
+  const [productConnectedImages, setProductConnectedImages] = useState([]);   
+  const [selectedItem, setSelectedItem] = useState({});
+  const [seletedSubItem, setSeletedSubItem] = useState({});
+  const [price, setPrice] = useState(0);
+  const [priceDiff, setPriceDiff] = useState(0);
 
-            paddingLeft: "50px",
-          },
-          formatter: () => {
-            return (
-              <input
-                type="text"
-                name=""
-                id=""
-                className="i3 h4 p-3 mt-1 w-100"
-                placeholder="0"
-              />
-            );
-          },
-        },
-        {
-          dataField: "inStock",
-          text: "In Stock",
-          style: {
-            width: "10%",
-          },
-          formatter: () => {
-            return (
-              <select defaultValue="0" className="form-select mt-1 ">
-                <option value="inStock">In stock</option>
-                <option value="outOfStock">Out of Stock</option>
-              </select>
-            );
-          },
-        },
-        {
-          dataField: "shippingWeight",
-          text: "Shipping Weight",
-          style: {
-            width: "10%",
-          },
-          formatter: () => {
-            return (
-              <input
-                type="text"
-                name=""
-                id=""
-                className="i3 h4 p-3 mt-1 w-100"
-                placeholder="0"
-              />
-            );
-          },
-        },
-        {
-          dataField: "visiblity",
-          text: "Visiblity",
-          style: {
-            textAlign: "center",
-          },
-          formatter: () => {
-            return (
-              <h2>
-                <i className="bx bx-show b-color "></i>
-              </h2>
-            );
-          },
-        },
-      ],
-    };
-    this.tog_inventory = this.tog_inventory.bind(this);
-    this.tog_large = this.tog_large.bind(this);
-    this.tog_connect_modal = this.tog_connect_modal.bind(this);
-    this.handleMulti = this.handleMulti.bind(this);
-    this.tog_img_option_modal = this.tog_img_option_modal.bind(this);
-    this.linkFollow = this.linkFollow.bind(this);
-    this.handleSelectGroup = this.handleSelectGroup.bind(this);
+  const options = [
+    { value: "AK", label: "Alaska" },
+    { value: "HI", label: "Hawaii" },
+    { value: "CA", label: "California" },
+    { value: "NV", label: "Nevada" },
+    { value: "OR", label: "Oregon" },
+    { value: "WA", label: "Washington" }
+  ]
+
+  const columns = [
+    {
+      dataField: "productColor",
+      text: "Variant",
+      formatter: (cellContent, row) => {
+        return (
+          <div>{`${row.productColor ? row.productColor : ""}|${
+            row.productSize
+          }`}</div>
+        );
+      },
+    },
+    {
+      dataField: "priceDiff",
+      text: `Price difference (+/-) `,
+      style: {
+        width: "20%",
+        paddingRight: "50px",
+      },
+      formatter: (cellContent, row) => {
+        return (
+          <input
+            type="text"
+            name=""
+            id=""
+            className=" price-input h4 p-3 mt-1 w-100 "
+            placeholder=""
+            value={priceDiff}
+            onChange={event => {
+              setPriceDiff(event.target.value)
+            }}
+          />
+        );
+      },
+    },
+    {
+      dataField: "productPrice",
+      text: "Variant Price",
+    },
+    {
+      dataField: "costOfGoods",
+      text: "Cost of goods",
+      style: {
+        width: "12%",
+      },
+      formatter: () => {
+        return (
+          <input
+            type="text"
+            name=""
+            id=""
+            className="i3 h4 p-3 mt-1 w-100"
+            placeholder="0"
+          />
+        );
+      },
+    },
+    {
+      dataField: "sku",
+      text: "SKU",
+      headerAlign: "center",
+      style: {
+        width: "16%",
+
+        paddingLeft: "50px",
+      },
+      formatter: () => {
+        return (
+          <input
+            type="text"
+            name=""
+            id=""
+            className="i3 h4 p-3 mt-1 w-100"
+            placeholder="0"
+          />
+        );
+      },
+    },
+    {
+      dataField: "inStock",
+      text: "In Stock",
+      style: {
+        width: "10%",
+      },
+      formatter: () => {
+        return (
+          <select defaultValue="0" className="form-select mt-1 ">
+            <option value="inStock">In stock</option>
+            <option value="outOfStock">Out of Stock</option>
+          </select>
+        );
+      },
+    },
+    {
+      dataField: "shippingWeight",
+      text: "Shipping Weight",
+      style: {
+        width: "10%",
+      },
+      formatter: () => {
+        return (
+          <input
+            type="text"
+            name=""
+            id=""
+            className="i3 h4 p-3 mt-1 w-100"
+            placeholder="0"
+          />
+        );
+      },
+    },
+    {
+      dataField: "visiblity",
+      text: "Visiblity",
+      style: {
+        textAlign: "center",
+      },
+      formatter: () => {
+        return (
+          <h2>
+            <i className="bx bx-show b-color "></i>
+          </h2>
+        );
+      },
+    },
+  ];
+
+  function handleAcceptedFiles(files) {
+    files.map(file =>
+      Object.assign(file, {
+        preview: URL.createObjectURL(file),
+        formattedSize: formatBytes(file.size)
+      })
+    )
+
+    setselectedFiles((previousState) => {
+      return [...previousState, files];
+    })
+    // selectedFiles.current = [...selectedFiles.prevState, files];
   }
 
-  handleMulti = selectedMulti => {
-    this.setState({ selectedMulti });
+  function formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  }
+
+  const handleMulti = selectedMulti => {
+    setSelectedMulti(selectedMulti);
   };
-  linkFollow = (cell, row, rowIndex, formatExtraData) => {
+
+  const linkFollow = (cell, row, rowIndex, formatExtraData) => {
     return <Button>Follow</Button>;
   };
 
-  NavVisible = () => {
+  const NavVisible = () => {
     if (window.scrollY >= 80) {
-      this.setState({
-        showNav: true,
-      });
+      setShowNav(true);
     } else {
-      this.setState({
-        showNav: false,
-      });
+      setShowNav(false);
     }
   };
 
-  handleSelectGroup = selectedGroup => {
-    this.setState({ selectedGroup });
+  const handleSelectGroup = selectedGroup => {
+    setSelectedGroup(selectedGroup);
   };
 
-  componentDidMount() {
-    this._isMounted = true;
-    if (this._isMounted) {
-      window.addEventListener("scroll", this.NavVisible);
-    }
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-
-  // componentDidMount() {
-  //   window.removeEventListener("scroll", NavVisible);
-  // }
-
-  tog_large() {
-    this.setState(prevState => ({
+  const tog_large = () => {
+    setModal_large(prevState => ({
       modal_large: !prevState.modal_large,
     }));
     this.removeBodyCss();
   }
-  tog_connect_modal() {
-    this.setState(prevState => ({
+
+  const tog_connect_modal = () => {
+    setConnect_modal(prevState => ({
       connect_modal: !prevState.connect_modal,
     }));
     this.removeBodyCss();
   }
 
-  tog_img_option_modal() {
-    this.setState(prevState => ({
+  const tog_img_option_modal =() => {
+    setImgOptionModal(prevState => ({
       imgOptionModal: !prevState.imgOptionModal,
     }));
     this.removeBodyCss();
   }
-  tog_inventory() {
-    this.setState(prevState => ({
-      toggleSwitchLarge3: !prevState.toggleSwitchLarge3,
-    }));
-    this.removeBodyCss();
-  }
-  removeBodyCss() {
+
+  function removeBodyCss() {
     document.body.classList.add("no_padding");
   }
-  render() {
-    const { selectedMulti, setOption } = this.state;
+
+  
+
+  useEffect(() => {
+    isMounted.current = true;
+    if (isMounted.current ) {
+      window.addEventListener("scroll", NavVisible);
+    }
+    return () => { isMounted.current = false }
+  }, []);
+
+//   useEffect(() => {
+//     if(!props.fetched) {
+//         props.fetchRules();
+//     }
+//     console.log('mount it!');
+// }, []);
+
+  // componentDidMount() {
+  //   this._isMounted = true;
+  //   if (this._isMounted) {
+  //     window.addEventListener("scroll", this.NavVisible);
+  //   }
+  // }
+
+  // componentWillUnmount() {
+  //   this._isMounted = false;
+  // }
     const dragItem = React.createRef(null);
     const dragOverItem = React.createRef(null);
-    console.log(this.state.inventoryProducts);
+    console.log(inventoryProducts);
 
     const handleSort = () => {
-      let _selectedFiles = [...this.state.selectedFiles];
+      let _selectedFiles = [...selectedFiles.prevState];
 
       const draggedItemContent = _selectedFiles.splice(dragItem.current, 1)[0];
 
@@ -360,87 +359,53 @@ export class EcommerceAddProduct extends Component {
       dragOverItem.current = null;
 
       //update the actual array
-      this.setState({ selectedFiles: _selectedFiles });
-    };
-
-    const handleAcceptedFiles = files => {
-      files.map(file =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-          formattedSize: formatBytes(file.size),
-        })
-      );
-      this.setState(prevState => ({
-        selectedFiles: prevState.selectedFiles.concat(files),
-      }));
-    };
-
-    const formatBytes = (bytes, decimals = 2) => {
-      if (bytes === 0) return "0 Bytes";
-      const k = 1024;
-      const dm = decimals < 0 ? 0 : decimals;
-      const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+      setSelectedFiles(_selectedFiles);
+      // selectedFiles.current = _selectedFiles;
     };
 
     const remove = fileIndex => {
-      const newFiles = [...this.state.selectedFiles];
+      const newFiles = [...selectedFiles.prevState];
       newFiles.splice(fileIndex, 1);
-      this.setState({ selectedFiles: newFiles });
+      setSelectedFiles(newFiles);
+      // selectedFiles.current = newFiles;
     };
 
     const handleAddCustomTextInput = e => {
       e.preventDefault();
-      this.setState({
-        customTextList: [...this.state.customTextList, { item: "" }],
-      });
+      setCustomTextList([...customTextList, { item: "" }]);
     };
 
     const handleDeleteCustomTextInput = (e, index) => {
       e.preventDefault();
-
-      this.setState({
-        customTextList: this.state.customTextList.splice(index, 1),
-      });
+      setCustomTextList(customTextList.splice(index, 1));
     };
 
     const productOptionChange = event => {
-      this.setState({
-        setOption: event.target.value,
-        selectedMulti: null,
-      });
+      setSetOption(event.target.value);
+      setSelectedMulti(null);
     };
 
     const handleOptionsAdd = (event, selectedMulti) => {
       event.preventDefault();
       const newList = { productOption: setOption, optionList: selectedMulti };
-      // this.setState({
-      //   selectedOptionsList: [newList, ...this.state.selectedOptionsList],
-      // });
-      this.setState(
-        prevState => ({
-          selectedOptionsList: [newList, ...prevState.selectedOptionsList],
-        }),
-        manageInventory
-      );
-      this.setState({ modal_large: false });
-
-      // this.state.selectedOptionsList.push(selectedMulti);
+      setSelectedOptionsList(prevState => ({
+        selectedOptionsList: [newList, ...prevState.selectedOptionsList],
+      }),
+      manageInventory);
+      setModal_large(false);
     };
 
     const manageInventory = () => {
-      const selectedColor = this.state.selectedOptionsList.find(
+      const selectedColor = selectedOptionsList.find(
         item => item.productOption === "color"
       );
-      const selectedSize = this.state.selectedOptionsList.find(
+      const selectedSize = selectedOptionsList.find(
         item => item.productOption === "list"
       );
 
       if ((selectedColor == undefined) & (selectedSize != null)) {
         selectedSize.optionList.forEach(subItem =>
-          this.setState(prevState => ({
+          setInventoryProducts(prevState => ({
             inventoryProducts: [
               ...prevState.inventoryProducts,
               {
@@ -452,12 +417,10 @@ export class EcommerceAddProduct extends Component {
           }))
         );
       } else {
-        this.setState({
-          inventoryProducts: [],
-        });
+        setInventoryProducts([]);
         selectedColor?.optionList.forEach(item =>
           selectedSize?.optionList.forEach(subItem =>
-            this.setState(prevState => ({
+            setInventoryProducts(prevState => ({
               inventoryProducts: [
                 ...prevState.inventoryProducts,
                 {
@@ -473,64 +436,50 @@ export class EcommerceAddProduct extends Component {
     };
 
     const ManageSelectedImages = () => {
-      console.log(this.state.selectedImgOptionList);
+      console.log(selectedImgOptionList);
     };
 
     const handleDeleteOptionRow = (index, event) => {
       event.preventDefault();
 
-      const listupdt = this.state.selectedOptionsList.splice(index, 1);
-      this.setState({
-        selectedOptionsList: listupdt,
-      });
+      const listupdt = selectedOptionsList.splice(index, 1);
+      setSelectedOptionsList(listupdt);
     };
 
     const handleEditOptionRow = (index, event) => {
       event.preventDefault();
-      const selectedRow = this.state.selectedOptionsList[index];
-      this.setState({
-        selectedMulti: selectedRow.optionList,
-        setOption: selectedRow.productOption,
-      });
-
+      const selectedRow = selectedOptionsList[index];
+      setSelectedMulti(selectedRow.optionList);
+      setSetOption(selectedRow.productOption);
       this.tog_large();
     };
 
     const getOptionImgIndex = (index, item) => {
-      this.setState({
-        selectedImgOptionIndex: index,
-      });
+      setSelectedImgOptionIndex(index);
     };
 
     const addImageOption = event => {
       const selectedImage =
-        this.state.selectedFiles[this.state.selectedImgOptionIndex];
-      this.setState(
-        prevState => ({
-          selectedImgOptionList: [
-            ...this.state.selectedImgOptionList,
-            { optionName: this.state.currentOption, ...selectedImage },
-          ],
-        }),
-        ManageSelectedImages
-      );
-      this.setState({
-        imgOptionModal: false,
-      });
+        selectedFiles[selectedImgOptionIndex];
+        setSelectedImgOptionList(prevState => ([
+            prevState,
+            { optionName: currentOption, ...selectedImage },
+        ]),ManageSelectedImages);
+        setImgOptionModal(false);
     };
 
     const getRowIndex = (rowIndex, optionName) => {
-      this.setState({
-        currentOption: optionName,
-      });
+      setCurrentOption(optionName);
     };
 
-    return (
-      <div className="main-container page-content ">
+
+  return (
+    <React.Fragment>
+       <div className="main-container page-content ">
         <Modal
           size="xl"
-          isOpen={this.state.toggleSwitchLarge3}
-          toggle={this.tog_inventory_modal}
+          isOpen={toggleSwitchLarge3}
+          toggle={() => tog_inventory_modal}
           scrollable={true}
           centered={true}
           contentClassName="inventory-modal"
@@ -539,7 +488,7 @@ export class EcommerceAddProduct extends Component {
             <h2 className="modal-title mt-0">Manage Variants</h2>
             <button
               type="button"
-              onClick={() => this.setState({ toggleSwitchLarge3: false })}
+              onClick={() => setToggleSwitchLarge3(false)}
               className="close"
               data-dismiss="modal"
               aria-label="Close"
@@ -551,8 +500,8 @@ export class EcommerceAddProduct extends Component {
             <div>
               <BootstrapTable
                 keyField="id"
-                data={this.state.inventoryProducts}
-                columns={this.state.columns}
+                data={inventoryProducts}
+                columns={columns}
                 bordered={false}
                 headerClasses="table-info"
                 selectRow={{ mode: "checkbox" }}
@@ -562,14 +511,14 @@ export class EcommerceAddProduct extends Component {
         </Modal>
 
         <Modal
-          isOpen={this.state.imgOptionModal}
-          toggle={this.tog_img_option_modal}
+          isOpen={imgOptionModal}
+          toggle={() => tog_img_option_modal}
           centered={true}
           contentClassName="img-option-modal"
         >
           <div>
             <button
-              onClick={() => this.setState({ imgOptionModal: false })}
+              onClick={() => setImgOptionModal(false)}
               type="button"
               className="close mt-2  close-btn"
               data-dismiss="modal"
@@ -578,7 +527,7 @@ export class EcommerceAddProduct extends Component {
               <span aria-hidden="true">&times;</span>
             </button>
             <div className="d-flex justify-content-around m-4 mt-5 ">
-              {this.state.selectedFiles.map((item, index) => (
+              {selectedFiles.map((item, index) => (
                 <div
                   key={index}
                   className=""
@@ -600,8 +549,8 @@ export class EcommerceAddProduct extends Component {
         </Modal>
         <Modal
           size="lg"
-          isOpen={this.state.connect_modal}
-          toggle={this.tog_connect_modal}
+          isOpen={connect_modal}
+          toggle={() => tog_connect_modal}
           centered={true}
           scrollable={true}
           contentClassName="connect-modal"
@@ -611,7 +560,7 @@ export class EcommerceAddProduct extends Component {
               Connect Images to an option
             </h2>
             <button
-              onClick={() => this.setState({ connect_modal: false })}
+              onClick={() => setConnect_modal(false)}
               type="button"
               className="close mt-2  close-btn"
               data-dismiss="modal"
@@ -633,13 +582,13 @@ export class EcommerceAddProduct extends Component {
                   <th>Choices</th>
                   <th>Product Images</th>
                 </tr>
-                {this.state.selectedOptionsList.map((item, index) => (
+                {selectedOptionsList.map((item, index) => (
                   <div key={index}>
                     {item.optionList.map((subitem, index) => {
                       return (
                         <tr className="tb-row" key={index}>
                           <td>{subitem.label}</td>
-                          {this.state.selectedImgOptionList.map(
+                          {selectedImgOptionList.map(
                             (item, index) => {
                               return item.optionName == subitem.label ? (
                                 <td key={index} className="">
@@ -660,7 +609,7 @@ export class EcommerceAddProduct extends Component {
                               className="option-img-add d-flex align-items-center justify-content-center"
                               onClick={() => {
                                 getRowIndex(index, subitem.label);
-                                this.tog_img_option_modal();
+                                tog_img_option_modal();
                               }}
                             >
                               <i className="bx bx-plus h3 mt-2 "></i>
@@ -675,8 +624,8 @@ export class EcommerceAddProduct extends Component {
               </table>
             </div>
           </div>
-        </Modal>
-        {this.state.showNav == false ? (
+        </Modal> 
+        {showNav == false ? (
           <div className="one-cont">
             <div className="">
               <h4 className="main-nav">
@@ -730,7 +679,7 @@ export class EcommerceAddProduct extends Component {
           </div>
         )}
 
-        <div className="second-cont">
+         <div className="second-cont">
           <Row className="p-3 cont-2">
             <Col className="w-75 rounded">
               <Card>
@@ -739,7 +688,7 @@ export class EcommerceAddProduct extends Component {
                     <h3 className="text-dark ">Product Images</h3>
                   </CardTitle>
                   <hr />
-                  {this.state.selectedFiles.length != 0 ? (
+                  {selectedFiles.length != 0 ? (
                     <div>
                       <Row className="d-flex ">
                         <Col className="d-flex justify-content-start mx-3  col-3  ">
@@ -766,7 +715,7 @@ export class EcommerceAddProduct extends Component {
                               </button>
                             </div>
                             <img
-                              src={this.state.selectedFiles[0]?.preview}
+                              src={selectedFiles[0]?.preview}
                               alt=""
                               height={237}
                               width={237}
@@ -775,7 +724,7 @@ export class EcommerceAddProduct extends Component {
                           </div>
                         </Col>
                         <Col className="d-flex flex-wrap justify-content-start  col-6  ">
-                          {this.state.selectedFiles
+                          {selectedFiles
                             .slice(1)
                             .map((item, index) => {
                               return (
@@ -918,11 +867,9 @@ export class EcommerceAddProduct extends Component {
                     id=""
                     className="mx-4 price-input h4 p-3 mt-1"
                     placeholder="₹  85"
-                    value={this.state.price}
+                    value={price}
                     onChange={event => {
-                      this.setState({
-                        price: event.target.value,
-                      });
+                      setPrice(event.target.value);
                     }}
                   />
 
@@ -931,11 +878,7 @@ export class EcommerceAddProduct extends Component {
                       type="checkbox"
                       className="form-check-input"
                       id="customSwitchsizelg"
-                      onClick={() => {
-                        this.setState({
-                          toggleSwitchLarge: !this.state.toggleSwitchLarge,
-                        });
-                      }}
+                      onClick={() => setToggleSwitchLarge(!toggleSwitchLarge)}
                     />
                     <label
                       className="form-check-label h4 mt-1 opacity-75"
@@ -946,7 +889,7 @@ export class EcommerceAddProduct extends Component {
                   </div>
                   <div
                     className={
-                      this.state.toggleSwitchLarge ? "" : "input-display"
+                      toggleSwitchLarge ? "" : "input-display"
                     }
                   >
                     <div className="d-flex justify-content-start mx-4">
@@ -981,11 +924,7 @@ export class EcommerceAddProduct extends Component {
                       type="checkbox"
                       className="form-check-input"
                       id="customSwitchsizelg"
-                      onClick={() => {
-                        this.setState({
-                          toggleSwitchLarge2: !this.state.toggleSwitchLarge2,
-                        });
-                      }}
+                      onClick={() => setToggleSwitchLarge2(!toggleSwitchLarge2)}
                     />
                     <label
                       className="form-check-label h4 mt-1 opacity-75"
@@ -996,7 +935,7 @@ export class EcommerceAddProduct extends Component {
                   </div>
                   <div
                     className={
-                      this.state.toggleSwitchLarge2 ? " " : "unit-display"
+                      toggleSwitchLarge2 ? " " : "unit-display"
                     }
                   >
                     <div className="d-flex mt-5 justify-content-start mx-4 unit-display ">
@@ -1098,7 +1037,7 @@ export class EcommerceAddProduct extends Component {
                   </p>
                   <hr />
 
-                  {this.state.customTextList.length == 0 ? (
+                  {customTextList.length == 0 ? (
                     <div className="mt-5">
                       <button
                         onClick={e => handleAddCustomTextInput(e)}
@@ -1110,7 +1049,7 @@ export class EcommerceAddProduct extends Component {
                   ) : (
                     <div>
                       <div>
-                        {this.state.customTextList.map((singleItem, index) => (
+                        {customTextList.map((singleItem, index) => (
                           <div key={index}>
                             <Row className="d-flex justify-content-start">
                               <Col className="col-md-8 ">
@@ -1138,9 +1077,7 @@ export class EcommerceAddProduct extends Component {
                               <Col className="mt-4">
                                 <button
                                   className="btn btn-link"
-                                  onClick={e =>
-                                    handleDeleteCustomTextInput(e, index)
-                                  }
+                                  onClick={e => handleDeleteCustomTextInput(e, index)}
                                 >
                                   <i className="bx bx-trash  h3 opacity-75 text-primary "></i>
                                 </button>
@@ -1186,7 +1123,7 @@ export class EcommerceAddProduct extends Component {
                       <h3 className="text-dark mx-4 info-title mt-2 ">
                         Product Options
                       </h3>
-                      {this.state.selectedOptionsList.length != 0 ? (
+                      {selectedOptionsList.length != 0 ? (
                         <>
                           <p className="nav-text mx-4 text-dark h4">
                             Manage the options this product comes in
@@ -1197,11 +1134,11 @@ export class EcommerceAddProduct extends Component {
                       )}
                     </div>
                     <div className="mx-5">
-                      {this.state.selectedOptionsList.length != 0 && (
+                      {selectedOptionsList.length != 0 && (
                         <div className=" mt-2 opactiy-75">
                           <p
                             className="h5 text-primary"
-                            onClick={this.tog_connect_modal}
+                            onClick={ () => tog_connect_modal}
                           >
                             <i className="bx bx-images "></i>
                             <span className="mx-3">Connect Images&emsp;|</span>
@@ -1212,10 +1149,10 @@ export class EcommerceAddProduct extends Component {
                     </div>
                     <hr />
                   </CardTitle>
-                  {this.state.selectedOptionsList.length != 0 ? (
+                  {selectedOptionsList.length != 0 ? (
                     <div>
                       <hr />
-                      {this.state.selectedOptionsList.map((item, index) => (
+                      {selectedOptionsList.map((item, index) => (
                         <div key={Math.random()}>
                           <Row className="d-flex justify-content-between option-row">
                             <Col className="h4 nav-text text-dark mx-4 font-weight-bold col-md-2">
@@ -1249,17 +1186,13 @@ export class EcommerceAddProduct extends Component {
                             <Col className="d-flex hidden-btns col-md-3">
                               <button
                                 className="rounded-circle btn-icon "
-                                onClick={event =>
-                                  handleEditOptionRow(index, event)
-                                }
+                                onClick={event => handleEditOptionRow(index, event)}
                               >
                                 <i className="bx bx-pencil icon-size  "></i>
                               </button>
                               <button
                                 className="rounded-circle btn-icon mx-3"
-                                onClick={event =>
-                                  handleDeleteOptionRow(index, event)
-                                }
+                                onClick={event => handleDeleteOptionRow(index, event)}
                               >
                                 <i className="bx bx-trash icon-size "></i>
                               </button>
@@ -1275,8 +1208,8 @@ export class EcommerceAddProduct extends Component {
                           className="d-flex  "
                           onClick={event => {
                             event.preventDefault();
-                            this.setState({ selectedMulti: null });
-                            this.tog_large();
+                            setSelectedMulti(null);
+                            tog_large();
                           }}
                         >
                           <p className="text-primary mx-1 h4 mt-2">+</p>
@@ -1290,10 +1223,7 @@ export class EcommerceAddProduct extends Component {
                           className="form-check-input"
                           id="customSwitchsizelg"
                           onClick={() => {
-                            this.setState({
-                              toggleSwitchLarge3:
-                                !this.state.toggleSwitchLarge3,
-                            });
+                            setToggleSwitchLarge3(!toggleSwitchLarge3);
                           }}
                         />
                         <label
@@ -1313,7 +1243,7 @@ export class EcommerceAddProduct extends Component {
                         </p>
                         <button
                           className="  subscribe-btn btn-primary h5 mx-4 text-white mt-5 btn-rounded border border-light  "
-                          onClick={this.tog_large}
+                          onClick={() => tog_large}
                         >
                           + Add Option
                         </button>
@@ -1332,8 +1262,8 @@ export class EcommerceAddProduct extends Component {
               </Card>
               <Modal
                 size="lg"
-                isOpen={this.state.modal_large}
-                toggle={this.tog_large}
+                isOpen={modal_large}
+                toggle={() => tog_large}
                 centered={true}
                 contentClassName="add-option-modal"
               >
@@ -1342,7 +1272,7 @@ export class EcommerceAddProduct extends Component {
                     Add Product Option
                   </h2>
                   <button
-                    onClick={() => this.setState({ modal_large: false })}
+                    onClick={() => setModal_large(false)}
                     type="button"
                     className="close mt-2  close-btn"
                     data-dismiss="modal"
@@ -1359,8 +1289,8 @@ export class EcommerceAddProduct extends Component {
                       </p>
                       <div className="mx-4 b-col">
                         <Select
-                          value={this.state.selectedGroup}
-                          onChange={this.handleSelectGroup}
+                          value={selectedGroup}
+                          onChange={() => handleSelectGroup}
                           options={optionGroup3}
                           classNamePrefix="select2-selection "
                         />
@@ -1380,7 +1310,7 @@ export class EcommerceAddProduct extends Component {
                                 id="product-option1"
                                 className="card-radio-input "
                                 value="list"
-                                checked={this.state.setOption === "list"}
+                                checked={setOption === "list"}
                                 onChange={event => productOptionChange(event)}
                               />
 
@@ -1399,7 +1329,7 @@ export class EcommerceAddProduct extends Component {
                                 id="product-option3"
                                 className="card-radio-input "
                                 value="color"
-                                checked={this.state.setOption === "color"}
+                                checked={setOption === "color"}
                                 onChange={event => productOptionChange(event)}
                               />
 
@@ -1421,9 +1351,9 @@ export class EcommerceAddProduct extends Component {
                     <Select
                       value={selectedMulti}
                       isMulti={true}
-                      onChange={this.handleMulti}
+                      onChange={() => handleMulti}
                       options={
-                        this.state.setOption == "list"
+                        setOption == "list"
                           ? optionGroup
                           : optionGroup2
                       }
@@ -1438,7 +1368,7 @@ export class EcommerceAddProduct extends Component {
                   <button
                     className="mx-3 btn-lg btn btn-primary "
                     disabled={
-                      this.state.selectedOptionsList.length >= 2 ? true : false
+                      selectedOptionsList.length >= 2 ? true : false
                     }
                     onClick={event => {
                       handleOptionsAdd(event, selectedMulti);
@@ -1469,9 +1399,7 @@ export class EcommerceAddProduct extends Component {
                       className="form-check-input"
                       id="customSwitchsizelg"
                       onClick={() => {
-                        this.setState({
-                          toggleSwitchLarge: !this.state.toggleSwitchLarge,
-                        });
+                        setToggleSwitchLarge(!toggleSwitchLarge)
                       }}
                     />
                     <label
@@ -1655,21 +1583,10 @@ export class EcommerceAddProduct extends Component {
               </Card>
             </Col>
           </Row>
-        </div>
+        </div> 
       </div>
-    );
-  }
+    </React.Fragment>
+  )
 }
 
-EcommerceAddProduct.propTypes = {};
-
-const mapStateToProps = state => ({
-  products: state.ecommerce.products,
-});
-
-const mapDispatchToProps = dispatch => ({});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(EcommerceAddProduct));
+export default EcommerceAddProduct

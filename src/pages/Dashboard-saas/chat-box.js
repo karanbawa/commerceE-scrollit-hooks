@@ -50,7 +50,7 @@ const ChantBox = (props) => {
 
   const onSendMessage = () => {
     const obj = JSON.parse(localStorage.getItem("authUser"));
-    const name = obj && obj.username ? obj.username : "Admin";
+    const name = obj && obj.data.user.firstName ? obj.data.user.firstName : "Admin";
 
     var modifiedMessages = [...messages];
     const lastItem = modifiedMessages.length

@@ -36,8 +36,8 @@ const Login = props => {
     enableReinitialize: true,
 
     initialValues: {
-      email: "admin@scrollit.com" || '',
-      password: "Karanbawab1@" || '',
+      email: '',
+      password: '',
     },
     validationSchema: Yup.object({
       email: Yup.string().email("Invalid Email").required("Please Enter Your Email"),
@@ -184,20 +184,6 @@ const Login = props => {
                         {validation.touched.password && validation.errors.password ? (
                           <FormFeedback type="invalid">{validation.errors.password}</FormFeedback>
                         ) : null}
-                      </div>
-
-                      <div className="form-check">
-                        <input
-                          type="checkbox"
-                          className="form-check-input"
-                          id="customControlInline"
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor="customControlInline"
-                        >
-                          Remember me
-                        </label>
                       </div>
 
                       <div className="mt-3 d-grid">

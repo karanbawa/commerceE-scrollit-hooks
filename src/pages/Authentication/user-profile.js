@@ -53,9 +53,9 @@ const UserProfile = props => {
         process.env.REACT_APP_DEFAULTAUTH === "fake" ||
         process.env.REACT_APP_DEFAULTAUTH === "jwt"
       ) {
-        setname(obj.username);
-        setemail(obj.email);
-        setidx(obj.uid);
+        setname(obj.data.user.firstName);
+        setemail(obj.data.user.email);
+        setidx(obj.data.user._id);
       }
       setTimeout(() => {
         dispatch(resetProfileFlag());

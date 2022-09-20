@@ -88,7 +88,7 @@ const postJwtRegister = (url, data) => {
 };
 
 // Login Method
-const postJwtLogin = data => post(url.POST_FAKE_JWT_LOGIN, data);
+const postJwtLogin = data => post(url.POST_SIGNIN_JWT_LOGIN, data);
 
 // postForgetPwd
 const postJwtForgetPwd = data => post(url.POST_FAKE_JWT_PASSWORD_FORGET, data);
