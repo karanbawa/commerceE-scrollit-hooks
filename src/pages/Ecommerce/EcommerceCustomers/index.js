@@ -429,7 +429,7 @@ const EcommerceCustomers = props => {
                                   />
                                 </div>
                                 <Modal isOpen={modal} toggle={toggle}>
-                                  <ModalHeader toggle={toggle} tag="h4">
+                                  <ModalHeader toggle={toggle} tag="h4"> 
                                     {!!isEdit
                                       ? "Edit Customer"
                                       : "Add Customer"}

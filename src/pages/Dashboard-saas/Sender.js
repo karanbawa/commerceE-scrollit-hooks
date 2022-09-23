@@ -10,7 +10,7 @@ import {
 
 const Sender = ({ message }) => {
   const obj = JSON.parse(localStorage.getItem("authUser"))
-  const name = obj && obj.username ? obj.username : message["name"]
+  const name = obj && obj.data.user.firstName ? obj.data.user.firstName : message["name"]
 
   return (
     <li className="right">

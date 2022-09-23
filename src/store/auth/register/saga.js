@@ -24,8 +24,8 @@ function* registerUser({ payload: { user } }) {
         user.password
       )
       yield put(registerUserSuccessful(response))
-    } else if (process.env.REACT_APP_DEFAULTAUTH === "jwt") {
-      const response = yield call(postJwtRegister, "/post-jwt-register", user)
+    } else if (process.env.REACT_APP_DEFAULTAUTH === "jwt") { 
+      const response = yield call(postJwtRegister, url, user)
       yield put(registerUserSuccessful(response))
     } else if (process.env.REACT_APP_DEFAULTAUTH === "fake") {
       const response = yield call(postFakeRegister, user)
