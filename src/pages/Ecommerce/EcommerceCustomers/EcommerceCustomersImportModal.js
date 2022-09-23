@@ -43,10 +43,10 @@ const EcommerceCustomersImportModal = props => {
       setError(true)
       return
     } else {
-      setError(false)
+      error ? setError(false) : null
       setFileName(inpFile.name)
       const data = await inpFile.arrayBuffer()
-      const wb = XLSX.read(data, {dateNF:'yyyy-mm-dd'})
+      const wb = XLSX.read(data, { dateNF: "yyyy-mm-dd" })
       const sheet = wb.Sheets[wb.SheetNames[0]]
       dataHandler(XLSX.utils.sheet_to_json(sheet), customers)
     }
@@ -84,6 +84,8 @@ const EcommerceCustomersImportModal = props => {
         customerInfo: res,
       })
     )
+    toggle()
+    setPreview(false)
   }
 
   const EcommerceCustomerImportColumns = [
@@ -163,7 +165,7 @@ const EcommerceCustomersImportModal = props => {
                   This action is not revertable. All new entries will be
                   imported.
                 </Alert>
-                <div className="btn-group">
+                <div className="w-100">
                   <Button
                     color="secondary"
                     type="button"
@@ -171,7 +173,7 @@ const EcommerceCustomersImportModal = props => {
                     onClick={() => {
                       !dataSelector ? setDataSelector(!dataSelector) : null
                     }}
-                    className="btn-sm"
+                    className="btn-sm w-50"
                   >
                     All Data {uploadData.length} Items
                   </Button>
@@ -182,7 +184,7 @@ const EcommerceCustomersImportModal = props => {
                     onClick={() => {
                       dataSelector ? setDataSelector(!dataSelector) : null
                     }}
-                    className="btn-sm"
+                    className="btn-sm w-50"
                   >
                     New Entries {filteredData.length} Items
                   </Button>
@@ -243,19 +245,18 @@ const EcommerceCustomersImportModal = props => {
                 color="success"
                 onClick={() => {
                   HandleImportSubmitClick()
-                  toggle()
                 }}
               >
                 Import
               </Button>
               <Button
                 type="button"
-                color="primary"
+                color="secondary"
                 onClick={() => {
                   setPreview(false)
                 }}
               >
-                Upload different file
+                Choose different file
               </Button>
             </>
           ) : null}
@@ -273,7 +274,7 @@ EcommerceCustomersImportModal.propTypes = {
   toggle: PropTypes.func,
   isOpen: PropTypes.bool,
   customers: PropTypes.array,
-  dataFields: PropTypes.array,
+  importCustomers: PropTypes.func,
 }
 
 export default EcommerceCustomersImportModal

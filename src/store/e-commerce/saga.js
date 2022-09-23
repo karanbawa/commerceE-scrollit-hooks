@@ -24,6 +24,7 @@ import {
   DELETE_PRODUCT_IN_LIST,
   ADD_NEW_PRODUCT_IN_LIST,
   IMPORT_CUSTOMERS,
+  DELETE_ALL_CUSTOMERS,
 } from "./actionTypes"
 import {
   getCartDataFail,
@@ -68,6 +69,11 @@ import {
   deleteProductInListFail,
   addProductInListSuccess,
   addProductInListFail,
+  importCustomerSuccess,
+  importCustomerFail,
+  deleteAllCustomers,
+  deleteAllCustomersSuccess,
+  deleteAllCustomersFail,
 } from "./actions"
 
 //Include Both Helper File with needed methods
@@ -96,7 +102,8 @@ import {
   addNewCustomer,
   updateCustomer,
   deleteCustomer,
-  importCustomers
+  importCustomers,
+  deleteEveryCustomer,
 } from "helpers/backend_helper"
 
 function* fetchProducts() {
@@ -117,8 +124,8 @@ function* fetchProductDetail({ productId }) {
   }
 }
 
-function* fetchProductList(){
-  try{
+function* fetchProductList() {
+  try {
     const response = yield call(getProductList)
     yield put(getProductListSuccess(response.data.products))
   } catch (error) {
@@ -201,12 +208,21 @@ function* onDeleteCustomer({ payload: customer }) {
   }
 }
 
+function* onDeleteAllCustomers() {
+  try {
+    const response = yield call(deleteEveryCustomer)
+    yield put(deleteAllCustomersSuccess())
+  } catch (error) {
+    yield put(deleteAllCustomersFail(error))
+  }
+}
+
 function* onImportCustomers({ payload: customers }) {
   try {
     const response = yield call(importCustomers, customers)
-    yield put(deleteCustomerSuccess(customers))
+    yield put(importCustomerSuccess(customers))
   } catch (error) {
-    yield put(deleteCustomerFail(error))
+    yield put(importCustomerFail(error))
   }
 }
 
@@ -318,6 +334,7 @@ function* ecommerceSaga() {
   yield takeEvery(ADD_NEW_CUSTOMER, onAddNewCustomer)
   yield takeEvery(UPDATE_CUSTOMER, onUpdateCustomer)
   yield takeEvery(DELETE_CUSTOMER, onDeleteCustomer)
+  yield takeEvery(DELETE_ALL_CUSTOMERS, onDeleteAllCustomers)
   yield takeEvery(IMPORT_CUSTOMERS, onImportCustomers)
   yield takeEvery(GET_SHOPS, fetchShops)
   yield takeEvery(ADD_NEW_ORDER, onAddNewOrder)

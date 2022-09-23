@@ -43,6 +43,7 @@ import {
   addNewCustomer as onAddNewCustomer,
   updateCustomer as onUpdateCustomer,
   deleteCustomer as onDeleteCustomer,
+  deleteAllCustomers,
 } from "store/e-commerce/actions"
 
 //redux
@@ -253,6 +254,11 @@ const EcommerceCustomers = props => {
     }
   }
 
+  const handleDeleteAllCustomers = () => {
+    dispatch(deleteAllCustomers())
+    setDeleteModal(false)
+  }
+
   const dataFields = [
     "username",
     "email",
@@ -336,6 +342,11 @@ const EcommerceCustomers = props => {
         onDeleteClick={handleDeleteCustomer}
         onCloseClick={() => setDeleteModal(false)}
       />
+      <DeleteModal
+        show={deleteModal}
+        onDeleteClick={handleDeleteAllCustomers}
+        onCloseClick={() => setDeleteModal(false)}
+      />
       <div className="page-content">
         <MetaTags>
           <title>Customers | Scrollit</title>
@@ -404,7 +415,7 @@ const EcommerceCustomers = props => {
                                     type="button"
                                     color="danger"
                                     className="btn-rounded  mb-2 me-2"
-                                    onClick={handleCustomerClicks}
+                                    onClick={()=>{setDeleteModal(true)}}
                                   >
                                     <i className="mdi mdi-delete me-1" />
                                     Delete all customers

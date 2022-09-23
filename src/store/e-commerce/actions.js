@@ -65,6 +65,9 @@ import {
   IMPORT_CUSTOMERS,
   IMPORT_CUSTOMERS_SUCCESS,
   IMPORT_CUSTOMERS_FAIL,
+  DELETE_ALL_CUSTOMERS,
+  DELETE_ALL_CUSTOMERS_SUCCESS,
+  DELETE_ALL_CUSTOMERS_FAIL,
 } from "./actionTypes"
 
 export const getProducts = () => ({
@@ -288,17 +291,30 @@ export const deleteCustomerFail = error => ({
 })
 
 export const importCustomers = customers => ({
-  type : IMPORT_CUSTOMERS,
-  payload: customers
+  type: IMPORT_CUSTOMERS,
+  payload: customers,
 })
 
 export const importCustomerSuccess = customers => ({
   type: IMPORT_CUSTOMERS_SUCCESS,
-  payload: customers,
+  payload: customers.customerInfo,
 })
 
 export const importCustomerFail = error => ({
   type: IMPORT_CUSTOMERS_FAIL,
+  payload: error,
+})
+
+export const deleteAllCustomers = () => ({
+  type: DELETE_ALL_CUSTOMERS,
+})
+
+export const deleteAllCustomersSuccess = () => ({
+  type: DELETE_ALL_CUSTOMERS_SUCCESS,
+})
+
+export const deleteAllCustomersFail = error => ({
+  type: DELETE_ALL_CUSTOMERS_FAIL,
   payload: error,
 })
 

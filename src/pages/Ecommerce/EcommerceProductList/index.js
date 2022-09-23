@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react"
 import MetaTags from "react-meta-tags"
 import PropTypes from "prop-types"
 import { withRouter, Link } from "react-router-dom"
-import { isEmpty, update } from "lodash"
+import { isEmpty } from "lodash"
 import BootstrapTable from "react-bootstrap-table-next"
 import paginationFactory, {
   PaginationListStandalone,
@@ -11,10 +11,9 @@ import paginationFactory, {
 import * as Yup from "yup"
 import { useFormik } from "formik"
 import DeleteModal from "../../../components/Common/DeleteModal"
-
+import Breadcrumbs from "components/Common/Breadcrumb"
 import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit"
 import * as moment from "moment"
-
 import {
   Button,
   Card,
@@ -35,28 +34,28 @@ import {
 
 //redux
 import { useSelector, useDispatch } from "react-redux"
-
-//Import Breadcrumb
-import Breadcrumbs from "components/Common/Breadcrumb"
-
-import EcommerceProductModal from "./EcommerceProductModal"
-
 import {
   getProductList,
   deleteProductInList,
   updateProductInList,
 } from "store/actions"
 
-const EcommerceProductList = props => {
-  const dispatch = useDispatch()
+import EcommerceProductModal from "./EcommerceProductModal"
 
+const EcommerceProductList = props => {
   const [productList, setProductList] = useState([])
   const [product, setProduct] = useState(null)
+  const [modal, setModal] = useState(false)
+  const [modal1, setModal1] = useState(false)
+  const [isEdit, setIsEdit] = useState(false)
+  const [deleteModal, setDeleteModal] = useState(false)
 
+  const dispatch = useDispatch()
   const { products } = useSelector(state => ({
     products: state.ecommerce.productList,
   }))
 
+  //Getting product list from store
   useEffect(() => {
     if (products && !products.length) {
       dispatch(getProductList())
@@ -78,10 +77,6 @@ const EcommerceProductList = props => {
     mode: "checkbox",
   }
 
-  const [modal, setModal] = useState(false)
-  const [modal1, setModal1] = useState(false)
-  const [isEdit, setIsEdit] = useState(false)
-
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
@@ -97,6 +92,7 @@ const EcommerceProductList = props => {
       name: Yup.string().required("Please Enter Product Name"),
       createdAt: Yup.string().required("Please Enter Product Creation Date"),
       price: Yup.string().required("Product Price"),
+      // change after API is updated
       // category: Yup.string().required("Please Enter Product Category"),
     }),
     onSubmit: values => {
@@ -104,6 +100,7 @@ const EcommerceProductList = props => {
         ...product,
         name: values.name,
         price: values.price,
+        // change after API is updated
         // createdAt: values.createdAt,
         // displayProduct: values.displayProduct,
         // category : values.category
@@ -161,9 +158,12 @@ const EcommerceProductList = props => {
       sort: true,
       // eslint-disable-next-line react/display-name
       formatter: (cellContent, row) => (
-        <FormGroup switch>
-          <Input type="switch" role="switch" />
-        </FormGroup>
+        // Warning: Received `true` for a non-boolean attribute `switch`.
+        <Form>
+          <FormGroup switch>
+            <Input type="switch" />
+          </FormGroup>
+        </Form>
       ),
     },
     {
@@ -226,10 +226,6 @@ const EcommerceProductList = props => {
     }
   }
 
-  const displayProductClickHandler = aaa => {
-    console.log(aaa.target.value)
-  }
-
   const handleProductClick = arg => {
     const prod = arg
     setProduct(prod)
@@ -251,7 +247,6 @@ const EcommerceProductList = props => {
   }
 
   //delete product
-  const [deleteModal, setDeleteModal] = useState(false)
 
   const onClickDelete = product => {
     setProduct(product)
@@ -555,6 +550,13 @@ const EcommerceProductList = props => {
       </div>
     </React.Fragment>
   )
+}
+
+EcommerceProductList.propTypes = {
+  productList: PropTypes.array,
+  getProductList : PropTypes.func,
+  deleteProductInList: PropTypes.func,
+  updateProductInList: PropTypes.func,
 }
 
 export default withRouter(EcommerceProductList)

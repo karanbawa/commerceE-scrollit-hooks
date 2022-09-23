@@ -38,6 +38,8 @@ import {
   DELETE_PRODUCT_IN_LIST_SUCCESS,
   DELETE_PRODUCT_IN_LIST_FAIL,
   IMPORT_CUSTOMERS_SUCCESS,
+  DELETE_ALL_CUSTOMERS_SUCCESS,
+  DELETE_ALL_CUSTOMERS_FAIL,
 } from "./actionTypes"
 
 const INIT_STATE = {
@@ -242,7 +244,8 @@ const Ecommerce = (state = INIT_STATE, action) => {
       return {
         ...state,
         customers: state.customers.filter(
-          customer => customer.email.toString() !== action.payload.email.toString()
+          customer =>
+            customer.email.toString() !== action.payload.email.toString()
         ),
       }
 
@@ -252,11 +255,22 @@ const Ecommerce = (state = INIT_STATE, action) => {
         error: action.payload,
       }
 
+    case DELETE_ALL_CUSTOMERS_SUCCESS:
+      return {
+        ...state,
+        customers: [],
+      }
+
+    case DELETE_ALL_CUSTOMERS_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      }
+
     case IMPORT_CUSTOMERS_SUCCESS:
       return {
         ...state,
-        // change after the API
-        customers: action.payload,
+        customers: [...state.customers, ...action.payload],
       }
 
     case GET_SHOPS_SUCCESS:
