@@ -29,18 +29,28 @@ import {
   ON_LIKE_REPLY_SUCCESS,
   ON_ADD_REPLY_SUCCESS,
   ON_ADD_COMMENT_SUCCESS,
-} from "./actionTypes";
+  GET_PRODUCT_LIST_SUCCESS,
+  GET_PRODUCTS_LIST_FAIL,
+  ADD_PRODUCT_IN_LIST_SUCCESS,
+  ADD_PRODUCT_IN_LIST_FAIL,
+  UPDATE_PRODUCT_IN_LIST_SUCCESS,
+  UPDATE_PRODUCT_IN_LIST_FAIL,
+  DELETE_PRODUCT_IN_LIST_SUCCESS,
+  DELETE_PRODUCT_IN_LIST_FAIL,
+  IMPORT_CUSTOMERS_SUCCESS,
+} from "./actionTypes"
 
 const INIT_STATE = {
   products: [],
   product: {},
+  productList: [],
   orders: [],
   cartData: {},
   customers: [],
   shops: [],
   error: {},
   productComments: [],
-};
+}
 
 const Ecommerce = (state = INIT_STATE, action) => {
   switch (action.type) {
@@ -48,49 +58,103 @@ const Ecommerce = (state = INIT_STATE, action) => {
       return {
         ...state,
         products: action.payload,
-      };
+      }
 
     case GET_PRODUCTS_FAIL:
       return {
         ...state,
         error: action.payload,
-      };
+      }
 
     case GET_PRODUCT_DETAIL_SUCCESS:
       return {
         ...state,
         product: action.payload,
-      };
+      }
 
     case GET_PRODUCT_DETAIL_FAIL:
       return {
         ...state,
         error: action.payload,
-      };
+      }
+
+    case GET_PRODUCT_LIST_SUCCESS:
+      return {
+        ...state,
+        productList: action.payload,
+      }
+
+    case GET_PRODUCTS_LIST_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      }
+
+    case ADD_PRODUCT_IN_LIST_SUCCESS:
+      return {
+        ...state,
+        productList: [...state.productList, action.payload],
+      }
+
+    case ADD_PRODUCT_IN_LIST_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      }
+
+    case UPDATE_PRODUCT_IN_LIST_SUCCESS:
+      return {
+        ...state,
+        productList: state.productList.map(product =>
+          product._id === action.payload._id.toString()
+            ? { product, ...action.payload }
+            : product
+        ),
+      }
+
+    case UPDATE_PRODUCT_IN_LIST_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      }
+
+    case DELETE_PRODUCT_IN_LIST_SUCCESS:
+      return {
+        ...state,
+        productList: state.productList.filter(
+          product => product._id.toString() !== action.payload._id.toString()
+        ),
+      }
+
+    case DELETE_PRODUCT_IN_LIST_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      }
 
     case GET_ORDERS_SUCCESS:
       return {
         ...state,
         orders: action.payload,
-      };
+      }
 
     case GET_ORDERS_FAIL:
       return {
         ...state,
         error: action.payload,
-      };
+      }
 
     case ADD_ORDER_SUCCESS:
       return {
         ...state,
         orders: [...state.orders, action.payload],
-      };
+      }
 
     case ADD_ORDER_FAIL:
       return {
         ...state,
         error: action.payload,
-      };
+      }
 
     case UPDATE_ORDER_SUCCESS:
       return {
@@ -100,13 +164,13 @@ const Ecommerce = (state = INIT_STATE, action) => {
             ? { order, ...action.payload }
             : order
         ),
-      };
+      }
 
     case UPDATE_ORDER_FAIL:
       return {
         ...state,
         error: action.payload,
-      };
+      }
 
     case DELETE_ORDER_SUCCESS:
       return {
@@ -114,91 +178,98 @@ const Ecommerce = (state = INIT_STATE, action) => {
         orders: state.orders.filter(
           order => order.id.toString() !== action.payload.id.toString()
         ),
-      };
+      }
 
     case DELETE_ORDER_FAIL:
       return {
         ...state,
         error: action.payload,
-      };
+      }
 
     case GET_CART_DATA_SUCCESS:
       return {
         ...state,
         cartData: action.payload,
-      };
+      }
 
     case GET_CART_DATA_FAIL:
       return {
         ...state,
         error: action.payload,
-      };
+      }
 
     case GET_CUSTOMERS_SUCCESS:
       return {
         ...state,
         customers: action.payload,
-      };
+      }
 
     case GET_CUSTOMERS_FAIL:
       return {
         ...state,
         error: action.payload,
-      };
+      }
 
     case ADD_CUSTOMER_SUCCESS:
       return {
         ...state,
         customers: [...state.customers, action.payload],
-      };
+      }
 
     case ADD_CUSTOMER_FAIL:
       return {
         ...state,
         error: action.payload,
-      };
+      }
 
     case UPDATE_CUSTOMER_SUCCESS:
       return {
         ...state,
         customers: state.customers.map(customer =>
-          customer.id.toString() === action.payload.id.toString()
+          customer.email.toString() === action.payload.email.toString()
             ? { customer, ...action.payload }
             : customer
         ),
-      };
+      }
 
     case UPDATE_CUSTOMER_FAIL:
       return {
         ...state,
         error: action.payload,
-      };
+      }
 
     case DELETE_CUSTOMER_SUCCESS:
       return {
         ...state,
         customers: state.customers.filter(
-          customer => customer.id.toString() !== action.payload.id.toString()
+          customer => customer.email.toString() !== action.payload.email.toString()
         ),
-      };
+      }
 
     case DELETE_CUSTOMER_FAIL:
       return {
         ...state,
         error: action.payload,
-      };
+      }
+
+    case IMPORT_CUSTOMERS_SUCCESS:
+      return {
+        ...state,
+        // change after the API
+        customers: action.payload,
+      }
 
     case GET_SHOPS_SUCCESS:
       return {
         ...state,
         shops: action.payload,
-      };
+      }
 
     case GET_SHOPS_FAIL:
       return {
         ...state,
         error: action.payload,
-      };
+      }
 
     case GET_PRODUCT_COMMENTS_SUCCESS:
     case ON_LIKE_COMMENT_SUCCESS:
@@ -208,17 +279,17 @@ const Ecommerce = (state = INIT_STATE, action) => {
       return {
         ...state,
         productComments: action.payload,
-      };
+      }
 
     case GET_PRODUCT_COMMENTS_FAIL:
       return {
         ...state,
         error: action.payload,
-      };
+      }
 
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default Ecommerce;
+export default Ecommerce

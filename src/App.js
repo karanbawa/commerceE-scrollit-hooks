@@ -24,7 +24,7 @@ import "./assets/scss/theme.scss"
 import fakeBackend from "./helpers/AuthType/fakeBackend"
 
 // Activating fake backend
-fakeBackend()
+// fakeBackend()
 
 // const firebaseConfig = {
 //   apiKey: process.env.                      ,

@@ -47,10 +47,24 @@ import {
   ON_ADD_REPLY,
   ON_ADD_REPLY_SUCCESS,
   ON_ADD_REPLY_FAIL,
-
   ON_ADD_COMMENT,
   ON_ADD_COMMENT_SUCCESS,
-  ON_ADD_COMMENT_FAIL
+  ON_ADD_COMMENT_FAIL,
+  GET_PRODUCT_LIST,
+  ADD_NEW_PRODUCT_IN_LIST,
+  ADD_PRODUCT_IN_LIST_SUCCESS,
+  ADD_PRODUCT_IN_LIST_FAIL,
+  UPDATE_PRODUCT_IN_LIST,
+  UPDATE_PRODUCT_IN_LIST_SUCCESS,
+  UPDATE_PRODUCT_IN_LIST_FAIL,
+  DELETE_PRODUCT_IN_LIST,
+  DELETE_PRODUCT_IN_LIST_SUCCESS,
+  DELETE_PRODUCT_IN_LIST_FAIL,
+  GET_PRODUCT_LIST_SUCCESS,
+  GET_PRODUCTS_LIST_FAIL,
+  IMPORT_CUSTOMERS,
+  IMPORT_CUSTOMERS_SUCCESS,
+  IMPORT_CUSTOMERS_FAIL,
 } from "./actionTypes"
 
 export const getProducts = () => ({
@@ -64,6 +78,65 @@ export const getProductsSuccess = products => ({
 
 export const getProductsFail = error => ({
   type: GET_PRODUCTS_FAIL,
+  payload: error,
+})
+
+export const getProductList = () => ({
+  type: GET_PRODUCT_LIST,
+})
+
+export const getProductListSuccess = productList => ({
+  type: GET_PRODUCT_LIST_SUCCESS,
+  payload: productList,
+})
+
+export const getProductListFail = error => ({
+  type: GET_PRODUCTS_LIST_FAIL,
+  payload: error,
+})
+
+export const addNewProductInList = product => ({
+  type: ADD_NEW_PRODUCT_IN_LIST,
+  payload: product,
+})
+
+export const addProductInListSuccess = product => ({
+  type: ADD_PRODUCT_IN_LIST_SUCCESS,
+  payload: product,
+})
+
+export const addProductInListFail = error => ({
+  type: ADD_PRODUCT_IN_LIST_FAIL,
+  payload: error,
+})
+
+export const updateProductInList = product => ({
+  type: UPDATE_PRODUCT_IN_LIST,
+  payload: product,
+})
+
+export const updateProductInListSuccess = product => ({
+  type: UPDATE_PRODUCT_IN_LIST_SUCCESS,
+  payload: product,
+})
+
+export const updateProductInListFail = error => ({
+  type: UPDATE_PRODUCT_IN_LIST_FAIL,
+  payload: error,
+})
+
+export const deleteProductInList = product => ({
+  type: DELETE_PRODUCT_IN_LIST,
+  payload: product,
+})
+
+export const deleteProductInListSuccess = product => ({
+  type: DELETE_PRODUCT_IN_LIST_SUCCESS,
+  payload: product,
+})
+
+export const deleteProductInListFail = error => ({
+  type: DELETE_PRODUCT_IN_LIST_FAIL,
   payload: error,
 })
 
@@ -211,6 +284,21 @@ export const deleteCustomerSuccess = customer => ({
 
 export const deleteCustomerFail = error => ({
   type: DELETE_CUSTOMER_FAIL,
+  payload: error,
+})
+
+export const importCustomers = customers => ({
+  type : IMPORT_CUSTOMERS,
+  payload: customers
+})
+
+export const importCustomerSuccess = customers => ({
+  type: IMPORT_CUSTOMERS_SUCCESS,
+  payload: customers,
+})
+
+export const importCustomerFail = error => ({
+  type: IMPORT_CUSTOMERS_FAIL,
   payload: error,
 })
 
