@@ -11,10 +11,9 @@ import paginationFactory, {
 import * as Yup from "yup"
 import { useFormik } from "formik"
 import DeleteModal from "../../../components/Common/DeleteModal"
-
+import Breadcrumbs from "components/Common/Breadcrumb"
 import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit"
 import * as moment from "moment"
-
 import {
   Button,
   Card,
@@ -22,7 +21,6 @@ import {
   Col,
   Container,
   Row,
-  Badge,
   UncontrolledTooltip,
   Modal,
   ModalHeader,
@@ -30,103 +28,93 @@ import {
   Form,
   Input,
   FormFeedback,
+  FormGroup,
   Label,
 } from "reactstrap"
 
 //redux
 import { useSelector, useDispatch } from "react-redux"
-
-//Import Breadcrumb
-import Breadcrumbs from "components/Common/Breadcrumb"
-
 import {
-  getOrders as onGetOrders,
-  addNewOrder as onAddNewOrder,
-  updateOrder as onUpdateOrder,
-  deleteOrder as onDeleteOrder,
+  getProductList,
+  deleteProductInList,
+  updateProductInList,
 } from "store/actions"
 
-import EcommerceOrdersModal from "./EcommerceOrdersModal"
+import EcommerceProductModal from "./EcommerceProductModal"
 
-const EcommerceOrders = props => {
+const EcommerceProductList = props => {
+  const [productList, setProductList] = useState([])
+  const [product, setProduct] = useState(null)
+  const [modal, setModal] = useState(false)
+  const [modal1, setModal1] = useState(false)
+  const [isEdit, setIsEdit] = useState(false)
+  const [deleteModal, setDeleteModal] = useState(false)
+
   const dispatch = useDispatch()
-
-  const [orderList, setOrderList] = useState([])
-  const [order, setOrder] = useState(null)
-
-  // validation
-  const validation = useFormik({
-    // enableReinitialize : use this flag when initial values needs to be changed
-    enableReinitialize: true,
-
-    initialValues: {
-      orderId: (order && order.orderId) || "",
-      billingName: (order && order.billingName) || "",
-      orderdate: (order && order.orderdate) || "",
-      total: (order && order.total) || "",
-      paymentStatus: (order && order.paymentStatus) || "Paid",
-      badgeclass: (order && order.badgeclass) || "success",
-      paymentMethod: (order && order.paymentMethod) || "Mastercard",
-    },
-    validationSchema: Yup.object({
-      orderId: Yup.string().required("Please Enter Your Order Id"),
-      billingName: Yup.string().required("Please Enter Your Billing Name"),
-      orderdate: Yup.string().required("Please Enter Your Order Date"),
-      total: Yup.string().required("Total Amount"),
-      paymentStatus: Yup.string().required("Please Enter Your Payment Status"),
-      badgeclass: Yup.string().required("Please Enter Your Badge Class"),
-      paymentMethod: Yup.string().required("Please Enter Your Payment Method"),
-    }),
-    onSubmit: values => {
-      if (isEdit) {
-        const updateOrder = {
-          id: order ? order.id : 0,
-          orderId: values.orderId,
-          billingName: values.billingName,
-          orderdate: values.orderdate,
-          total: values.total,
-          paymentStatus: values.paymentStatus,
-          paymentMethod: values.paymentMethod,
-          badgeclass: values.badgeclass,
-        }
-        // update order
-        dispatch(onUpdateOrder(updateOrder))
-        validation.resetForm()
-      } else {
-        const newOrder = {
-          id: Math.floor(Math.random() * (30 - 20)) + 20,
-          orderId: values["orderId"],
-          billingName: values["billingName"],
-          orderdate: values["orderdate"],
-          total: values["total"],
-          paymentStatus: values["paymentStatus"],
-          paymentMethod: values["paymentMethod"],
-          badgeclass: values["badgeclass"],
-        }
-        // save new order
-        dispatch(onAddNewOrder(newOrder))
-        validation.resetForm()
-      }
-      toggle()
-    },
-  })
-
-  const { orders } = useSelector(state => ({
-    orders: state.ecommerce.orders
+  const { products } = useSelector(state => ({
+    products: state.ecommerce.productList,
   }))
+
+  //Getting product list from store
+  useEffect(() => {
+    if (products && !products.length) {
+      dispatch(getProductList())
+    }
+  }, [dispatch, products])
+
+  useEffect(() => {
+    setProductList(products)
+  }, [products])
+
+  useEffect(() => {
+    if (!isEmpty(products) && !!isEdit) {
+      setProductList(products)
+      setIsEdit(false)
+    }
+  }, [products])
 
   const selectRow = {
     mode: "checkbox",
   }
 
-  const [modal, setModal] = useState(false)
-  const [modal1, setModal1] = useState(false)
-  const [isEdit, setIsEdit] = useState(false)
+  const validation = useFormik({
+    // enableReinitialize : use this flag when initial values needs to be changed
+    enableReinitialize: true,
+
+    initialValues: {
+      name: (product && product.name) || "",
+      createdAt: (product && product.createdAt) || "2020-10-11",
+      price: (product && product.price) || "",
+      category: (product && product.productCategory) || "",
+      displayProduct: (product && product.displayProduct) || true,
+    },
+    validationSchema: Yup.object({
+      name: Yup.string().required("Please Enter Product Name"),
+      createdAt: Yup.string().required("Please Enter Product Creation Date"),
+      price: Yup.string().required("Product Price"),
+      // change after API is updated
+      // category: Yup.string().required("Please Enter Product Category"),
+    }),
+    onSubmit: values => {
+      const updatedProduct = {
+        ...product,
+        name: values.name,
+        price: values.price,
+        // change after API is updated
+        // createdAt: values.createdAt,
+        // displayProduct: values.displayProduct,
+        // category : values.category
+      }
+      dispatch(updateProductInList(updatedProduct))
+      validation.resetForm()
+      toggle()
+    },
+  })
 
   //pagination customization
   const pageOptions = {
     sizePerPage: 10,
-    totalSize: orders.length, // replace later with size(orders),
+    totalSize: productList.length, // replace later with size(productList),
     custom: true,
   }
   const { SearchBar } = Search
@@ -140,67 +128,42 @@ const EcommerceOrders = props => {
     return str === "" || str === undefined ? "" : str.toLowerCase()
   }
 
-  const EcommerceOrderColumns = toggleModal => [
+  const EcommerceProductListColumns = toggleModal => [
     {
-      dataField: "orderId",
-      text: "Order ID",
-      sort: true,
-      // eslint-disable-next-line react/display-name
-      formatter: (cellContent, row) => (
-        <Link to="#" className="text-body fw-bold">
-          {row.orderId}
-        </Link>
-      ),
-    },
-    {
-      dataField: "billingName",
-      text: "Billing Name",
+      dataField: "name",
+      text: "Product Name",
       sort: true,
     },
     {
-      dataField: "orderdate",
+      dataField: "productDate",
       text: "Date",
       sort: true,
       // eslint-disable-next-line react/display-name
-      formatter: (cellContent, row) => handleValidDate(row.orderdate),
+      formatter: (cellContent, row) => handleValidDate(row.productDate),
     },
     {
-      dataField: "total",
-      text: "Total",
+      dataField: "price",
+      text: "Price",
       sort: true,
     },
     {
-      dataField: "paymentStatus",
-      text: "Payment Status",
+      dataField: "category",
+      text: "Category",
       sort: true,
-      // eslint-disable-next-line react/display-name
-      formatter: (cellContent, row) => (
-        <Badge
-          className={"font-size-12 badge-soft-" + row.badgeclass}
-          color={row.badgeClass}
-          pill
-        >
-          {row.paymentStatus}
-        </Badge>
-      ),
     },
     {
-      dataField: "paymentMethod",
+      dataField: "displayProduct",
       isDummyField: true,
-      text: "Payment Method",
+      text: "Display Product",
       sort: true,
       // eslint-disable-next-line react/display-name
       formatter: (cellContent, row) => (
-        <>
-          <i
-            className={
-              row.paymentMethod !== "COD"
-                ? "fab fa-cc-" + toLowerCase1(row.paymentMethod) + " me-1"
-                : "fab fas fa-money-bill-alt me-1"
-            }
-          />{" "}
-          {row.paymentMethod}
-        </>
+        // Warning: Received `true` for a non-boolean attribute `switch`.
+        <Form>
+          <FormGroup switch>
+            <Input type="switch" />
+          </FormGroup>
+        </Form>
       ),
     },
     {
@@ -225,13 +188,13 @@ const EcommerceOrders = props => {
       isDummyField: true,
       text: "Action",
       // eslint-disable-next-line react/display-name
-      formatter: (cellContent, order) => (
+      formatter: (cellContent, product) => (
         <>
           <div className="d-flex gap-3">
             <Link
               to="#"
               className="text-success"
-              onClick={() => handleOrderClick(order)}
+              onClick={() => handleProductClick(product)}
             >
               <i className="mdi mdi-pencil font-size-18" id="edittooltip" />
               <UncontrolledTooltip placement="top" target="edittooltip">
@@ -241,7 +204,7 @@ const EcommerceOrders = props => {
             <Link
               to="#"
               className="text-danger"
-              onClick={() => onClickDelete(order)}
+              onClick={() => onClickDelete(product)}
             >
               <i className="mdi mdi-delete font-size-18" id="deletetooltip" />
               <UncontrolledTooltip placement="top" target="deletetooltip">
@@ -254,48 +217,19 @@ const EcommerceOrders = props => {
     },
   ]
 
-  useEffect(() => {
-    if (orders && !orders.length) {
-      dispatch(onGetOrders())
-    }
-  }, [dispatch, orders])
-
-  useEffect(() => {
-    setOrderList(orders)
-  }, [orders])
-
-  useEffect(() => {
-    if (!isEmpty(orders) && !!isEdit) {
-      setOrderList(orders)
-      setIsEdit(false)
-    }
-  }, [orders])
-
   const toggle = () => {
     if (modal) {
       setModal(false)
-      setOrder(null)
+      setProduct(null)
     } else {
       setModal(true)
     }
   }
 
-  const handleOrderClick = arg => {
-    const order = arg
-
-    setOrder({
-      id: order.id,
-      orderId: order.orderId,
-      billingName: order.billingName,
-      orderdate: order.orderdate,
-      total: order.total,
-      paymentStatus: order.paymentStatus,
-      paymentMethod: order.paymentMethod,
-      badgeclass: order.badgeclass,
-    })
-
+  const handleProductClick = arg => {
+    const prod = arg
+    setProduct(prod)
     setIsEdit(true)
-
     toggle()
   }
 
@@ -312,25 +246,20 @@ const EcommerceOrders = props => {
     }
   }
 
-  //delete order
-  const [deleteModal, setDeleteModal] = useState(false)
+  //delete product
 
-  const onClickDelete = order => {
-    setOrder(order)
+  const onClickDelete = product => {
+    setProduct(product)
     setDeleteModal(true)
   }
 
   const handleDeleteOrder = () => {
-    if (order.id) {
-      dispatch(onDeleteOrder(order))
+    console.log(product)
+    if (product._id) {
+      dispatch(deleteProductInList(product))
       onPaginationPageChange(1)
       setDeleteModal(false)
     }
-  }
-  const handleOrderClicks = () => {
-    setOrderList("")
-    setIsEdit(false)
-    toggle()
   }
 
   const handleValidDate = date => {
@@ -340,14 +269,14 @@ const EcommerceOrders = props => {
 
   const defaultSorted = [
     {
-      dataField: "orderId",
+      dataField: "name",
       order: "desc",
     },
   ]
 
   return (
     <React.Fragment>
-      <EcommerceOrdersModal isOpen={modal1} toggle={toggleViewModal} />
+      <EcommerceProductModal isOpen={modal1} toggle={toggleViewModal} />
       <DeleteModal
         show={deleteModal}
         onDeleteClick={handleDeleteOrder}
@@ -355,25 +284,25 @@ const EcommerceOrders = props => {
       />
       <div className="page-content">
         <MetaTags>
-          <title>Orders | Scrollit</title>
+          <title>Product List | Scrollit</title>
         </MetaTags>
         <Container fluid>
-          <Breadcrumbs title="Ecommerce" breadcrumbItem="Orders" />
+          <Breadcrumbs title="Ecommerce" breadcrumbItem="Product List" />
           <Row>
             <Col xs="12">
               <Card>
                 <CardBody>
                   <PaginationProvider
                     pagination={paginationFactory(pageOptions)}
-                    keyField="id"
-                    columns={EcommerceOrderColumns(toggle)}
-                    data={orders}
+                    keyField="_id"
+                    columns={EcommerceProductListColumns(toggle)}
+                    data={productList}
                   >
                     {({ paginationProps, paginationTableProps }) => (
                       <ToolkitProvider
-                        keyField="id"
-                        data={orders}
-                        columns={EcommerceOrderColumns(toggle)}
+                        keyField="_id"
+                        data={productList}
+                        columns={EcommerceProductListColumns(toggle)}
                         bootstrap4
                         search
                       >
@@ -390,15 +319,16 @@ const EcommerceOrders = props => {
                               </Col>
                               <Col sm="8">
                                 <div className="text-sm-end">
-                                  <Button
-                                    type="button"
-                                    color="success"
-                                    className="btn-rounded  mb-2 me-2"
-                                    onClick={handleOrderClicks}
-                                  >
-                                    <i className="mdi mdi-plus me-1" />
-                                    Add New Order
-                                  </Button>
+                                  <Link to="/ecommerce-add-product">
+                                    <Button
+                                      type="button"
+                                      color="success"
+                                      className="btn-rounded  mb-2 me-2"
+                                    >
+                                      <i className="mdi mdi-plus me-1" />
+                                      Add New Product
+                                    </Button>
+                                  </Link>
                                 </div>
                               </Col>
                             </Row>
@@ -406,7 +336,7 @@ const EcommerceOrders = props => {
                               <Col xl="12">
                                 <div className="table-responsive">
                                   <BootstrapTable
-                                    keyField="id"
+                                    keyField="_id"
                                     responsive
                                     bordered={false}
                                     striped={false}
@@ -423,7 +353,7 @@ const EcommerceOrders = props => {
                                 </div>
                                 <Modal isOpen={modal} toggle={toggle}>
                                   <ModalHeader toggle={toggle} tag="h4">
-                                    {!!isEdit ? "Edit Order" : "Add Order"}
+                                    Edit Product
                                   </ModalHeader>
                                   <ModalBody>
                                     <Form
@@ -437,36 +367,10 @@ const EcommerceOrders = props => {
                                         <Col className="col-12">
                                           <div className="mb-3">
                                             <Label className="form-label">
-                                              Order Id
+                                              Product Name
                                             </Label>
                                             <Input
-                                              name="orderId"
-                                              type="text"
-                                              onChange={validation.handleChange}
-                                              onBlur={validation.handleBlur}
-                                              value={
-                                                validation.values.orderId || ""
-                                              }
-                                              invalid={
-                                                validation.touched.orderId &&
-                                                validation.errors.orderId
-                                                  ? true
-                                                  : false
-                                              }
-                                            />
-                                            {validation.touched.orderId &&
-                                            validation.errors.orderId ? (
-                                              <FormFeedback type="invalid">
-                                                {validation.errors.orderId}
-                                              </FormFeedback>
-                                            ) : null}
-                                          </div>
-                                          <div className="mb-3">
-                                            <Label className="form-label">
-                                              Billing Name
-                                            </Label>
-                                            <Input
-                                              name="billingName"
+                                              name="name"
                                               type="text"
                                               validate={{
                                                 required: { value: true },
@@ -474,147 +378,138 @@ const EcommerceOrders = props => {
                                               onChange={validation.handleChange}
                                               onBlur={validation.handleBlur}
                                               value={
-                                                validation.values.billingName ||
-                                                ""
+                                                validation.values.name || ""
                                               }
                                               invalid={
-                                                validation.touched
-                                                  .billingName &&
-                                                validation.errors.billingName
+                                                validation.touched.name &&
+                                                validation.errors.name
                                                   ? true
                                                   : false
                                               }
                                             />
-                                            {validation.touched.billingName &&
-                                            validation.errors.billingName ? (
+                                            {validation.touched.name &&
+                                            validation.errors.name ? (
                                               <FormFeedback type="invalid">
-                                                {validation.errors.billingName}
+                                                {validation.errors.name}
                                               </FormFeedback>
                                             ) : null}
                                           </div>
                                           <div className="mb-3">
                                             <Label className="form-label">
-                                              Order Date
+                                              Date of Creation
                                             </Label>
                                             <Input
-                                              name="orderdate"
+                                              name="createdAt"
                                               type="date"
                                               // value={orderList.orderdate || ""}
                                               onChange={validation.handleChange}
                                               onBlur={validation.handleBlur}
                                               value={
-                                                validation.values.orderdate ||
+                                                validation.values.createdAt ||
                                                 ""
                                               }
                                               invalid={
-                                                validation.touched.orderdate &&
-                                                validation.errors.orderdate
+                                                validation.touched.createdAt &&
+                                                validation.errors.createdAt
                                                   ? true
                                                   : false
                                               }
                                             />
-                                            {validation.touched.orderdate &&
-                                            validation.errors.orderdate ? (
+                                            {validation.touched.createdAt &&
+                                            validation.errors.createdAt ? (
                                               <FormFeedback type="invalid">
-                                                {validation.errors.orderdate}
+                                                {validation.errors.createdAt}
                                               </FormFeedback>
                                             ) : null}
                                           </div>
                                           <div className="mb-3">
                                             <Label className="form-label">
-                                              Total
+                                              Price
                                             </Label>
                                             <Input
-                                              name="total"
+                                              name="price"
                                               type="text"
                                               onChange={validation.handleChange}
                                               onBlur={validation.handleBlur}
                                               value={
-                                                validation.values.total || ""
+                                                validation.values.price || ""
                                               }
                                               invalid={
-                                                validation.touched.total &&
-                                                validation.errors.total
+                                                validation.touched.price &&
+                                                validation.errors.price
                                                   ? true
                                                   : false
                                               }
                                             />
-                                            {validation.touched.total &&
-                                            validation.errors.total ? (
+                                            {validation.touched.price &&
+                                            validation.errors.price ? (
                                               <FormFeedback type="invalid">
-                                                {validation.errors.total}
+                                                {validation.errors.price}
                                               </FormFeedback>
                                             ) : null}
                                           </div>
                                           <div className="mb-3">
                                             <Label className="form-label">
-                                              Total
+                                              Category
                                             </Label>
                                             <Input
-                                              name="paymentStatus"
-                                              type="select"
-                                              className="form-select"
+                                              name="category"
+                                              type="text"
                                               onChange={validation.handleChange}
                                               onBlur={validation.handleBlur}
                                               value={
-                                                validation.values
-                                                  .paymentStatus || ""
+                                                validation.values.category || ""
                                               }
-                                            >
-                                              <option>Paid</option>
-                                              <option>Chargeback</option>
-                                              <option>Refund</option>
-                                            </Input>
-                                            {validation.touched.paymentStatus &&
-                                            validation.errors.paymentStatus ? (
+                                              invalid={
+                                                validation.touched.category &&
+                                                validation.errors.category
+                                                  ? true
+                                                  : false
+                                              }
+                                            />
+                                            {validation.touched.category &&
+                                            validation.errors.category ? (
+                                              <FormFeedback type="invalid">
+                                                {validation.errors.category}
+                                              </FormFeedback>
+                                            ) : null}
+                                          </div>
+                                          <div className="mb-3">
+                                            <Label className="form-label">
+                                              Display Product
+                                            </Label>
+                                            <FormGroup switch>
+                                              <Input
+                                                name="displayProduct"
+                                                type="checkbox"
+                                                onChange={
+                                                  validation.handleChange
+                                                }
+                                                onBlur={validation.handleBlur}
+                                                // value={
+                                                //   validation.values
+                                                //     .displayProduct || ""
+                                                // }
+                                                invalid={
+                                                  validation.touched
+                                                    .displayProduct &&
+                                                  validation.errors
+                                                    .displayProduct
+                                                    ? true
+                                                    : false
+                                                }
+                                              />
+                                            </FormGroup>
+                                            {validation.touched
+                                              .displayProduct &&
+                                            validation.errors.displayProduct ? (
                                               <FormFeedback type="invalid">
                                                 {
                                                   validation.errors
-                                                    .paymentStatus
+                                                    .displayProduct
                                                 }
                                               </FormFeedback>
                                             ) : null}
-                                          </div>
-                                          <div className="mb-3">
-                                            <Label className="form-label">
-                                              Badge Class
-                                            </Label>
-                                            <Input
-                                              name="badgeclass"
-                                              type="select"
-                                              className="form-select"
-                                              onChange={validation.handleChange}
-                                              onBlur={validation.handleBlur}
-                                              value={
-                                                validation.values.badgeclass ||
-                                                ""
-                                              }
-                                            >
-                                              <option>success</option>
-                                              <option>danger</option>
-                                              <option>warning</option>
-                                            </Input>
-                                          </div>
-                                          <div className="mb-3">
-                                            <Label className="form-label">
-                                              Payment Method
-                                            </Label>
-                                            <Input
-                                              name="paymentMethod"
-                                              type="select"
-                                              className="form-select"
-                                              onChange={validation.handleChange}
-                                              onBlur={validation.handleBlur}
-                                              value={
-                                                validation.values
-                                                  .paymentMethod || ""
-                                              }
-                                            >
-                                              <option>Mastercard</option>
-                                              <option>Visa</option>
-                                              <option>Paypal</option>
-                                              <option>COD</option>
-                                            </Input>
                                           </div>
                                         </Col>
                                       </Row>
@@ -657,12 +552,11 @@ const EcommerceOrders = props => {
   )
 }
 
-EcommerceOrders.propTypes = {
-  orders: PropTypes.array,
-  onGetOrders: PropTypes.func,
-  onAddNewOrder: PropTypes.func,
-  onDeleteOrder: PropTypes.func,
-  onUpdateOrder: PropTypes.func,
+EcommerceProductList.propTypes = {
+  productList: PropTypes.array,
+  getProductList : PropTypes.func,
+  deleteProductInList: PropTypes.func,
+  updateProductInList: PropTypes.func,
 }
 
-export default withRouter(EcommerceOrders)
+export default withRouter(EcommerceProductList)

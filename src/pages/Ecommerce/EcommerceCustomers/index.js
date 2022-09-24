@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
-import MetaTags from "react-meta-tags";
-import PropTypes from "prop-types";
-import { isEmpty } from "lodash";
-import * as moment from "moment";
-import * as Yup from "yup";
-import { useFormik } from "formik";
+import React, { useEffect, useState, useRef } from "react"
+import MetaTags from "react-meta-tags"
+import PropTypes from "prop-types"
+import { isEmpty } from "lodash"
+import * as moment from "moment"
+import * as Yup from "yup"
+import { useFormik } from "formik"
 import {
   Button,
   Card,
@@ -24,40 +24,45 @@ import {
   FormFeedback,
   Label,
   Form,
-} from "reactstrap";
+} from "reactstrap"
+import * as XLSX from "xlsx"
 
-import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
-import BootstrapTable from "react-bootstrap-table-next";
+import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit"
+import BootstrapTable from "react-bootstrap-table-next"
 import paginationFactory, {
   PaginationListStandalone,
   PaginationProvider,
-} from "react-bootstrap-table2-paginator";
+} from "react-bootstrap-table2-paginator"
 
 //Import Breadcrumb
-import Breadcrumbs from "components/Common/Breadcrumb";
+import Breadcrumbs from "components/Common/Breadcrumb"
 
-import DeleteModal from "../../../components/Common/DeleteModal";
+import DeleteModal from "../../../components/Common/DeleteModal"
 import {
   getCustomers as onGetCustomers,
   addNewCustomer as onAddNewCustomer,
   updateCustomer as onUpdateCustomer,
   deleteCustomer as onDeleteCustomer,
-} from "store/e-commerce/actions";
+  deleteAllCustomers,
+} from "store/e-commerce/actions"
 
 //redux
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux"
+import EcommerceCustomersImportModal from "./EcommerceCustomersImportModal"
 
 const EcommerceCustomers = props => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
   const { customers } = useSelector(state => ({
     customers: state.ecommerce.customers,
-  }));
+  }))
 
-  const [modal, setModal] = useState(false);
-  const [customerList, setCustomerList] = useState([]);
-  const [isEdit, setIsEdit] = useState(false);
-  const [customer, setCustomer] = useState(null);
+  const [modal, setModal] = useState(false)
+  const [customerList, setCustomerList] = useState([])
+  const [isEdit, setIsEdit] = useState(false)
+  const [customer, setCustomer] = useState(null)
+  const [modal1, setModal1] = useState(false)
+  const toggleViewModal = () => setModal1(!modal1)
 
   // validation
   const validation = useFormik({
@@ -65,13 +70,13 @@ const EcommerceCustomers = props => {
     enableReinitialize: true,
 
     initialValues: {
-      username: (customer && customer.username) || '',
-      phone: (customer && customer.phone) || '',
-      email: (customer && customer.email) || '',
-      address: (customer && customer.address) || '',
-      rating: (customer && customer.rating) || '',
-      walletBalance: (customer && customer.walletBalance) || '',
-      joiningDate: (customer && customer.joiningDate) || '',
+      username: (customer && customer.username) || "",
+      phone: (customer && customer.phone) || "",
+      email: (customer && customer.email) || "",
+      address: (customer && customer.address) || "",
+      rating: (customer && customer.rating) || "",
+      walletBalance: (customer && customer.walletBalance) || "",
+      joiningDate: (customer && customer.joiningDate) || "",
     },
     validationSchema: Yup.object({
       username: Yup.string().required("Please Enter Your Name"),
@@ -82,10 +87,10 @@ const EcommerceCustomers = props => {
       walletBalance: Yup.string().required("Please Enter Your Wallet Balance"),
       joiningDate: Yup.string().required("Please Enter Your Joining Date"),
     }),
-    onSubmit: (values) => {
+    onSubmit: values => {
       if (isEdit) {
         const updateCustomer = {
-          id: customer ? customer.id : 0,
+          ...customer,
           username: values.username,
           phone: values.phone,
           email: values.email,
@@ -93,13 +98,12 @@ const EcommerceCustomers = props => {
           rating: values.rating,
           walletBalance: values.walletBalance,
           joiningDate: values.joiningDate,
-        };
+        }
         // update customer
-        dispatch(onUpdateCustomer(updateCustomer));
-        validation.resetForm();
+        dispatch(onUpdateCustomer(updateCustomer))
+        validation.resetForm()
       } else {
         const newCustomer = {
-          id: Math.floor(Math.random() * (30 - 20)) + 20,
           username: values["username"],
           phone: values["phone"],
           email: values["email"],
@@ -107,30 +111,30 @@ const EcommerceCustomers = props => {
           rating: values["rating"],
           walletBalance: values["walletBalance"],
           joiningDate: values["joiningDate"],
-        };
+        }
         // save new customer
-        dispatch(onAddNewCustomer(newCustomer));
-        validation.resetForm();
+        dispatch(onAddNewCustomer(newCustomer))
+        validation.resetForm()
       }
-      toggle();
+      toggle()
     },
-  });
+  })
 
   //pagination customization
   const pageOptions = {
     sizePerPage: 10,
     totalSize: customers.length, // replace later with size(orders),
     custom: true,
-  };
+  }
 
   const EcommerceCustomerColumns = [
     {
-      text: "id",
-      dataField: "id",
+      text: "_id",
+      dataField: "_id",
       sort: true,
       hidden: true,
       // eslint-disable-next-line react/display-name
-      formatter: (cellContent, row) => <>{row.id}</>,
+      formatter: (cellContent, row) => <>{row._id}</>,
     },
     {
       dataField: "username",
@@ -196,10 +200,7 @@ const EcommerceCustomers = props => {
               <i className="fas fa-pencil-alt text-success me-1" />
               Edit
             </DropdownItem>
-            <DropdownItem
-              href="#"
-              onClick={() => onClickDelete(customer)}
-            >
+            <DropdownItem href="#" onClick={() => onClickDelete(customer)}>
               <i className="fas fa-trash-alt text-danger me-1" />
               Delete
             </DropdownItem>
@@ -207,37 +208,24 @@ const EcommerceCustomers = props => {
         </UncontrolledDropdown>
       ),
     },
-  ];
+  ]
 
   const toggle = () => {
     if (modal) {
-      setModal(false);
-      setCustomer(null);
+      setModal(false)
+      setCustomer(null)
     } else {
-      setModal(true);
+      setModal(true)
     }
-  };
-
+  }
 
   const handleCustomerClick = arg => {
-    const customer = arg;
+    setCustomer(arg)
+    setIsEdit(true)
+    toggle()
+  }
 
-    setCustomer({
-      id: customer.id,
-      username: customer.username,
-      phone: customer.phone,
-      email: customer.email,
-      address: customer.address,
-      rating: customer.rating,
-      walletBalance: customer.walletBalance,
-      joiningDate: customer.joiningDate,
-    });
-
-    setIsEdit(true);
-    toggle();
-  };
-
-  var node = useRef();
+  var node = useRef()
   const onPaginationPageChange = page => {
     if (
       node &&
@@ -246,43 +234,70 @@ const EcommerceCustomers = props => {
       node.current.props.pagination &&
       node.current.props.pagination.options
     ) {
-      node.current.props.pagination.options.onPageChange(page);
+      node.current.props.pagination.options.onPageChange(page)
     }
-  };
+  }
 
   //delete customer
-  const [deleteModal, setDeleteModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false)
 
-  const onClickDelete = (customer) => {
-    setCustomer(customer);
-    setDeleteModal(true);
-  };
+  const onClickDelete = customer => {
+    setCustomer(customer)
+    setDeleteModal(true)
+  }
 
   const handleDeleteCustomer = () => {
-    if (customer.id) {
-      dispatch(onDeleteCustomer(customer));
-      onPaginationPageChange(1);
-      setDeleteModal(false);
+    if (customer.email) {
+      dispatch(onDeleteCustomer(customer))
+      onPaginationPageChange(1)
+      setDeleteModal(false)
     }
-  };
+  }
 
-  const { SearchBar } = Search;
+  const handleDeleteAllCustomers = () => {
+    dispatch(deleteAllCustomers())
+    setDeleteModal(false)
+  }
+
+  const dataFields = [
+    "username",
+    "email",
+    "phone",
+    "address",
+    "rating",
+    "walletBalance",
+    "joiningDate",
+  ]
+
+  const handleExportCustomers = () => {
+    const filteredData = customerList.map(obj =>
+      Object.fromEntries(
+        Object.entries(obj).filter(r => dataFields.indexOf(r[0]) > -1)
+      )
+    )
+    const book = XLSX.utils.book_new()
+    const ws = XLSX.utils.json_to_sheet(filteredData)
+    XLSX.utils.book_append_sheet(book, ws, "Customers")
+    XLSX.writeFile(book, "Customers.xlsx")
+  }
+
+  const { SearchBar } = Search
 
   useEffect(() => {
     if (customers && !customers.length) {
-      dispatch(onGetCustomers());
+      dispatch(onGetCustomers())
     }
-  }, [dispatch, customers]);
+  }, [dispatch, customers])
 
   useEffect(() => {
-    setCustomerList(customers);
-  }, [customers]);
+    setCustomerList(customers)
+  }, [customers])
 
   useEffect(() => {
     if (!isEmpty(customers)) {
-      setCustomerList(customers);
+      setCustomerList(customers)
     }
-  }, [customers]);
+  }, [customers])
 
   // eslint-disable-next-line no-unused-vars
   const handleTableChange = (type, { page, searchText }) => {
@@ -292,33 +307,44 @@ const EcommerceCustomers = props => {
           customer[key].toLowerCase().includes(searchText.toLowerCase())
         )
       )
-    );
-  };
+    )
+  }
 
   const handleCustomerClicks = () => {
-    setCustomerList("");
-    setIsEdit(false);
-    toggle();
-  };
+    setCustomerList("")
+    setIsEdit(false)
+    toggle()
+  }
 
-  const defaultSorted = [
-    {
-      dataField: "id",
-      order: "desc",
-    },
-  ];
+  // const defaultSorted = [
+  //   {
+  //     dataField: "_id",
+  //     order: "desc",
+  //   },
+  // ]
 
   /** set Date formate */
   const handleValidDate = date => {
-    const date1 = moment(new Date(date)).format("DD MMM Y");
-    return date1;
-  };
+    const date1 = moment(new Date(date)).format("DD MMM Y")
+    return date1
+  }
 
   return (
     <React.Fragment>
+      <EcommerceCustomersImportModal
+        isOpen={modal1}
+        toggle={toggleViewModal}
+        customers={customerList}
+        dataFields={dataFields}
+      />
       <DeleteModal
         show={deleteModal}
         onDeleteClick={handleDeleteCustomer}
+        onCloseClick={() => setDeleteModal(false)}
+      />
+      <DeleteModal
+        show={deleteModal}
+        onDeleteClick={handleDeleteAllCustomers}
         onCloseClick={() => setDeleteModal(false)}
       />
       <div className="page-content">
@@ -333,13 +359,13 @@ const EcommerceCustomers = props => {
                 <CardBody>
                   <PaginationProvider
                     pagination={paginationFactory(pageOptions)}
-                    keyField="id"
+                    keyField="email"
                     columns={EcommerceCustomerColumns}
                     data={customers}
                   >
                     {({ paginationProps, paginationTableProps }) => (
                       <ToolkitProvider
-                        keyField="id"
+                        keyField="email"
                         data={customers || []}
                         columns={EcommerceCustomerColumns}
                         bootstrap4
@@ -359,6 +385,24 @@ const EcommerceCustomers = props => {
                               <Col sm="8">
                                 <div className="text-sm-end">
                                   <Button
+                                    type="file"
+                                    color="success"
+                                    className="btn-rounded  mb-2 me-2"
+                                    onClick={toggleViewModal}
+                                  >
+                                    <i className="me-2 me-2 fa fa-upload " />
+                                    Import
+                                  </Button>
+                                  <Button
+                                    type="button"
+                                    color="success"
+                                    className="btn-rounded  mb-2 me-2"
+                                    onClick={handleExportCustomers}
+                                  >
+                                    <i className="me-2 me-2 fa fa-download " />
+                                    Export
+                                  </Button>
+                                  <Button
                                     type="button"
                                     color="success"
                                     className="btn-rounded  mb-2 me-2"
@@ -366,6 +410,15 @@ const EcommerceCustomers = props => {
                                   >
                                     <i className="mdi mdi-plus me-1" />
                                     New customer
+                                  </Button>
+                                  <Button
+                                    type="button"
+                                    color="danger"
+                                    className="btn-rounded  mb-2 me-2"
+                                    onClick={()=>{setDeleteModal(true)}}
+                                  >
+                                    <i className="mdi mdi-delete me-1" />
+                                    Delete all customers
                                   </Button>
                                 </div>
                               </Col>
@@ -377,9 +430,9 @@ const EcommerceCustomers = props => {
                                     responsive
                                     bordered={false}
                                     striped={false}
-                                    defaultSorted={defaultSorted}
+                                    // defaultSorted={defaultSorted}
                                     classes={"table align-middle table-nowrap"}
-                                    keyField="id"
+                                    keyField="email"
                                     {...toolkitProps.baseProps}
                                     onTableChange={handleTableChange}
                                     {...paginationTableProps}
@@ -394,131 +447,208 @@ const EcommerceCustomers = props => {
                                   </ModalHeader>
                                   <ModalBody>
                                     <Form
-                                      onSubmit={(e) => {
-                                        e.preventDefault();
-                                        validation.handleSubmit();
-                                        return false;
+                                      onSubmit={e => {
+                                        e.preventDefault()
+                                        validation.handleSubmit()
+                                        return false
                                       }}
                                     >
                                       <Row form>
                                         <Col className="col-12">
                                           <div className="mb-3">
-                                            <Label className="form-label">UserName</Label>
+                                            <Label className="form-label">
+                                              UserName
+                                            </Label>
                                             <Input
                                               name="username"
                                               type="text"
                                               onChange={validation.handleChange}
                                               onBlur={validation.handleBlur}
-                                              value={validation.values.username || ""}
+                                              value={
+                                                validation.values.username || ""
+                                              }
                                               invalid={
-                                                validation.touched.username && validation.errors.username ? true : false
+                                                validation.touched.username &&
+                                                validation.errors.username
+                                                  ? true
+                                                  : false
                                               }
                                             />
-                                            {validation.touched.username && validation.errors.username ? (
-                                              <FormFeedback type="invalid">{validation.errors.username}</FormFeedback>
+                                            {validation.touched.username &&
+                                            validation.errors.username ? (
+                                              <FormFeedback type="invalid">
+                                                {validation.errors.username}
+                                              </FormFeedback>
                                             ) : null}
                                           </div>
 
                                           <div className="mb-3">
-                                            <Label className="form-label">Phone No</Label>
+                                            <Label className="form-label">
+                                              Phone No
+                                            </Label>
                                             <Input
                                               name="phone"
                                               type="text"
                                               onChange={validation.handleChange}
                                               onBlur={validation.handleBlur}
-                                              value={validation.values.phone || ""}
+                                              value={
+                                                validation.values.phone || ""
+                                              }
                                               invalid={
-                                                validation.touched.phone && validation.errors.phone ? true : false
+                                                validation.touched.phone &&
+                                                validation.errors.phone
+                                                  ? true
+                                                  : false
                                               }
                                             />
-                                            {validation.touched.phone && validation.errors.phone ? (
-                                              <FormFeedback type="invalid">{validation.errors.phone}</FormFeedback>
+                                            {validation.touched.phone &&
+                                            validation.errors.phone ? (
+                                              <FormFeedback type="invalid">
+                                                {validation.errors.phone}
+                                              </FormFeedback>
                                             ) : null}
                                           </div>
 
                                           <div className="mb-3">
-                                            <Label className="form-label">Email Id</Label>
+                                            <Label className="form-label">
+                                              Email Id
+                                            </Label>
                                             <Input
                                               name="email"
                                               type="email"
                                               onChange={validation.handleChange}
                                               onBlur={validation.handleBlur}
-                                              value={validation.values.email || ""}
+                                              value={
+                                                validation.values.email || ""
+                                              }
                                               invalid={
-                                                validation.touched.email && validation.errors.email ? true : false
+                                                validation.touched.email &&
+                                                validation.errors.email
+                                                  ? true
+                                                  : false
                                               }
                                             />
-                                            {validation.touched.email && validation.errors.email ? (
-                                              <FormFeedback type="invalid">{validation.errors.email}</FormFeedback>
+                                            {validation.touched.email &&
+                                            validation.errors.email ? (
+                                              <FormFeedback type="invalid">
+                                                {validation.errors.email}
+                                              </FormFeedback>
                                             ) : null}
                                           </div>
 
                                           <div className="mb-3">
-                                            <Label className="form-label">Address</Label>
+                                            <Label className="form-label">
+                                              Address
+                                            </Label>
                                             <Input
                                               name="address"
                                               type="textarea"
                                               rows="3"
                                               onChange={validation.handleChange}
                                               onBlur={validation.handleBlur}
-                                              value={validation.values.address || ""}
+                                              value={
+                                                validation.values.address || ""
+                                              }
                                               invalid={
-                                                validation.touched.address && validation.errors.address ? true : false
+                                                validation.touched.address &&
+                                                validation.errors.address
+                                                  ? true
+                                                  : false
                                               }
                                             />
-                                            {validation.touched.address && validation.errors.address ? (
-                                              <FormFeedback type="invalid">{validation.errors.address}</FormFeedback>
+                                            {validation.touched.address &&
+                                            validation.errors.address ? (
+                                              <FormFeedback type="invalid">
+                                                {validation.errors.address}
+                                              </FormFeedback>
                                             ) : null}
                                           </div>
 
                                           <div className="mb-3">
-                                            <Label className="form-label">Rating</Label>
+                                            <Label className="form-label">
+                                              Rating
+                                            </Label>
                                             <Input
                                               name="rating"
                                               type="text"
                                               onChange={validation.handleChange}
                                               onBlur={validation.handleBlur}
-                                              value={validation.values.rating || ""}
+                                              value={
+                                                validation.values.rating || ""
+                                              }
                                               invalid={
-                                                validation.touched.rating && validation.errors.rating ? true : false
+                                                validation.touched.rating &&
+                                                validation.errors.rating
+                                                  ? true
+                                                  : false
                                               }
                                             />
-                                            {validation.touched.rating && validation.errors.rating ? (
-                                              <FormFeedback type="invalid">{validation.errors.rating}</FormFeedback>
+                                            {validation.touched.rating &&
+                                            validation.errors.rating ? (
+                                              <FormFeedback type="invalid">
+                                                {validation.errors.rating}
+                                              </FormFeedback>
                                             ) : null}
                                           </div>
 
                                           <div className="mb-3">
-                                            <Label className="form-label">Wallet Balance</Label>
+                                            <Label className="form-label">
+                                              Wallet Balance
+                                            </Label>
                                             <Input
                                               name="walletBalance"
                                               type="text"
                                               onChange={validation.handleChange}
                                               onBlur={validation.handleBlur}
-                                              value={validation.values.walletBalance || ""}
+                                              value={
+                                                validation.values
+                                                  .walletBalance || ""
+                                              }
                                               invalid={
-                                                validation.touched.walletBalance && validation.errors.walletBalance ? true : false
+                                                validation.touched
+                                                  .walletBalance &&
+                                                validation.errors.walletBalance
+                                                  ? true
+                                                  : false
                                               }
                                             />
-                                            {validation.touched.walletBalance && validation.errors.walletBalance ? (
-                                              <FormFeedback type="invalid">{validation.errors.walletBalance}</FormFeedback>
+                                            {validation.touched.walletBalance &&
+                                            validation.errors.walletBalance ? (
+                                              <FormFeedback type="invalid">
+                                                {
+                                                  validation.errors
+                                                    .walletBalance
+                                                }
+                                              </FormFeedback>
                                             ) : null}
                                           </div>
 
                                           <div className="mb-3">
-                                            <Label className="form-label">Joining Date</Label>
+                                            <Label className="form-label">
+                                              Joining Date
+                                            </Label>
                                             <Input
                                               name="joiningDate"
                                               type="date"
                                               onChange={validation.handleChange}
                                               onBlur={validation.handleBlur}
-                                              value={validation.values.joiningDate || ""}
+                                              value={
+                                                validation.values.joiningDate ||
+                                                ""
+                                              }
                                               invalid={
-                                                validation.touched.joiningDate && validation.errors.joiningDate ? true : false
+                                                validation.touched
+                                                  .joiningDate &&
+                                                validation.errors.joiningDate
+                                                  ? true
+                                                  : false
                                               }
                                             />
-                                            {validation.touched.joiningDate && validation.errors.joiningDate ? (
-                                              <FormFeedback type="invalid">{validation.errors.joiningDate}</FormFeedback>
+                                            {validation.touched.joiningDate &&
+                                            validation.errors.joiningDate ? (
+                                              <FormFeedback type="invalid">
+                                                {validation.errors.joiningDate}
+                                              </FormFeedback>
                                             ) : null}
                                           </div>
                                         </Col>
@@ -559,8 +689,8 @@ const EcommerceCustomers = props => {
         </Container>
       </div>
     </React.Fragment>
-  );
-};
+  )
+}
 
 EcommerceCustomers.propTypes = {
   customers: PropTypes.array,
@@ -568,6 +698,6 @@ EcommerceCustomers.propTypes = {
   onAddNewCustomer: PropTypes.func,
   onDeleteCustomer: PropTypes.func,
   onUpdateCustomer: PropTypes.func,
-};
+}
 
-export default EcommerceCustomers;
+export default EcommerceCustomers

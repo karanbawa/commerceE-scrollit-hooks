@@ -1,19 +1,16 @@
-  import axios from "axios";
-  import accessToken from "./jwt-token-access/accessToken";
-  import apiKey from "./jwt-token-access/apiKey";
+import axios from "axios";
+import accessToken from "./jwt-token-access/accessToken";
+import apiKey from "./jwt-token-access/apiKey";
 
 //pass new generated access token here
 const token = accessToken;
 const apiKeys = apiKey;
-
 //apply base url for axios
 // const API_URL = "https://api.univolenitsolutions.com";
-const API_URL = "http://13.233.135.104:3005";
-
+const API_URL = "https://api.univolenitsolutions.com";
 const axiosApi = axios.create({
   baseURL: API_URL,
 });
-
 axiosApi.defaults.headers.common["Authorization"] = localStorage.getItem('authUser')?.data?.tokens?.accessToken ?? token;
 axiosApi.defaults.headers.common["x-api-key"] = apiKeys;
 
