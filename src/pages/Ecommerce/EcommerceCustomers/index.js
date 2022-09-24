@@ -24,6 +24,7 @@ import {
   FormFeedback,
   Label,
   Form,
+  Dropdown,
 } from "reactstrap"
 import * as XLSX from "xlsx"
 
@@ -49,6 +50,7 @@ import {
 //redux
 import { useSelector, useDispatch } from "react-redux"
 import EcommerceCustomersImportModal from "./EcommerceCustomersImportModal"
+import DeleteAllModal from "components/Common/DeleteAllModal"
 
 const EcommerceCustomers = props => {
   const dispatch = useDispatch()
@@ -240,6 +242,7 @@ const EcommerceCustomers = props => {
 
   //delete customer
   const [deleteModal, setDeleteModal] = useState(false)
+  const [deleteAllModal, setDeleteAllModal] = useState(false)
 
   const onClickDelete = customer => {
     setCustomer(customer)
@@ -256,7 +259,7 @@ const EcommerceCustomers = props => {
 
   const handleDeleteAllCustomers = () => {
     dispatch(deleteAllCustomers())
-    setDeleteModal(false)
+    setDeleteAllModal(false)
   }
 
   const dataFields = [
@@ -269,7 +272,7 @@ const EcommerceCustomers = props => {
     "joiningDate",
   ]
 
-  const handleExportCustomers = () => {
+  const handleExportCustomers = format => {
     const filteredData = customerList.map(obj =>
       Object.fromEntries(
         Object.entries(obj).filter(r => dataFields.indexOf(r[0]) > -1)
@@ -278,7 +281,14 @@ const EcommerceCustomers = props => {
     const book = XLSX.utils.book_new()
     const ws = XLSX.utils.json_to_sheet(filteredData)
     XLSX.utils.book_append_sheet(book, ws, "Customers")
-    XLSX.writeFile(book, "Customers.xlsx")
+    XLSX.writeFile(book, `Customers.${format}`)
+  }
+
+  const handleDownloadTemplate = format => {
+    const book = XLSX.utils.book_new()
+    const ws = XLSX.utils.aoa_to_sheet([dataFields])
+    XLSX.utils.book_append_sheet(book, ws, "Customers")
+    XLSX.writeFile(book, `Customers Template.${format}`)
   }
 
   const { SearchBar } = Search
@@ -287,7 +297,7 @@ const EcommerceCustomers = props => {
     if (customers && !customers.length) {
       dispatch(onGetCustomers())
     }
-  }, [dispatch, customers])
+  }, [])
 
   useEffect(() => {
     setCustomerList(customers)
@@ -342,17 +352,17 @@ const EcommerceCustomers = props => {
         onDeleteClick={handleDeleteCustomer}
         onCloseClick={() => setDeleteModal(false)}
       />
-      <DeleteModal
-        show={deleteModal}
+      <DeleteAllModal
+        show={deleteAllModal}
         onDeleteClick={handleDeleteAllCustomers}
-        onCloseClick={() => setDeleteModal(false)}
+        onCloseClick={() => setDeleteAllModal(false)}
       />
       <div className="page-content">
         <MetaTags>
           <title>Customers | Scrollit</title>
         </MetaTags>
         <Container fluid>
-          <Breadcrumbs title="Ecommerce" breadcrumbItem="Customers" />
+          <Breadcrumbs title="Ecommerce" count={customers.length} breadcrumbItem="Customers" />
           <Row>
             <Col xs="12">
               <Card>
@@ -383,25 +393,66 @@ const EcommerceCustomers = props => {
                                 </div>
                               </Col>
                               <Col sm="8">
-                                <div className="text-sm-end">
+                                <div className="text-sm-end btn-grp">
                                   <Button
                                     type="file"
                                     color="success"
                                     className="btn-rounded  mb-2 me-2"
                                     onClick={toggleViewModal}
                                   >
-                                    <i className="me-2 me-2 fa fa-upload " />
+                                    <i className="me-2 me-2 fa fa-file-import " />
                                     Import
                                   </Button>
-                                  <Button
-                                    type="button"
-                                    color="success"
-                                    className="btn-rounded  mb-2 me-2"
-                                    onClick={handleExportCustomers}
-                                  >
-                                    <i className="me-2 me-2 fa fa-download " />
-                                    Export
-                                  </Button>
+                                  <UncontrolledDropdown direction="left" className="d-inline mb-2 me-2 align-middle">
+                                    <DropdownToggle
+                                      className=" btn-rounded btn-primary align-middle mb-2"
+                                      color="success"
+                                      href="#"
+                                    >
+                                      <i className="me-2 me-2 fa fa-file-export " />{" "}
+                                      Export
+                                    </DropdownToggle>
+                                    <DropdownMenu className="dropdown-menu-end">
+                                      <DropdownItem
+                                        href="#"
+                                        onClick={() =>
+                                          handleExportCustomers("xlsx")
+                                        }
+                                        disabled={customerList.length === 0}
+                                      >
+                                        <i className="fas fa-file-excel text-success me-2" />
+                                        Save as Customers.xlsx
+                                      </DropdownItem>
+                                      <DropdownItem
+                                        href="#"
+                                        onClick={() =>
+                                          handleExportCustomers("csv")
+                                        }
+                                        disabled={customerList.length === 0}
+                                      >
+                                        <i className="fas fa-file-excel text-success me-2" />
+                                        Save as Customers.csv
+                                      </DropdownItem>
+                                      <DropdownItem
+                                        href="#"
+                                        onClick={() =>
+                                          handleDownloadTemplate("xlsx")
+                                        }
+                                      >
+                                        <i className="fas fa-file-excel text-success me-2" />
+                                        Download template - xlsx
+                                      </DropdownItem>
+                                      <DropdownItem
+                                        href="#"
+                                        onClick={() =>
+                                          handleDownloadTemplate("csv")
+                                        }
+                                      >
+                                        <i className="fas fa-file-excel text-success me-2" />
+                                        Download template - csv
+                                      </DropdownItem>
+                                    </DropdownMenu>
+                                  </UncontrolledDropdown>
                                   <Button
                                     type="button"
                                     color="success"
@@ -415,7 +466,9 @@ const EcommerceCustomers = props => {
                                     type="button"
                                     color="danger"
                                     className="btn-rounded  mb-2 me-2"
-                                    onClick={()=>{setDeleteModal(true)}}
+                                    onClick={() => {
+                                      setDeleteAllModal(true)
+                                    }}
                                   >
                                     <i className="mdi mdi-delete me-1" />
                                     Delete all customers
@@ -440,7 +493,7 @@ const EcommerceCustomers = props => {
                                   />
                                 </div>
                                 <Modal isOpen={modal} toggle={toggle}>
-                                  <ModalHeader toggle={toggle} tag="h4"> 
+                                  <ModalHeader toggle={toggle} tag="h4">
                                     {!!isEdit
                                       ? "Edit Customer"
                                       : "Add Customer"}

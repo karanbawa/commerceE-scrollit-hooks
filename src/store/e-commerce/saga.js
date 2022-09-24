@@ -71,7 +71,6 @@ import {
   addProductInListFail,
   importCustomerSuccess,
   importCustomerFail,
-  deleteAllCustomers,
   deleteAllCustomersSuccess,
   deleteAllCustomersFail,
 } from "./actions"

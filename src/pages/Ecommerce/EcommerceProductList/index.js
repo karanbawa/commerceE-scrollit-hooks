@@ -60,7 +60,7 @@ const EcommerceProductList = props => {
     if (products && !products.length) {
       dispatch(getProductList())
     }
-  }, [dispatch, products])
+  }, [])
 
   useEffect(() => {
     setProductList(products)
@@ -158,10 +158,10 @@ const EcommerceProductList = props => {
       sort: true,
       // eslint-disable-next-line react/display-name
       formatter: (cellContent, row) => (
-        // Warning: Received `true` for a non-boolean attribute `switch`.
+        // Replace with Switch
         <Form>
-          <FormGroup switch>
-            <Input type="switch" />
+          <FormGroup>
+            <Input type="checkbox" />
           </FormGroup>
         </Form>
       ),
@@ -287,7 +287,11 @@ const EcommerceProductList = props => {
           <title>Product List | Scrollit</title>
         </MetaTags>
         <Container fluid>
-          <Breadcrumbs title="Ecommerce" breadcrumbItem="Product List" />
+          <div>
+            <Breadcrumbs title="Ecommerce" count={productList.length} breadcrumbItem="Product List" />
+            <div>{}</div>
+          </div>
+
           <Row>
             <Col xs="12">
               <Card>
@@ -478,8 +482,9 @@ const EcommerceProductList = props => {
                                             <Label className="form-label">
                                               Display Product
                                             </Label>
-                                            <FormGroup switch>
+                                            <FormGroup>
                                               <Input
+                                                // Replace with Switch
                                                 name="displayProduct"
                                                 type="checkbox"
                                                 onChange={
@@ -554,7 +559,7 @@ const EcommerceProductList = props => {
 
 EcommerceProductList.propTypes = {
   productList: PropTypes.array,
-  getProductList : PropTypes.func,
+  getProductList: PropTypes.func,
   deleteProductInList: PropTypes.func,
   updateProductInList: PropTypes.func,
 }
