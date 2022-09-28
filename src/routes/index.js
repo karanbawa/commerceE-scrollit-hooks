@@ -25,6 +25,7 @@ import ProjectsOverview from "../pages/Projects/ProjectOverview/projects-overvie
 import ProjectsCreate from "../pages/Projects/projects-create"
 
 // //Ecommerce Pages
+import EcommerceCollections from "pages/Ecommerce/EcommerceCollections/EcommerceCollections"
 import EcommerceProducts from "../pages/Ecommerce/EcommerceProducts/index"
 import EcommerceProductDetail from "../pages/Ecommerce/EcommerceProducts/EcommerceProductDetail"
 import EcommerceProductList from "pages/Ecommerce/EcommerceProductList/index"
@@ -198,6 +199,7 @@ const authProtectedRoutes = [
   { path: "/profile", component: UserProfile },
 
   //Ecommerce
+  { path: "/ecommerce-collections", component: EcommerceCollections },
   { path: "/ecommerce-product-detail/:id", component: EcommerceProductDetail },
   { path: "/ecommerce-products", component: EcommerceProducts },
   { path: "/ecommerce-product-list", component: EcommerceProductList },
