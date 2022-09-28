@@ -46,7 +46,7 @@ const EcommerceCustomersImportModal = props => {
       error ? setError(false) : null
       setFileName(inpFile.name)
       const data = await inpFile.arrayBuffer()
-      const wb = XLSX.read(data, { dateNF: "yyyy-mm-dd" })
+      const wb = XLSX.read(data, { dateNF: "yyyy-mm-dd", raw: true })
       const sheet = wb.Sheets[wb.SheetNames[0]]
       dataHandler(XLSX.utils.sheet_to_json(sheet), customers)
     }
@@ -243,9 +243,7 @@ const EcommerceCustomersImportModal = props => {
               <Button
                 type="button"
                 color="success"
-                onClick={() => {
-                  HandleImportSubmitClick()
-                }}
+                onClick={HandleImportSubmitClick}
               >
                 Import
               </Button>
