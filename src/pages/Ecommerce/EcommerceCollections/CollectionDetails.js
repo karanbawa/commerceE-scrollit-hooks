@@ -1,4 +1,5 @@
 import React from "react"
+import update from 'immutability-helper'
 import { useState } from "react"
 import {
   Container,
@@ -17,33 +18,81 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  CardSubtitle,
 } from "reactstrap"
 import Dropzone from "react-dropzone"
 import { Link } from "react-router-dom"
+import { HTML5Backend } from "react-dnd-html5-backend"
+import { DndProvider } from "react-dnd"
+import CollectionProductPreview from "./CollectionProductPreview"
+import { useCallback } from "react"
+import { useRef } from "react"
 
 export default function EcommerceCollectionDetails() {
+  const ref = useRef(null)
   const [collection, setCollection] = useState({
     name: "All products",
   })
 
-  const handleAcceptedFiles = file => {
-    console.log("hellooo!!")
-  }
+  const [products, setProducts] = useState([
+    { id: 1, text: "Im a dog" },
+    { id: 2, text: "Im a cat" },
+    { id: 3, text: "Im a bird" },
+    { id: 4, text: "Im a elephant" },
+    { id: 5, text: "Im a lion" },
+    { id: 6, text: "Im a bird" },
+    { id: 7, text: "Im a elephant" },
+    { id: 8, text: "Im a lion" },
+    { id: 9, text: "Im a bird" },
+    { id: 10, text: "Im a elephant" },
+    { id: 11, text: "Im a lion" },
+    { id: 12, text: "Im a bird" },
+    { id: 13, text: "Im a elephant" },
+    { id: 14, text: "Im a lion" },
+  ])
+
+  const moveCollectionProductPreview = useCallback((dragIndex, hoverIndex) => {
+    setProducts(prevCards =>
+      update(prevCards, {
+        $splice: [
+          [dragIndex, 1],
+          [hoverIndex, 0, prevCards[dragIndex]],
+        ],
+      })
+    )
+  }, [])
+
+  const renderCollectionProductPreview = useCallback(
+    (CollectionProductPreviewItem, index) => {
+      return (
+        <CollectionProductPreview
+          key={CollectionProductPreviewItem.id}
+          index={index}
+          id={CollectionProductPreviewItem.id}
+          text={CollectionProductPreviewItem.text}
+          moveCollectionProductPreview={moveCollectionProductPreview}
+        />
+      )
+    },
+    []
+  )
 
   return (
     <React.Fragment>
-      <div className="page-content">
-        <Container fluid className="mx-auto" style={{ maxWidth: "1200px" }}>
+      <div className="page-content" ref={ref}>
+        <Container fluid className="mx-auto" style={{ maxWidth: "1100px" }}>
           <Row>
             <Col>
-              <Link to={"/ecommerce-collections"}>Collections</Link> &gt;{" "}
-              {collection.name}
+              <Row>
+                <Col>
+                  <Link to={"/ecommerce-collections"}>Collections</Link> &gt;{" "}
+                  {collection.name}
+                </Col>
+              </Row>
+              {window.scrollY ? null : <Row className="display-6 m-3">{collection.name}</Row>}
             </Col>
-          </Row>
-          <Row>
-            <Col className="display-6">{collection.name}</Col>
-            <Col>
-              <div className="text-sm-end">
+            <Col className="h-100">
+              <div className="text-sm-end align-bottom">
                 <UncontrolledDropdown
                   direction="left"
                   className="d-inline mb-2 me-2 align-middle"
@@ -89,7 +138,18 @@ export default function EcommerceCollectionDetails() {
                 <CardHeader>
                   <CardTitle>Products in Collection</CardTitle>
                 </CardHeader>
-                <CardBody>prfgdfgdfgdfoduct</CardBody>
+                <CardBody>
+                  <DndProvider backend={HTML5Backend}>
+                    <Row>
+                      {products.map((CollectionProductPreview, i) =>
+                        renderCollectionProductPreview(
+                          CollectionProductPreview,
+                          i
+                        )
+                      )}
+                    </Row>
+                  </DndProvider>
+                </CardBody>
               </Card>
             </Col>
             <Col className="p-3" xs="4">

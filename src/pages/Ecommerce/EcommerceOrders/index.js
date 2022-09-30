@@ -112,7 +112,7 @@ const EcommerceOrders = props => {
   })
 
   const { orders } = useSelector(state => ({
-    orders: state.ecommerce.orders
+    orders: state.ecommerce.orders,
   }))
 
   const selectRow = {
