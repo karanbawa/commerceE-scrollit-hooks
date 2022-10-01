@@ -143,7 +143,7 @@ const EcommerceCustomers = props => {
       text: "Name",
       sort: true,
       formatter: (cellContent, row) => (
-        <p className="mb-1 text-wrap" style={{ maxWidth: "300px" }}>
+        <p className="mb-1 text-wrap">
           {row.username}
         </p>
       )
@@ -166,7 +166,7 @@ const EcommerceCustomers = props => {
       sort: true,
       // eslint-disable-next-line react/display-name
       formatter: (cellContent, row) => (
-        <p className="mb-1 text-wrap" style={{ maxWidth: "300px" }}>
+        <p className="mb-1 text-wrap">
           {row.address}
         </p>
       ),
