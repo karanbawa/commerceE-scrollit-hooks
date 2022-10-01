@@ -2,11 +2,13 @@ import PropTypes from "prop-types"
 import React from "react"
 import { useRef } from "react"
 import { useDrag, useDrop } from "react-dnd"
-import { Card, Col, CardBody, CardSubtitle, CardFooter } from "reactstrap"
+import { Card, CardBody, CardFooter, CardHeader, Col, Row } from "reactstrap"
+import "./CollectionProductPreview-styles.scss"
 
 export default function CollectionProductPreview({
   id,
   text,
+  img,
   index,
   moveCollectionProductPreview,
 }) {
@@ -42,9 +44,14 @@ export default function CollectionProductPreview({
   })
   drag(drop(ref))
   return (
-    <div className="col-3" ref={ref} data-handler-id={handlerId}>
-      <Card>
-        <img src="https://picsum.photos/200" />
+    <div
+      className="collection-product-preview col-lg-3"
+      ref={ref}
+      data-handler-id={handlerId}
+    >
+      <Card className="pw-3 pe-3">
+        <CardHeader className="position-absolute-top">{index + 1}</CardHeader>
+        <img src={img} width="100%"></img>
         <CardFooter>{text}</CardFooter>
       </Card>
     </div>
@@ -56,4 +63,5 @@ CollectionProductPreview.propTypes = {
   text: PropTypes.string,
   index: PropTypes.any,
   moveCollectionProductPreview: PropTypes.func,
+  img: PropTypes.string,
 }

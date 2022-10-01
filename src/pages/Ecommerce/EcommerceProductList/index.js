@@ -288,7 +288,11 @@ const EcommerceProductList = props => {
         </MetaTags>
         <Container fluid>
           <div>
-            <Breadcrumbs title="Ecommerce" count={productList.length} breadcrumbItem="Product List" />
+            <Breadcrumbs
+              title="Ecommerce"
+              count={productList.length}
+              breadcrumbItem="Product List"
+            />
             <div>{}</div>
           </div>
 

@@ -43,6 +43,7 @@ import {
 } from "./actionTypes"
 
 const INIT_STATE = {
+  collections: [],
   products: [],
   product: {},
   productList: [],
@@ -56,6 +57,9 @@ const INIT_STATE = {
 
 const Ecommerce = (state = INIT_STATE, action) => {
   switch (action.type) {
+
+    case 
+
     case GET_PRODUCTS_SUCCESS:
       return {
         ...state,

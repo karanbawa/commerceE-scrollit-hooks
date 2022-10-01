@@ -1,5 +1,5 @@
 import React from "react"
-import update from 'immutability-helper'
+import update from "immutability-helper"
 import { useState } from "react"
 import {
   Container,
@@ -18,7 +18,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  CardSubtitle,
+  CardGroup,
 } from "reactstrap"
 import Dropzone from "react-dropzone"
 import { Link } from "react-router-dom"
@@ -26,29 +26,19 @@ import { HTML5Backend } from "react-dnd-html5-backend"
 import { DndProvider } from "react-dnd"
 import CollectionProductPreview from "./CollectionProductPreview"
 import { useCallback } from "react"
-import { useRef } from "react"
 
 export default function EcommerceCollectionDetails() {
-  const ref = useRef(null)
   const [collection, setCollection] = useState({
     name: "All products",
   })
+  const [isMutable, setIsMutable] = useState(true)
 
   const [products, setProducts] = useState([
-    { id: 1, text: "Im a dog" },
-    { id: 2, text: "Im a cat" },
-    { id: 3, text: "Im a bird" },
-    { id: 4, text: "Im a elephant" },
-    { id: 5, text: "Im a lion" },
-    { id: 6, text: "Im a bird" },
-    { id: 7, text: "Im a elephant" },
-    { id: 8, text: "Im a lion" },
-    { id: 9, text: "Im a bird" },
-    { id: 10, text: "Im a elephant" },
-    { id: 11, text: "Im a lion" },
-    { id: 12, text: "Im a bird" },
-    { id: 13, text: "Im a elephant" },
-    { id: 14, text: "Im a lion" },
+    { id: 1, text: "Im a dog", img: "https://picsum.photos/id/1024/200" },
+    { id: 2, text: "Im a cat", img: "https://picsum.photos/id/1028/200" },
+    { id: 3, text: "Im a bird", img: "https://picsum.photos/id/1035/200" },
+    { id: 4, text: "Im a elephant", img: "https://picsum.photos/id/1040/200" },
+    { id: 5, text: "Im a lion", img: "https://picsum.photos/id/1047/200" },
   ])
 
   const moveCollectionProductPreview = useCallback((dragIndex, hoverIndex) => {
@@ -69,6 +59,7 @@ export default function EcommerceCollectionDetails() {
           key={CollectionProductPreviewItem.id}
           index={index}
           id={CollectionProductPreviewItem.id}
+          img={CollectionProductPreviewItem.img}
           text={CollectionProductPreviewItem.text}
           moveCollectionProductPreview={moveCollectionProductPreview}
         />
@@ -79,7 +70,7 @@ export default function EcommerceCollectionDetails() {
 
   return (
     <React.Fragment>
-      <div className="page-content" ref={ref}>
+      <div className="page-content">
         <Container fluid className="mx-auto" style={{ maxWidth: "1100px" }}>
           <Row>
             <Col>
@@ -89,10 +80,10 @@ export default function EcommerceCollectionDetails() {
                   {collection.name}
                 </Col>
               </Row>
-              {window.scrollY ? null : <Row className="display-6 m-3">{collection.name}</Row>}
+              <Row className="display-6 m-3">{collection.name}</Row>
             </Col>
             <Col className="h-100">
-              <div className="text-sm-end align-bottom">
+              <div className="text-sm-end align-bottom m-4">
                 <UncontrolledDropdown
                   direction="left"
                   className="d-inline mb-2 me-2 align-middle"
@@ -136,17 +127,22 @@ export default function EcommerceCollectionDetails() {
             <Col className="p-3" xs="8">
               <Card className="h-100">
                 <CardHeader>
-                  <CardTitle>Products in Collection</CardTitle>
+                  <Col>
+                    <CardTitle>Products in Collection</CardTitle>
+                  </Col>
+                  <Col></Col>
                 </CardHeader>
                 <CardBody>
                   <DndProvider backend={HTML5Backend}>
                     <Row>
-                      {products.map((CollectionProductPreview, i) =>
-                        renderCollectionProductPreview(
-                          CollectionProductPreview,
-                          i
-                        )
-                      )}
+                      <CardGroup>
+                        {products.map((CollectionProductPreview, i) =>
+                          renderCollectionProductPreview(
+                            CollectionProductPreview,
+                            i
+                          )
+                        )}
+                      </CardGroup>
                     </Row>
                   </DndProvider>
                 </CardBody>
@@ -158,21 +154,23 @@ export default function EcommerceCollectionDetails() {
                   <CardTitle>Collection Info</CardTitle>
                 </CardHeader>
                 <CardBody>
-                  <div>
+                  <div className="m-1">
                     Collection Name
-                    <Input />
+                    <Input className="m-1" />
                   </div>
-                  <div>
+                  <div className="m-1 mt-3">
                     Collection Image
-                    <Dropzone
-                      onDrop={() => {
-                        console.log("helloo!!")
-                      }}
-                    >
-                      {({ getRootProps, getInputProps }) => (
-                        <div className="dropzone "></div>
-                      )}
-                    </Dropzone>
+                    <div className="mh-50">
+                      <Dropzone
+                        onDrop={() => {
+                          console.log("helloo!!")
+                        }}
+                      >
+                        {({ getRootProps, getInputProps }) => (
+                          <div className="dropzone "></div>
+                        )}
+                      </Dropzone>
+                    </div>
                   </div>
                 </CardBody>
                 <CardFooter className="text-sm-center">
