@@ -140,8 +140,13 @@ const EcommerceCustomers = props => {
     },
     {
       dataField: "username",
-      text: "Username",
+      text: "Name",
       sort: true,
+      formatter: (cellContent, row) => (
+        <p className="mb-1 text-wrap" style={{ maxWidth: "300px" }}>
+          {row.username}
+        </p>
+      )
     },
     {
       text: "Phone / Email",
@@ -159,6 +164,12 @@ const EcommerceCustomers = props => {
       dataField: "address",
       text: "Address",
       sort: true,
+      // eslint-disable-next-line react/display-name
+      formatter: (cellContent, row) => (
+        <p className="mb-1 text-wrap" style={{ maxWidth: "300px" }}>
+          {row.address}
+        </p>
+      ),
     },
     {
       dataField: "rating",
@@ -362,7 +373,11 @@ const EcommerceCustomers = props => {
           <title>Customers | Scrollit</title>
         </MetaTags>
         <Container fluid>
-          <Breadcrumbs title="Ecommerce" count={customers.length} breadcrumbItem="Customers" />
+          <Breadcrumbs
+            title="Ecommerce"
+            count={customers.length}
+            breadcrumbItem="Customers"
+          />
           <Row>
             <Col xs="12">
               <Card>
@@ -403,7 +418,10 @@ const EcommerceCustomers = props => {
                                     <i className="me-2 me-2 fa fa-file-import " />
                                     Import
                                   </Button>
-                                  <UncontrolledDropdown direction="left" className="d-inline mb-2 me-2 align-middle">
+                                  <UncontrolledDropdown
+                                    direction="left"
+                                    className="d-inline mb-2 me-2 align-middle"
+                                  >
                                     <DropdownToggle
                                       className=" btn-rounded btn-primary align-middle mb-2"
                                       color="success"
