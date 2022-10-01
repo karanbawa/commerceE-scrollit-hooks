@@ -25,6 +25,10 @@ import {
   ADD_NEW_PRODUCT_IN_LIST,
   IMPORT_CUSTOMERS,
   DELETE_ALL_CUSTOMERS,
+  GET_COLLECTIONS,
+  ADD_COLLECTION,
+  UPDATE_COLLECTION,
+  DELETE_COLLECTION,
 } from "./actionTypes"
 import {
   getCartDataFail,
@@ -73,6 +77,12 @@ import {
   importCustomerFail,
   deleteAllCustomersSuccess,
   deleteAllCustomersFail,
+  getCollectionsSuccess,
+  getCollectionsFail,
+  updateCollectionSuccess,
+  updateCollectionFail,
+  deleteCollectionSuccess,
+  deleteCollectionFail,
 } from "./actions"
 
 //Include Both Helper File with needed methods
@@ -103,6 +113,9 @@ import {
   deleteCustomer,
   importCustomers,
   deleteEveryCustomer,
+  getCollections,
+  updateCollection,
+  deleteColletion,
 } from "helpers/backend_helper"
 
 function* fetchProducts() {
@@ -272,6 +285,46 @@ function* onAddNewOrder({ payload: order }) {
   }
 }
 
+
+function* fetchCollections(){
+  try{
+    const response = yield call(getCollections)
+    console.log(response)
+    yield put(getCollectionsSuccess(response.data))
+  } catch (error){
+    yield put(getCollectionsFail)
+  }
+}
+
+function* onUpdateCollection({ payload: collection }) {
+  try {
+    const response = yield call(updateCollection, collection)
+    yield put(updateCollectionSuccess(response))
+  } catch (error) {
+    yield put(updateCollectionFail(error))
+  }
+}
+
+function* onDeleteCollection({ payload: collectionId }) {
+  try {
+    const response = yield call(deleteColletion, collectionId)
+    console.log("response", response)
+    yield put(deleteCollectionSuccess(collectionId))
+  } catch (error) {
+    console.log("error", error)
+    yield put(deleteCollectionFail(error))
+  }
+}
+
+function* onAddCollection({ payload: order }) {
+  try {
+    const response = yield call(addNewOrder, order)
+    yield put(addOrderSuccess(response))
+  } catch (error) {
+    yield put(addOrderFail(error))
+  }
+}
+
 function* getProductComents() {
   try {
     // todo - add product Id to the payload and api
@@ -327,6 +380,10 @@ function* ecommerceSaga() {
   yield takeEvery(UPDATE_PRODUCT_IN_LIST, onUpdateProductInList)
   yield takeEvery(DELETE_PRODUCT_IN_LIST, onDeleteProductInList)
   yield takeEvery(ADD_NEW_PRODUCT_IN_LIST, onAddNewProductInList)
+  yield takeEvery(GET_COLLECTIONS, fetchCollections)
+  yield takeEvery(ADD_COLLECTION, onAddCollection)
+  yield takeEvery(UPDATE_COLLECTION, onUpdateCollection)  
+  yield takeEvery(DELETE_COLLECTION, onDeleteCollection)
   yield takeEvery(GET_ORDERS, fetchOrders)
   yield takeEvery(GET_CART_DATA, fetchCartData)
   yield takeEvery(GET_CUSTOMERS, fetchCustomers)

@@ -40,6 +40,9 @@ import {
   IMPORT_CUSTOMERS_SUCCESS,
   DELETE_ALL_CUSTOMERS_SUCCESS,
   DELETE_ALL_CUSTOMERS_FAIL,
+  GET_COLLECTIONS_SUCCESS,
+  GET_COLLECTIONS_FAIL,
+  DELETE_COLLECTION_SUCCESS,
 } from "./actionTypes"
 
 const INIT_STATE = {
@@ -57,8 +60,26 @@ const INIT_STATE = {
 
 const Ecommerce = (state = INIT_STATE, action) => {
   switch (action.type) {
+    case GET_COLLECTIONS_SUCCESS:
+      return {
+        ...state,
+        collections: action.payload,
+      }
 
-    case 
+    case GET_COLLECTIONS_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      }
+
+    case DELETE_COLLECTION_SUCCESS:
+      console.log(action.payload)
+      return {
+        ...state,
+        collections: state.collections.filter(
+          collection => collection._id.toString() !== action.payload.toString()
+        ),
+      }
 
     case GET_PRODUCTS_SUCCESS:
       return {

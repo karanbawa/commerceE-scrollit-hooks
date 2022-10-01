@@ -21,25 +21,50 @@ import {
   CardGroup,
 } from "reactstrap"
 import Dropzone from "react-dropzone"
-import { Link } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import { DndProvider } from "react-dnd"
 import CollectionProductPreview from "./CollectionProductPreview"
 import { useCallback } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { getProductList } from "store/actions"
+import { useEffect } from "react"
 
 export default function EcommerceCollectionDetails() {
   const [collection, setCollection] = useState({
-    name: "All products",
+    name: "Untitled Collection",
+    productIds: [],
   })
-  const [isMutable, setIsMutable] = useState(true)
+  const [productList, setProductList] = useState([])
 
-  const [products, setProducts] = useState([
-    { id: 1, text: "Im a dog", img: "https://picsum.photos/id/1024/200" },
-    { id: 2, text: "Im a cat", img: "https://picsum.photos/id/1028/200" },
-    { id: 3, text: "Im a bird", img: "https://picsum.photos/id/1035/200" },
-    { id: 4, text: "Im a elephant", img: "https://picsum.photos/id/1040/200" },
-    { id: 5, text: "Im a lion", img: "https://picsum.photos/id/1047/200" },
-  ])
+  const { _id } = useParams()
+  const dispatch = useDispatch()
+  const { collections, products } = useSelector(state => ({
+    collections: state.ecommerce.collections,
+    products: state.ecommerce.productList,
+  }))
+
+  let isMutable = true
+  if (_id === "all-products") {
+    isMutable = false
+  }
+
+  useEffect(() => {
+    if (products && !products.length) {
+      dispatch(getProductList())
+    }
+  }, [])
+
+  useEffect(() => {
+    setProductList(products)
+  }, [products])
+
+  useEffect(() => {
+    if (collections) {
+      setCollection(collections.filter(collection => collection._id === _id)[0])
+      console.log(collection)
+    }
+  },[collection])
 
   const moveCollectionProductPreview = useCallback((dragIndex, hoverIndex) => {
     setProducts(prevCards =>
@@ -77,10 +102,12 @@ export default function EcommerceCollectionDetails() {
               <Row>
                 <Col>
                   <Link to={"/ecommerce-collections"}>Collections</Link> &gt;{" "}
-                  {collection.name}
+                  {collection ? collection.name : null}
                 </Col>
               </Row>
-              <Row className="display-6 m-3">{collection.name}</Row>
+              <Row className="display-6 m-3">
+                {collection ? collection.name : null}
+              </Row>
             </Col>
             <Col className="h-100">
               <div className="text-sm-end align-bottom m-4">
@@ -136,7 +163,7 @@ export default function EcommerceCollectionDetails() {
                   <DndProvider backend={HTML5Backend}>
                     <Row>
                       <CardGroup>
-                        {products.map((CollectionProductPreview, i) =>
+                        {productList.map((CollectionProductPreview, i) =>
                           renderCollectionProductPreview(
                             CollectionProductPreview,
                             i

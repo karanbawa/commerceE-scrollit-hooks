@@ -200,7 +200,7 @@ const authProtectedRoutes = [
   { path: "/profile", component: UserProfile },
 
   //Ecommerce
-  { path: "/ecommerce-collection-details/:CollectionId", component: EcommerceCollectionDetails },
+  { path: "/ecommerce-collection-details/:_id", component: EcommerceCollectionDetails },
   { path: "/ecommerce-collections", component: EcommerceCollections },
   { path: "/ecommerce-product-detail/:id", component: EcommerceProductDetail },
   { path: "/ecommerce-products", component: EcommerceProducts },

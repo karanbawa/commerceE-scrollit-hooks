@@ -75,6 +75,12 @@ export const DELETE_CUSTOMER = "/v1/customer/delete/"
 export const DELETE_ALL_CUSTOMERS = "/v1/customer/deleteall"
 export const IMPORT_CUSTOMERS = "/v1/customer/importcustomers"
 
+//COLLECTIONS (SAME AS CATEGORIES)
+export const GET_COLLECTIONS = "/v1/categories"
+export const ADD_COLLECTION ="/v1/categories"
+export const UPDATE_COLLECTION = "/v1/categories/"
+export const DELETE_COLLECTION = "/v1/categories/"
+
 //SHOPS
 export const GET_SHOPS = "/shops"
 
