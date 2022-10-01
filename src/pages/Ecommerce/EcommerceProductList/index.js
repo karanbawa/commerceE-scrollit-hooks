@@ -99,7 +99,7 @@ const EcommerceProductList = props => {
       const updatedProduct = {
         ...product,
         name: values.name,
-        price: values.price,
+        price: values.price.toString(),
         // change after API is updated
         // createdAt: values.createdAt,
         // displayProduct: values.displayProduct,
