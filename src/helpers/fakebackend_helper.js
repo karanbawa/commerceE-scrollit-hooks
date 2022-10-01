@@ -139,15 +139,30 @@ export const addMessage = message => post(url.ADD_MESSAGE, message);
 export const getOrders = () => get(url.GET_ORDERS);
 
 // add order
-export const addNewOrder = order => post(url.ADD_NEW_ORDER, order);
+export const addNewOrder = order => post(`${url.ADD_NEW_ORDER}` , order);
 
-// update order
-export const updateOrder = order => put(url.UPDATE_ORDER, order);
+
+
+//update order
+export const updateOrder = order => {put(`${url.UPDATE_ORDER}/${order._id}`, {
+  orderId: values.orderId,
+  billingName: values.billingName,
+  shippingAddress1:values.shippingAddress1,
+  shippingAddress2:values.shippingAddress2,
+  orderdate: values.orderdate,
+  paymentStatus: values.paymentStatus,
+  paymentMethod: values.paymentMethod,
+  badgeclass: values.badgeclass,
+
+})
+console.log(order._id)
+};
+
 
 // delete order
 export const deleteOrder = order =>
-  del(url.DELETE_ORDER, { headers: { order } });
-
+  del(`${url.DELETE_ORDER}${order._id}`, { headers: { order } });
+ 
 // get cart data
 export const getCartData = () => get(url.GET_CART_DATA);
 
@@ -158,7 +173,12 @@ export const getCustomers = () => get(url.GET_CUSTOMERS);
 export const addNewCustomer = customer => post(url.ADD_NEW_CUSTOMER, customer);
 
 // update CUSTOMER
-export const updateCustomer = customer => put(url.UPDATE_CUSTOMER, customer);
+export const updateCustomer = customer => {put(url.UPDATE_CUSTOMER, customer);
+
+  console.log(customer)
+}
+
+
 
 // delete CUSTOMER
 export const deleteCustomer = customer =>

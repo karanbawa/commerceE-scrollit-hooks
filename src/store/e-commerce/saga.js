@@ -165,12 +165,16 @@ function* onAddNewProductInList({ payload: product }) {
 
 function* fetchOrders() {
   try {
+    console.log("hello")
     const response = yield call(getOrders)
-    yield put(getOrdersSuccess(response))
+    console.log(response)
+    yield put(getOrdersSuccess(response.data))
+    
   } catch (error) {
     yield put(getOrdersFail(error))
   }
 }
+
 
 function* fetchCartData() {
   try {
@@ -247,6 +251,7 @@ function* fetchShops() {
 function* onUpdateOrder({ payload: order }) {
   try {
     const response = yield call(updateOrder, order)
+    console.log(order)
     yield put(updateOrderSuccess(response))
   } catch (error) {
     yield put(updateOrderFail(error))
@@ -256,10 +261,10 @@ function* onUpdateOrder({ payload: order }) {
 function* onDeleteOrder({ payload: order }) {
   try {
     const response = yield call(deleteOrder, order)
-    console.log("response", response)
+    // console.log("response", response)
     yield put(deleteOrderSuccess(response))
   } catch (error) {
-    console.log("error", error)
+    // console.log("error", error)
     yield put(deleteOrderFail(error))
   }
 }
@@ -267,11 +272,13 @@ function* onDeleteOrder({ payload: order }) {
 function* onAddNewOrder({ payload: order }) {
   try {
     const response = yield call(addNewOrder, order)
+    console.log(response)
     yield put(addOrderSuccess(response))
   } catch (error) {
     yield put(addOrderFail(error))
   }
 }
+
 
 function* getProductComents() {
   try {

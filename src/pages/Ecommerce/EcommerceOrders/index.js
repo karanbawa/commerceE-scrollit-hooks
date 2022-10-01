@@ -44,65 +44,84 @@ import {
   addNewOrder as onAddNewOrder,
   updateOrder as onUpdateOrder,
   deleteOrder as onDeleteOrder,
+  
 } from "store/actions"
 
 import EcommerceOrdersModal from "./EcommerceOrdersModal"
 
 const EcommerceOrders = props => {
-  const dispatch = useDispatch()
+ 
 
   const [orderList, setOrderList] = useState([])
-  const [order, setOrder] = useState(null)
+  const [order, setOrder] = useState([])
+  const dispatch = useDispatch()
 
+ 
+  
   // validation
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
 
     initialValues: {
-      orderId: (order && order.orderId) || "",
       billingName: (order && order.billingName) || "",
-      orderdate: (order && order.orderdate) || "",
-      total: (order && order.total) || "",
+      shippingAddress1:(order && order.shippingAddress1) || "",
+      shippingAddress2:(order && order.shippingAddress2) || "",
       paymentStatus: (order && order.paymentStatus) || "Paid",
       badgeclass: (order && order.badgeclass) || "success",
       paymentMethod: (order && order.paymentMethod) || "Mastercard",
+      city: (order && order.city) || "",
+      country: (order && order.country) || "",
+      state:(order && order.state) || "",
+      phone:(order && order.phone) || "",
     },
     validationSchema: Yup.object({
-      orderId: Yup.string().required("Please Enter Your Order Id"),
       billingName: Yup.string().required("Please Enter Your Billing Name"),
-      orderdate: Yup.string().required("Please Enter Your Order Date"),
-      total: Yup.string().required("Total Amount"),
+      shippingAddress1: Yup.string().required("Please Enter Your shipping address 1"),
+      shippingAddress2: Yup.string().required("Please Enter Your shipping address 2"),
       paymentStatus: Yup.string().required("Please Enter Your Payment Status"),
       badgeclass: Yup.string().required("Please Enter Your Badge Class"),
       paymentMethod: Yup.string().required("Please Enter Your Payment Method"),
+      city:Yup.string().required("Please Enter Your city"),
+      state:Yup.string().required("Please Enter Your state"),
+      country:Yup.string().required("Please Enter Your country"),
+      phone:Yup.string().required("Please Enter Your phone"),
     }),
     onSubmit: values => {
+      console.log("hi")
       if (isEdit) {
+        console.log("hello")
         const updateOrder = {
-          id: order ? order.id : 0,
-          orderId: values.orderId,
+          ...order,
           billingName: values.billingName,
-          orderdate: values.orderdate,
-          total: values.total,
+          shippingAddress1:values.shippingAddress1,
+          shippingAddress2:values.shippingAddress2,
           paymentStatus: values.paymentStatus,
           paymentMethod: values.paymentMethod,
           badgeclass: values.badgeclass,
+          city:values.city,
+          state:values.state,
+          country:values.country,
+          phone:values.phone
         }
         // update order
         dispatch(onUpdateOrder(updateOrder))
+        
         validation.resetForm()
       } else {
         const newOrder = {
-          id: Math.floor(Math.random() * (30 - 20)) + 20,
-          orderId: values["orderId"],
           billingName: values["billingName"],
-          orderdate: values["orderdate"],
-          total: values["total"],
+          shippingAddress1:values["shippingAddress1"],
+          shippingAddress2:values["shippingAddress2"],
           paymentStatus: values["paymentStatus"],
           paymentMethod: values["paymentMethod"],
           badgeclass: values["badgeclass"],
+          city:values["city"],
+          state:values["state"],
+          country:values["country"],
+          phone:values["phone"],
         }
+        console.log(newOrder)
         // save new order
         dispatch(onAddNewOrder(newOrder))
         validation.resetForm()
@@ -111,10 +130,16 @@ const EcommerceOrders = props => {
     },
   })
 
+
+
   const { orders } = useSelector(state => ({
     orders: state.ecommerce.orders
   }))
 
+  // console.log(orders)
+
+
+ 
   const selectRow = {
     mode: "checkbox",
   }
@@ -158,16 +183,21 @@ const EcommerceOrders = props => {
       sort: true,
     },
     {
+      dataField:"shippingAddress1",
+      text:"shippingAddress1",
+      sort:true,
+    },
+    {
+      dataField:"shippingAddress2",
+      text:"shippingAddress2",
+      sort:true,
+    },
+    {
       dataField: "orderdate",
       text: "Date",
       sort: true,
       // eslint-disable-next-line react/display-name
       formatter: (cellContent, row) => handleValidDate(row.orderdate),
-    },
-    {
-      dataField: "total",
-      text: "Total",
-      sort: true,
     },
     {
       dataField: "paymentStatus",
@@ -258,9 +288,9 @@ const EcommerceOrders = props => {
     if (orders && !orders.length) {
       dispatch(onGetOrders())
     }
-  }, [dispatch, orders])
+  }, [])
 
-  useEffect(() => {
+  useEffect(() => { 
     setOrderList(orders)
   }, [orders])
 
@@ -281,23 +311,14 @@ const EcommerceOrders = props => {
   }
 
   const handleOrderClick = arg => {
-    const order = arg
-
-    setOrder({
-      id: order.id,
-      orderId: order.orderId,
-      billingName: order.billingName,
-      orderdate: order.orderdate,
-      total: order.total,
-      paymentStatus: order.paymentStatus,
-      paymentMethod: order.paymentMethod,
-      badgeclass: order.badgeclass,
-    })
+  
+    setOrder(arg)
 
     setIsEdit(true)
 
     toggle()
   }
+  
 
   var node = useRef()
   const onPaginationPageChange = page => {
@@ -316,12 +337,14 @@ const EcommerceOrders = props => {
   const [deleteModal, setDeleteModal] = useState(false)
 
   const onClickDelete = order => {
+    //console.log(order)
     setOrder(order)
     setDeleteModal(true)
   }
 
   const handleDeleteOrder = () => {
-    if (order.id) {
+    console.log(order)
+    if (order._id) {
       dispatch(onDeleteOrder(order))
       onPaginationPageChange(1)
       setDeleteModal(false)
@@ -429,6 +452,7 @@ const EcommerceOrders = props => {
                                     <Form
                                       onSubmit={e => {
                                         e.preventDefault()
+                                        console.log("data")
                                         validation.handleSubmit()
                                         return false
                                       }}
@@ -492,6 +516,76 @@ const EcommerceOrders = props => {
                                               </FormFeedback>
                                             ) : null}
                                           </div>
+                                         
+                                         
+
+                                          <div className="mb-3">
+                                          <Label className="form-label">
+                                          shippingAddress1 
+                                          </Label>
+                                          <Input
+                                            name="shippingAddress1"
+                                            type="text"
+                                            validate={{
+                                              required: { value: true },
+                                            }}
+                                            onChange={validation.handleChange}
+                                            onBlur={validation.handleBlur}
+                                            value={
+                                              validation.values.shippingAddress1 ||
+                                              ""
+                                            }
+                                            invalid={
+                                              validation.touched
+                                                .shippingAddress1 &&
+                                              validation.errors.shippingAddress1
+                                                ? true
+                                                : false
+                                            }
+                                          />
+                                          {validation.touched.shippingAddress1 &&
+                                          validation.errors.shippingAddress1 ? (
+                                            <FormFeedback type="invalid">
+                                              {validation.errors.shippingAddress1}
+                                            </FormFeedback>
+                                          ) : null}
+                                        </div>
+                                       
+
+                                        <div className="mb-3">
+                                        <Label className="form-label">
+                                        shippingAddress2
+                                        </Label>
+                                        <Input
+                                          name="shippingAddress2"
+                                          type="text"
+                                          validate={{
+                                            required: { value: true },
+                                          }}
+                                          onChange={validation.handleChange}
+                                          onBlur={validation.handleBlur}
+                                          value={
+                                            validation.values.shippingAddress2 ||
+                                            ""
+                                          }
+                                          invalid={
+                                            validation.touched
+                                              .shippingAddress2 &&
+                                            validation.errors.shippingAddress2
+                                              ? true
+                                              : false
+                                          }
+                                        />
+                                        {validation.touched.shippingAddress2 &&
+                                        validation.errors.shippingAddress2 ? (
+                                          <FormFeedback type="invalid">
+                                            {validation.errors.shippingAddress2}
+                                          </FormFeedback>
+                                        ) : null}
+                                      </div>
+                                        
+
+
                                           <div className="mb-3">
                                             <Label className="form-label">
                                               Order Date
@@ -520,32 +614,7 @@ const EcommerceOrders = props => {
                                               </FormFeedback>
                                             ) : null}
                                           </div>
-                                          <div className="mb-3">
-                                            <Label className="form-label">
-                                              Total
-                                            </Label>
-                                            <Input
-                                              name="total"
-                                              type="text"
-                                              onChange={validation.handleChange}
-                                              onBlur={validation.handleBlur}
-                                              value={
-                                                validation.values.total || ""
-                                              }
-                                              invalid={
-                                                validation.touched.total &&
-                                                validation.errors.total
-                                                  ? true
-                                                  : false
-                                              }
-                                            />
-                                            {validation.touched.total &&
-                                            validation.errors.total ? (
-                                              <FormFeedback type="invalid">
-                                                {validation.errors.total}
-                                              </FormFeedback>
-                                            ) : null}
-                                          </div>
+                                         
                                           <div className="mb-3">
                                             <Label className="form-label">
                                               Total

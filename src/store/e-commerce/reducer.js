@@ -137,7 +137,7 @@ const Ecommerce = (state = INIT_STATE, action) => {
     case GET_ORDERS_SUCCESS:
       return {
         ...state,
-        orders: action.payload,
+         orders: action.payload,
       }
 
     case GET_ORDERS_FAIL:
@@ -162,11 +162,12 @@ const Ecommerce = (state = INIT_STATE, action) => {
       return {
         ...state,
         orders: state.orders.map(order =>
-          order.id === action.payload.id.toString()
+          order._id === action.payload._id.toString()
             ? { order, ...action.payload }
             : order
         ),
-      }
+        }
+
 
     case UPDATE_ORDER_FAIL:
       return {

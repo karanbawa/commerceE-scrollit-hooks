@@ -207,6 +207,7 @@ export const deleteOrder = order => ({
   payload: order,
 })
 
+
 export const deleteOrderSuccess = order => ({
   type: DELETE_ORDER_SUCCESS,
   payload: order,
