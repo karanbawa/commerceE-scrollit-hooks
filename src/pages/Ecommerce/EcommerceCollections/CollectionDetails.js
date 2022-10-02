@@ -1,6 +1,7 @@
 import React from "react"
 import update from "immutability-helper"
 import { useState } from "react"
+import PropTypes from "prop-types"
 import {
   Container,
   Col,
@@ -31,23 +32,19 @@ import { getProductList } from "store/actions"
 import { useEffect } from "react"
 
 export default function EcommerceCollectionDetails() {
-  const [collection, setCollection] = useState({
-    name: "Untitled Collection",
-    productIds: [],
-  })
-  const [productList, setProductList] = useState([])
-
   const { _id } = useParams()
-  const dispatch = useDispatch()
   const { collections, products } = useSelector(state => ({
     collections: state.ecommerce.collections,
-    products: state.ecommerce.productList,
+    products: state.ecommerce.productList
   }))
 
-  let isMutable = true
-  if (_id === "all-products") {
-    isMutable = false
-  }
+  const collection = collections.filter(collection => collection._id === _id)[0]
+
+  const [collectionName, setCollectionName] = useState(collection.name)
+  const [collectionImage, setCollectionImage] = useState(collection.image)
+  const [collectionProductIds, setCollectionProductIds] = useState(
+    collection.productIds
+  )
 
   useEffect(() => {
     if (products && !products.length) {
@@ -55,19 +52,15 @@ export default function EcommerceCollectionDetails() {
     }
   }, [])
 
-  useEffect(() => {
-    setProductList(products)
-  }, [products])
-
-  useEffect(() => {
-    if (collections) {
-      setCollection(collections.filter(collection => collection._id === _id)[0])
-      console.log(collection)
-    }
-  },[collection])
+  // useEffect(() => {
+  //   if (collections) {
+  //     setCollection(collections.filter(collection => collection._id === _id)[0])
+  //     console.log(collection)
+  //   }
+  // }, [])
 
   const moveCollectionProductPreview = useCallback((dragIndex, hoverIndex) => {
-    setProducts(prevCards =>
+    setCollectionProductIds(prevCards =>
       update(prevCards, {
         $splice: [
           [dragIndex, 1],
@@ -81,11 +74,11 @@ export default function EcommerceCollectionDetails() {
     (CollectionProductPreviewItem, index) => {
       return (
         <CollectionProductPreview
-          key={CollectionProductPreviewItem.id}
+          key={CollectionProductPreviewItem._id}
           index={index}
           id={CollectionProductPreviewItem.id}
-          img={CollectionProductPreviewItem.img}
-          text={CollectionProductPreviewItem.text}
+          img={"https://picsum.photos/200"}
+          text={CollectionProductPreviewItem.name}
           moveCollectionProductPreview={moveCollectionProductPreview}
         />
       )
@@ -96,17 +89,17 @@ export default function EcommerceCollectionDetails() {
   return (
     <React.Fragment>
       <div className="page-content">
-        <Container fluid className="mx-auto" style={{ maxWidth: "1100px" }}>
+        <Container fluid className="mx-auto" style={{ maxWidth: "1300px" }}>
           <Row>
             <Col>
               <Row>
                 <Col>
                   <Link to={"/ecommerce-collections"}>Collections</Link> &gt;{" "}
-                  {collection ? collection.name : null}
+                  {collectionName}
                 </Col>
               </Row>
               <Row className="display-6 m-3">
-                {collection ? collection.name : null}
+                {collectionName}
               </Row>
             </Col>
             <Col className="h-100">
@@ -163,11 +156,12 @@ export default function EcommerceCollectionDetails() {
                   <DndProvider backend={HTML5Backend}>
                     <Row>
                       <CardGroup>
-                        {productList.map((CollectionProductPreview, i) =>
-                          renderCollectionProductPreview(
-                            CollectionProductPreview,
-                            i
-                          )
+                        {collectionProductIds.map(
+                          (CollectionProductPreview, i) =>
+                            renderCollectionProductPreview(
+                              CollectionProductPreview,
+                              i
+                            )
                         )}
                       </CardGroup>
                     </Row>

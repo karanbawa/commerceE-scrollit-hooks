@@ -17,10 +17,9 @@ import { useEffect } from "react"
 
 export default function EcommerceCollections() {
   const [collectionList, setCollectionList] = useState([])
-  const [filteredCollectionList, setFilteredCollectionList] = useState([])
-
+  const sortedCollections = []
   const dispatch = useDispatch()
-  const { collections } = useSelector(state => ({
+  const { collections, products } = useSelector(state => ({
     collections: state.ecommerce.collections,
     products: state.ecommerce.productList,
   }))
@@ -30,11 +29,17 @@ export default function EcommerceCollections() {
     if (collections && !collections.length) {
       dispatch(getCollections())
     }
+
+    if (products && !products.length) {
+      dispatch(getProductList())
+    }
   }, [])
 
   useEffect(() => {
     setCollectionList(collections)
   }, [collections])
+
+  console.log(collectionList)
 
   return (
     <React.Fragment>
@@ -42,11 +47,11 @@ export default function EcommerceCollections() {
         <MetaTags>
           <title>Collections | Scrollit</title>
         </MetaTags>
-        <Container className="p-2" fluid style={{ maxWidth: "1100px" }}>
+        <Container className="p-2" fluid style={{ maxWidth: "1300px" }}>
           <Row>
             <Col className="display-6 ">
               Collections{" "}
-              <span className="text-secondary">{collections.length + 1}</span>
+              <span className="text-secondary">{collections.length}</span>
             </Col>
             <Col>
               <div className="mt-4 mt-sm-0 float-sm-end d-flex align-items-center">
@@ -56,11 +61,6 @@ export default function EcommerceCollections() {
                       type="text"
                       className="form-control"
                       placeholder="Search"
-                      onChange={event => {
-                        if (!event.target.value) {
-                          setFilteredCollectionList(collectionList)
-                        }
-                      }}
                     />
                     <i className="bx bx-search-alt search-icon" />
                   </div>
@@ -82,11 +82,6 @@ export default function EcommerceCollections() {
             Group related products into collections and add them to your site.
           </Row>
           <Row className="mt-2">
-            <CollectionTile
-              _id="all-products"
-              name="All Products"
-              productIds={[]}
-            />
             {collectionList.map(collection => (
               <CollectionTile
                 key={collection._id}
@@ -98,8 +93,11 @@ export default function EcommerceCollections() {
                 isMutable={true}
               />
             ))}
-            <div className="col-4 pt-4">
-              <Link className=" rounded bg-success d-flex justify-content-center align-items-center h-100" to={`/ecommerce-collection-details/untitled-collection`}>
+            <div className="col-4 pt-4" style={{ minHeight: "280px" }}>
+              <Link
+                className=" rounded bg-success d-flex justify-content-center align-items-center h-100"
+                to={`/ecommerce-collection-details/untitled-collection`}
+              >
                 <i className="mdi mdi-plus mdi-48px me-1 text-white" />
               </Link>
             </div>

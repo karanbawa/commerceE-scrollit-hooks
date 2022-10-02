@@ -44,7 +44,7 @@ function CollectionTile({ _id, name, icon, color, productIds, isMutable }) {
                   </DropdownItem> */}
                   <DropdownItem href="#" onClick={() => console.log("hello!!")}>
                     <i className="mdi mdi-file-image me-3" />
-                    Add Image
+                    Update Image
                   </DropdownItem>
                   {isMutable ? (
                     <DropdownItem

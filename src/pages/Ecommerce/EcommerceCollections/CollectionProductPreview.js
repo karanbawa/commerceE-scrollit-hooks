@@ -2,7 +2,16 @@ import PropTypes from "prop-types"
 import React from "react"
 import { useRef } from "react"
 import { useDrag, useDrop } from "react-dnd"
-import { Card, CardBody, CardFooter, CardHeader, Col, Row } from "reactstrap"
+import {
+  Badge,
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Col,
+  Row,
+} from "reactstrap"
 import "./CollectionProductPreview-styles.scss"
 
 export default function CollectionProductPreview({
@@ -49,10 +58,23 @@ export default function CollectionProductPreview({
       ref={ref}
       data-handler-id={handlerId}
     >
-      <Card className="pw-3 pe-3">
-        <CardHeader className="position-absolute-top">{index + 1}</CardHeader>
-        <img src={img} width="100%"></img>
-        <CardFooter>{text}</CardFooter>
+      <Card className="mx-2">
+        <img className="mh-100 position-relative" src={img} width="100%"></img>
+
+        <div className="position-absolute font-size-18 pt-2 d-flex align-items-center justify-content-between w-100">
+          <Badge pill color="light " className=" opacity-75 mx-3">
+            {index + 1}
+          </Badge>
+          <Button
+            className="btn-transparent btn-rounded border-0 mx-2 delete-product-in-collection"
+            outline
+          >
+            <i className="mdi mdi-close text-sm-end text-white opacity-100" />
+          </Button>
+        </div>
+        <CardFooter className="bg-white w-100 h-25">
+          {text}
+        </CardFooter>
       </Card>
     </div>
   )

@@ -1,3 +1,16 @@
+.collection-product-preview {
+  cursor: all-scroll;
+}
+
 .collection-product-preview:hover img {
-  filter: sepia(100%) saturate(200%) brightness(70%) hue-rotate(330deg);
+  filter: brightness(0.5) saturate(2) blur(0.65px);
+  max-height: 10px;
+}
+
+.delete-product-in-collection {
+  visibility: hidden;
+}
+
+.collection-product-preview:hover .delete-product-in-collection {
+  visibility: visible;
 }
