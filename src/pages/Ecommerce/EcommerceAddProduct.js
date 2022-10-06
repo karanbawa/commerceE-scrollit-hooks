@@ -1,11 +1,11 @@
-import React, { Component } from "react";
-import MetaTags from "react-meta-tags";
-import "../../assets/scss/custom/pages/_addproductV3.scss";
-import Dropzone from "react-dropzone";
-import { connect } from "react-redux";
-import { Link, withRouter } from "react-router-dom";
-import { Editor } from "react-draft-wysiwyg";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import React, { Component } from "react"
+import MetaTags from "react-meta-tags"
+import "../../assets/scss/custom/pages/_addproductV3.scss"
+import Dropzone from "react-dropzone"
+import { connect } from "react-redux"
+import { Link, withRouter } from "react-router-dom"
+import { Editor } from "react-draft-wysiwyg"
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
 
 import {
   Card,
@@ -34,10 +34,10 @@ import {
   Modal,
   ModalBody,
   ModalHeader,
-} from "reactstrap";
-import Select from "react-select";
-import classNames from "classnames";
-import BootstrapTable from "react-bootstrap-table-next";
+} from "reactstrap"
+import Select from "react-select"
+import classNames from "classnames"
+import BootstrapTable from "react-bootstrap-table-next"
 // const columns = [
 //   {
 //     dataField: "variant",
@@ -78,7 +78,7 @@ const tempData = [
     name: "item-name4",
     price: 200,
   },
-];
+]
 const optionGroup3 = [
   {
     label: "Option",
@@ -87,7 +87,7 @@ const optionGroup3 = [
       { label: "Color", value: "color" },
     ],
   },
-];
+]
 const optionGroup = [
   {
     label: "Size",
@@ -97,7 +97,7 @@ const optionGroup = [
       { label: "Small", value: "small" },
     ],
   },
-];
+]
 const optionGroup2 = [
   {
     label: "Color",
@@ -107,12 +107,12 @@ const optionGroup2 = [
       { label: "Gray", value: "gray" },
     ],
   },
-];
+]
 export class EcommerceAddProduct extends Component {
-  _isMounted = false;
+  _isMounted = false
 
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       selectedFiles: [],
       toggleSwitchLarge: false,
@@ -148,7 +148,7 @@ export class EcommerceAddProduct extends Component {
               <div>{`${row.productColor ? row.productColor : ""}|${
                 row.productSize
               }`}</div>
-            );
+            )
           },
         },
         {
@@ -170,10 +170,10 @@ export class EcommerceAddProduct extends Component {
                 onChange={event => {
                   this.setState({
                     priceDiff: event.target.value,
-                  });
+                  })
                 }}
               />
-            );
+            )
           },
         },
         {
@@ -195,7 +195,7 @@ export class EcommerceAddProduct extends Component {
                 className="i3 h4 p-3 mt-1 w-100"
                 placeholder="0"
               />
-            );
+            )
           },
         },
         {
@@ -216,7 +216,7 @@ export class EcommerceAddProduct extends Component {
                 className="i3 h4 p-3 mt-1 w-100"
                 placeholder="0"
               />
-            );
+            )
           },
         },
         {
@@ -231,7 +231,7 @@ export class EcommerceAddProduct extends Component {
                 <option value="inStock">In stock</option>
                 <option value="outOfStock">Out of Stock</option>
               </select>
-            );
+            )
           },
         },
         {
@@ -249,7 +249,7 @@ export class EcommerceAddProduct extends Component {
                 className="i3 h4 p-3 mt-1 w-100"
                 placeholder="0"
               />
-            );
+            )
           },
         },
         {
@@ -263,52 +263,52 @@ export class EcommerceAddProduct extends Component {
               <h2>
                 <i className="bx bx-show b-color "></i>
               </h2>
-            );
+            )
           },
         },
       ],
-    };
-    this.tog_inventory = this.tog_inventory.bind(this);
-    this.tog_large = this.tog_large.bind(this);
-    this.tog_connect_modal = this.tog_connect_modal.bind(this);
-    this.handleMulti = this.handleMulti.bind(this);
-    this.tog_img_option_modal = this.tog_img_option_modal.bind(this);
-    this.linkFollow = this.linkFollow.bind(this);
-    this.handleSelectGroup = this.handleSelectGroup.bind(this);
+    }
+    this.tog_inventory = this.tog_inventory.bind(this)
+    this.tog_large = this.tog_large.bind(this)
+    this.tog_connect_modal = this.tog_connect_modal.bind(this)
+    this.handleMulti = this.handleMulti.bind(this)
+    this.tog_img_option_modal = this.tog_img_option_modal.bind(this)
+    this.linkFollow = this.linkFollow.bind(this)
+    this.handleSelectGroup = this.handleSelectGroup.bind(this)
   }
 
   handleMulti = selectedMulti => {
-    this.setState({ selectedMulti });
-  };
+    this.setState({ selectedMulti })
+  }
   linkFollow = (cell, row, rowIndex, formatExtraData) => {
-    return <Button>Follow</Button>;
-  };
+    return <Button>Follow</Button>
+  }
 
   NavVisible = () => {
     if (window.scrollY >= 80) {
       this.setState({
         showNav: true,
-      });
+      })
     } else {
       this.setState({
         showNav: false,
-      });
+      })
     }
-  };
+  }
 
   handleSelectGroup = selectedGroup => {
-    this.setState({ selectedGroup });
-  };
+    this.setState({ selectedGroup })
+  }
 
   componentDidMount() {
-    this._isMounted = true;
+    this._isMounted = true
     if (this._isMounted) {
-      window.addEventListener("scroll", this.NavVisible);
+      window.addEventListener("scroll", this.NavVisible)
     }
   }
 
   componentWillUnmount() {
-    this._isMounted = false;
+    this._isMounted = false
   }
 
   // componentDidMount() {
@@ -318,50 +318,50 @@ export class EcommerceAddProduct extends Component {
   tog_large() {
     this.setState(prevState => ({
       modal_large: !prevState.modal_large,
-    }));
-    this.removeBodyCss();
+    }))
+    this.removeBodyCss()
   }
   tog_connect_modal() {
     this.setState(prevState => ({
       connect_modal: !prevState.connect_modal,
-    }));
-    this.removeBodyCss();
+    }))
+    this.removeBodyCss()
   }
 
   tog_img_option_modal() {
     this.setState(prevState => ({
       imgOptionModal: !prevState.imgOptionModal,
-    }));
-    this.removeBodyCss();
+    }))
+    this.removeBodyCss()
   }
   tog_inventory() {
     this.setState(prevState => ({
       toggleSwitchLarge3: !prevState.toggleSwitchLarge3,
-    }));
-    this.removeBodyCss();
+    }))
+    this.removeBodyCss()
   }
   removeBodyCss() {
-    document.body.classList.add("no_padding");
+    document.body.classList.add("no_padding")
   }
   render() {
-    const { selectedMulti, setOption } = this.state;
-    const dragItem = React.createRef(null);
-    const dragOverItem = React.createRef(null);
-    console.log(this.state.inventoryProducts);
+    const { selectedMulti, setOption } = this.state
+    const dragItem = React.createRef(null)
+    const dragOverItem = React.createRef(null)
+    console.log(this.state.inventoryProducts)
 
     const handleSort = () => {
-      let _selectedFiles = [...this.state.selectedFiles];
+      let _selectedFiles = [...this.state.selectedFiles]
 
-      const draggedItemContent = _selectedFiles.splice(dragItem.current, 1)[0];
+      const draggedItemContent = _selectedFiles.splice(dragItem.current, 1)[0]
 
-      _selectedFiles.splice(dragOverItem.current, 0, draggedItemContent);
+      _selectedFiles.splice(dragOverItem.current, 0, draggedItemContent)
 
-      dragItem.current = null;
-      dragOverItem.current = null;
+      dragItem.current = null
+      dragOverItem.current = null
 
       //update the actual array
-      this.setState({ selectedFiles: _selectedFiles });
-    };
+      this.setState({ selectedFiles: _selectedFiles })
+    }
 
     const handleAcceptedFiles = files => {
       files.map(file =>
@@ -369,53 +369,53 @@ export class EcommerceAddProduct extends Component {
           preview: URL.createObjectURL(file),
           formattedSize: formatBytes(file.size),
         })
-      );
+      )
       this.setState(prevState => ({
         selectedFiles: prevState.selectedFiles.concat(files),
-      }));
-    };
+      }))
+    }
 
     const formatBytes = (bytes, decimals = 2) => {
-      if (bytes === 0) return "0 Bytes";
-      const k = 1024;
-      const dm = decimals < 0 ? 0 : decimals;
-      const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+      if (bytes === 0) return "0 Bytes"
+      const k = 1024
+      const dm = decimals < 0 ? 0 : decimals
+      const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
 
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-    };
+      const i = Math.floor(Math.log(bytes) / Math.log(k))
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i]
+    }
 
     const remove = fileIndex => {
-      const newFiles = [...this.state.selectedFiles];
-      newFiles.splice(fileIndex, 1);
-      this.setState({ selectedFiles: newFiles });
-    };
+      const newFiles = [...this.state.selectedFiles]
+      newFiles.splice(fileIndex, 1)
+      this.setState({ selectedFiles: newFiles })
+    }
 
     const handleAddCustomTextInput = e => {
-      e.preventDefault();
+      e.preventDefault()
       this.setState({
         customTextList: [...this.state.customTextList, { item: "" }],
-      });
-    };
+      })
+    }
 
     const handleDeleteCustomTextInput = (e, index) => {
-      e.preventDefault();
+      e.preventDefault()
 
       this.setState({
         customTextList: this.state.customTextList.splice(index, 1),
-      });
-    };
+      })
+    }
 
     const productOptionChange = event => {
       this.setState({
         setOption: event.target.value,
         selectedMulti: null,
-      });
-    };
+      })
+    }
 
     const handleOptionsAdd = (event, selectedMulti) => {
-      event.preventDefault();
-      const newList = { productOption: setOption, optionList: selectedMulti };
+      event.preventDefault()
+      const newList = { productOption: setOption, optionList: selectedMulti }
       // this.setState({
       //   selectedOptionsList: [newList, ...this.state.selectedOptionsList],
       // });
@@ -424,19 +424,19 @@ export class EcommerceAddProduct extends Component {
           selectedOptionsList: [newList, ...prevState.selectedOptionsList],
         }),
         manageInventory
-      );
-      this.setState({ modal_large: false });
+      )
+      this.setState({ modal_large: false })
 
       // this.state.selectedOptionsList.push(selectedMulti);
-    };
+    }
 
     const manageInventory = () => {
       const selectedColor = this.state.selectedOptionsList.find(
         item => item.productOption === "color"
-      );
+      )
       const selectedSize = this.state.selectedOptionsList.find(
         item => item.productOption === "list"
-      );
+      )
 
       if ((selectedColor == undefined) & (selectedSize != null)) {
         selectedSize.optionList.forEach(subItem =>
@@ -450,11 +450,11 @@ export class EcommerceAddProduct extends Component {
               },
             ],
           }))
-        );
+        )
       } else {
         this.setState({
           inventoryProducts: [],
-        });
+        })
         selectedColor?.optionList.forEach(item =>
           selectedSize?.optionList.forEach(subItem =>
             this.setState(prevState => ({
@@ -468,43 +468,43 @@ export class EcommerceAddProduct extends Component {
               ],
             }))
           )
-        );
+        )
       }
-    };
+    }
 
     const ManageSelectedImages = () => {
-      console.log(this.state.selectedImgOptionList);
-    };
+      console.log(this.state.selectedImgOptionList)
+    }
 
     const handleDeleteOptionRow = (index, event) => {
-      event.preventDefault();
+      event.preventDefault()
 
-      const listupdt = this.state.selectedOptionsList.splice(index, 1);
+      const listupdt = this.state.selectedOptionsList.splice(index, 1)
       this.setState({
         selectedOptionsList: listupdt,
-      });
-    };
+      })
+    }
 
     const handleEditOptionRow = (index, event) => {
-      event.preventDefault();
-      const selectedRow = this.state.selectedOptionsList[index];
+      event.preventDefault()
+      const selectedRow = this.state.selectedOptionsList[index]
       this.setState({
         selectedMulti: selectedRow.optionList,
         setOption: selectedRow.productOption,
-      });
+      })
 
-      this.tog_large();
-    };
+      this.tog_large()
+    }
 
     const getOptionImgIndex = (index, item) => {
       this.setState({
         selectedImgOptionIndex: index,
-      });
-    };
+      })
+    }
 
     const addImageOption = event => {
       const selectedImage =
-        this.state.selectedFiles[this.state.selectedImgOptionIndex];
+        this.state.selectedFiles[this.state.selectedImgOptionIndex]
       this.setState(
         prevState => ({
           selectedImgOptionList: [
@@ -513,17 +513,17 @@ export class EcommerceAddProduct extends Component {
           ],
         }),
         ManageSelectedImages
-      );
+      )
       this.setState({
         imgOptionModal: false,
-      });
-    };
+      })
+    }
 
     const getRowIndex = (rowIndex, optionName) => {
       this.setState({
         currentOption: optionName,
-      });
-    };
+      })
+    }
 
     return (
       <div className="main-container page-content ">
@@ -652,15 +652,15 @@ export class EcommerceAddProduct extends Component {
                                 </td>
                               ) : (
                                 ""
-                              );
+                              )
                             }
                           )}
                           <td>
                             <div
                               className="option-img-add d-flex align-items-center justify-content-center"
                               onClick={() => {
-                                getRowIndex(index, subitem.label);
-                                this.tog_img_option_modal();
+                                getRowIndex(index, subitem.label)
+                                this.tog_img_option_modal()
                               }}
                             >
                               <i className="bx bx-plus h3 mt-2 "></i>
@@ -668,7 +668,7 @@ export class EcommerceAddProduct extends Component {
                           </td>
                           <hr />
                         </tr>
-                      );
+                      )
                     })}
                   </div>
                 ))}
@@ -759,7 +759,7 @@ export class EcommerceAddProduct extends Component {
                               <button
                                 className="remove-btn-big"
                                 onClick={() => {
-                                  remove(0);
+                                  remove(0)
                                 }}
                               >
                                 x
@@ -811,12 +811,12 @@ export class EcommerceAddProduct extends Component {
                                     className="mx-3 img-cont-sm"
                                   />
                                 </div>
-                              );
+                              )
                             })}
                           <div className=" dropzone-custom mx-3">
                             <Dropzone
                               onDrop={acceptedFiles => {
-                                handleAcceptedFiles(acceptedFiles);
+                                handleAcceptedFiles(acceptedFiles)
                               }}
                             >
                               {({ getRootProps, getInputProps }) => (
@@ -840,7 +840,7 @@ export class EcommerceAddProduct extends Component {
                       <div className=" dropzone-big mx-2 ">
                         <Dropzone
                           onDrop={acceptedFiles => {
-                            handleAcceptedFiles(acceptedFiles);
+                            handleAcceptedFiles(acceptedFiles)
                           }}
                         >
                           {({ getRootProps, getInputProps }) => (
@@ -922,7 +922,7 @@ export class EcommerceAddProduct extends Component {
                     onChange={event => {
                       this.setState({
                         price: event.target.value,
-                      });
+                      })
                     }}
                   />
 
@@ -934,7 +934,7 @@ export class EcommerceAddProduct extends Component {
                       onClick={() => {
                         this.setState({
                           toggleSwitchLarge: !this.state.toggleSwitchLarge,
-                        });
+                        })
                       }}
                     />
                     <label
@@ -984,7 +984,7 @@ export class EcommerceAddProduct extends Component {
                       onClick={() => {
                         this.setState({
                           toggleSwitchLarge2: !this.state.toggleSwitchLarge2,
-                        });
+                        })
                       }}
                     />
                     <label
@@ -1274,9 +1274,9 @@ export class EcommerceAddProduct extends Component {
                           href=""
                           className="d-flex  "
                           onClick={event => {
-                            event.preventDefault();
-                            this.setState({ selectedMulti: null });
-                            this.tog_large();
+                            event.preventDefault()
+                            this.setState({ selectedMulti: null })
+                            this.tog_large()
                           }}
                         >
                           <p className="text-primary mx-1 h4 mt-2">+</p>
@@ -1293,7 +1293,7 @@ export class EcommerceAddProduct extends Component {
                             this.setState({
                               toggleSwitchLarge3:
                                 !this.state.toggleSwitchLarge3,
-                            });
+                            })
                           }}
                         />
                         <label
@@ -1441,8 +1441,8 @@ export class EcommerceAddProduct extends Component {
                       this.state.selectedOptionsList.length >= 2 ? true : false
                     }
                     onClick={event => {
-                      handleOptionsAdd(event, selectedMulti);
-                      manageInventory();
+                      handleOptionsAdd(event, selectedMulti)
+                      manageInventory()
                     }}
                   >
                     Add
@@ -1471,7 +1471,7 @@ export class EcommerceAddProduct extends Component {
                       onClick={() => {
                         this.setState({
                           toggleSwitchLarge: !this.state.toggleSwitchLarge,
-                        });
+                        })
                       }}
                     />
                     <label
@@ -1657,19 +1657,19 @@ export class EcommerceAddProduct extends Component {
           </Row>
         </div>
       </div>
-    );
+    )
   }
 }
 
-EcommerceAddProduct.propTypes = {};
+EcommerceAddProduct.propTypes = {}
 
 const mapStateToProps = state => ({
   products: state.ecommerce.products,
-});
+})
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({})
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(EcommerceAddProduct));
+)(withRouter(EcommerceAddProduct))

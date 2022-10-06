@@ -72,9 +72,7 @@ export default function CollectionProductPreview({
             <i className="mdi mdi-close text-sm-end text-white opacity-100" />
           </Button>
         </div>
-        <CardFooter className="bg-white w-100 h-25">
-          {text}
-        </CardFooter>
+        <CardFooter className="bg-white w-100 h-25">{text}</CardFooter>
       </Card>
     </div>
   )

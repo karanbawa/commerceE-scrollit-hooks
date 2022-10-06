@@ -26,20 +26,20 @@ export default function EcommerceCollections() {
 
   //Getting Collections from store
   useEffect(() => {
-    if (collections && !collections.length) {
-      dispatch(getCollections())
-    }
-
     if (products && !products.length) {
       dispatch(getProductList())
     }
   }, [])
 
+  useEffect(()=>{
+    if (collections && !collections.length && products.length && products) {
+      dispatch(getCollections())
+    }
+  },[collections,products])
+
   useEffect(() => {
     setCollectionList(collections)
   }, [collections])
-
-  console.log(collectionList)
 
   return (
     <React.Fragment>

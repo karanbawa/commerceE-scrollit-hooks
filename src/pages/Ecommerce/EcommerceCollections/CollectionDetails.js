@@ -20,45 +20,75 @@ import {
   DropdownMenu,
   DropdownItem,
   CardGroup,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Alert,
 } from "reactstrap"
 import Dropzone from "react-dropzone"
-import { Link, useParams } from "react-router-dom"
+import { Link, useHistory, useParams } from "react-router-dom"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import { DndProvider } from "react-dnd"
 import CollectionProductPreview from "./CollectionProductPreview"
 import { useCallback } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { getProductList } from "store/actions"
+import {
+  deleteCollection,
+  getCollections,
+  getProductList,
+  updateCollection,
+} from "store/actions"
 import { useEffect } from "react"
 
 export default function EcommerceCollectionDetails() {
+  const dispatch = useDispatch()
+  const history = useHistory()
   const { _id } = useParams()
+
+  // Getting collections and products from store
   const { collections, products } = useSelector(state => ({
     collections: state.ecommerce.collections,
-    products: state.ecommerce.productList
+    products: state.ecommerce.productList,
   }))
 
+  // Getting page specific collection from collections
   const collection = collections.filter(collection => collection._id === _id)[0]
 
-  const [collectionName, setCollectionName] = useState(collection.name)
-  const [collectionImage, setCollectionImage] = useState(collection.image)
-  const [collectionProductIds, setCollectionProductIds] = useState(
-    collection.productIds
+  // Creating a local set of values that will enable editing
+  const [collectionName, setCollectionName] = useState(
+    collection ? collection.name : ""
   )
+  const [collectionImage, setCollectionImage] = useState(
+    collection ? collection.image : ""
+  )
+  const [collectionProductIds, setCollectionProductIds] = useState(
+    collection ? collection.productIds : []
+  )
+  const [modal, setModal] = useState(false)
 
+  // call APIs if products or collections is empty
   useEffect(() => {
     if (products && !products.length) {
       dispatch(getProductList())
     }
-  }, [])
+  }, [products])
 
-  // useEffect(() => {
-  //   if (collections) {
-  //     setCollection(collections.filter(collection => collection._id === _id)[0])
-  //     console.log(collection)
-  //   }
-  // }, [])
+  useEffect(() => {
+    if (collections && !collections.length) {
+      dispatch(getCollections())
+    }
+  }, [collections])
 
+  // redirect to collections page if a wrong id is entered in the address bar by the user
+  useEffect(() => {
+    console.log("executed")
+    if (!collection && _id !== "untitled-collection") {
+      history.push("/ecommerce-collections")
+    }
+  }, [collection])
+
+  // updating products array after drag drop action
   const moveCollectionProductPreview = useCallback((dragIndex, hoverIndex) => {
     setCollectionProductIds(prevCards =>
       update(prevCards, {
@@ -70,6 +100,7 @@ export default function EcommerceCollectionDetails() {
     )
   }, [])
 
+  // rendering drag drop product cards
   const renderCollectionProductPreview = useCallback(
     (CollectionProductPreviewItem, index) => {
       return (
@@ -77,7 +108,7 @@ export default function EcommerceCollectionDetails() {
           key={CollectionProductPreviewItem._id}
           index={index}
           id={CollectionProductPreviewItem.id}
-          img={"https://picsum.photos/200"}
+          img={CollectionProductPreviewItem.media[0].url}
           text={CollectionProductPreviewItem.name}
           moveCollectionProductPreview={moveCollectionProductPreview}
         />
@@ -85,6 +116,40 @@ export default function EcommerceCollectionDetails() {
     },
     []
   )
+
+  // handling save action
+  const handleSaveCollection = () => {
+    if(_id === 'untitled-collection'){
+      
+    }
+    if (
+      collection.name === collectionName &&
+      collection.image === collectionImage
+    ) {
+      history.push("/ecommerce-collections")
+      return
+    } else {
+      dispatch(
+        updateCollection({
+          name: collectionName,
+          image: collectionImage,
+          _id: _id,
+        })
+      )
+    }
+    history.push("/ecommerce-collections")
+  }
+
+  // update fuction after save collection to site is defined
+  const handleSaveCollectiontoSite = () => {
+    console.log("I do nothing!!")
+  }
+
+  const handleDeleteCollection = () => {
+    dispatch(deleteCollection(_id))
+    history.push("/ecommerce-collections")
+  }
+  const toggle = () => setModal(!modal)
 
   return (
     <React.Fragment>
@@ -95,11 +160,11 @@ export default function EcommerceCollectionDetails() {
               <Row>
                 <Col>
                   <Link to={"/ecommerce-collections"}>Collections</Link> &gt;{" "}
-                  {collectionName}
+                  {collection ? collection.name : "Untitled Product"}
                 </Col>
               </Row>
               <Row className="display-6 m-3">
-                {collectionName}
+                {collection ? collection.name : "Untitled Product"}
               </Row>
             </Col>
             <Col className="h-100">
@@ -116,11 +181,16 @@ export default function EcommerceCollectionDetails() {
                     <i className="mdi mdi-dots-horizontal" />
                   </DropdownToggle>
                   <DropdownMenu className="dropdown-menu-end">
-                    <DropdownItem href="#">
+                    <DropdownItem href="#" onClick={handleSaveCollection}>
                       <i className="mdi mdi-plus text-success me-2" />
                       Add Collection to Site
                     </DropdownItem>
-                    <DropdownItem href="#">
+                    <DropdownItem
+                      href="#"
+                      onClick={() => {
+                        handleDeleteCollection()
+                      }}
+                    >
                       <i className="mdi mdi-delete text-danger me-2" />
                       Delete Collection
                     </DropdownItem>
@@ -130,6 +200,9 @@ export default function EcommerceCollectionDetails() {
                   type="button"
                   className="btn-rounded  mb-2 me-2"
                   outline
+                  onClick={() => {
+                    toggle()
+                  }}
                 >
                   Cancel
                 </Button>
@@ -137,6 +210,9 @@ export default function EcommerceCollectionDetails() {
                   type="button"
                   color="success"
                   className="btn-rounded  mb-2 me-2"
+                  onClick={() => {
+                    handleSaveCollection()
+                  }}
                 >
                   Save
                 </Button>
@@ -177,7 +253,13 @@ export default function EcommerceCollectionDetails() {
                 <CardBody>
                   <div className="m-1">
                     Collection Name
-                    <Input className="m-1" />
+                    <Input
+                      className="m-1"
+                      value={collectionName}
+                      onChange={event => {
+                        setCollectionName(event.target.value)
+                      }}
+                    />
                   </div>
                   <div className="m-1 mt-3">
                     Collection Image
@@ -199,6 +281,7 @@ export default function EcommerceCollectionDetails() {
                     type="button"
                     color="success"
                     className="btn-rounded  m-3"
+                    onClick={handleSaveCollection}
                   >
                     <i className="mdi mdi-plus me-1" />
                     Add Collection to Site
@@ -225,6 +308,29 @@ export default function EcommerceCollectionDetails() {
             </Col>
           </Row>
         </Container>
+        <Modal isOpen={modal} toggle={toggle}>
+          <ModalHeader toggle={toggle}>Confirmation</ModalHeader>
+          <ModalBody>
+            <Alert color="warning">
+              <i className="mdi mdi-alert-outline me-2"></i>The Changes you made
+              will be lost !
+            </Alert>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" onClick={toggle}>
+              Go Back
+            </Button>{" "}
+            <Button
+              color="danger"
+              onClick={() => {
+                toggle()
+                history.push('/ecommerce-collections')
+              }}
+            >
+              Discard Changes
+            </Button>
+          </ModalFooter>
+        </Modal>
       </div>
     </React.Fragment>
   )

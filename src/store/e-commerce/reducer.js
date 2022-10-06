@@ -43,6 +43,8 @@ import {
   GET_COLLECTIONS_SUCCESS,
   GET_COLLECTIONS_FAIL,
   DELETE_COLLECTION_SUCCESS,
+  UPDATE_COLLECTION_SUCCESS,
+  UPDATE_COLLECTION_FAIL,
 } from "./actionTypes"
 
 const INIT_STATE = {
@@ -56,6 +58,7 @@ const INIT_STATE = {
   shops: [],
   error: {},
   productComments: [],
+  inventoryItems: [],
 }
 
 const Ecommerce = (state = INIT_STATE, action) => {
@@ -66,9 +69,9 @@ const Ecommerce = (state = INIT_STATE, action) => {
         collections: [
           {
             name: "All Products",
-            image: "somelink",
+            image: "some link",
             _id: "all-products",
-            productIds: state.productList.map(product => product._id),
+            productIds: state.productList,
           },
           ...action.payload.map(collection => ({
             name: collection.name,
@@ -82,6 +85,22 @@ const Ecommerce = (state = INIT_STATE, action) => {
       }
 
     case GET_COLLECTIONS_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      }
+
+    case UPDATE_COLLECTION_SUCCESS:
+      return {
+        ...state,
+        collections: state.collections.map(collection =>
+          collection._id === action.payload._id.toString()
+            ? { ...collection, ...action.payload }
+            : collection
+        ),
+      }
+
+    case UPDATE_COLLECTION_FAIL:
       return {
         ...state,
         error: action.payload,

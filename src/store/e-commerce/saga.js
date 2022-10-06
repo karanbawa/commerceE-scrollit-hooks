@@ -285,13 +285,12 @@ function* onAddNewOrder({ payload: order }) {
   }
 }
 
-
-function* fetchCollections(){
-  try{
+function* fetchCollections() {
+  try {
     const response = yield call(getCollections)
     console.log(response)
     yield put(getCollectionsSuccess(response.data))
-  } catch (error){
+  } catch (error) {
     yield put(getCollectionsFail)
   }
 }
@@ -299,7 +298,7 @@ function* fetchCollections(){
 function* onUpdateCollection({ payload: collection }) {
   try {
     const response = yield call(updateCollection, collection)
-    yield put(updateCollectionSuccess(response))
+    yield put(updateCollectionSuccess(collection))
   } catch (error) {
     yield put(updateCollectionFail(error))
   }
@@ -382,7 +381,7 @@ function* ecommerceSaga() {
   yield takeEvery(ADD_NEW_PRODUCT_IN_LIST, onAddNewProductInList)
   yield takeEvery(GET_COLLECTIONS, fetchCollections)
   yield takeEvery(ADD_COLLECTION, onAddCollection)
-  yield takeEvery(UPDATE_COLLECTION, onUpdateCollection)  
+  yield takeEvery(UPDATE_COLLECTION, onUpdateCollection)
   yield takeEvery(DELETE_COLLECTION, onDeleteCollection)
   yield takeEvery(GET_ORDERS, fetchOrders)
   yield takeEvery(GET_CART_DATA, fetchCartData)

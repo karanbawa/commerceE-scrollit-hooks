@@ -53,7 +53,11 @@ export const getCollections = () => get(url.GET_COLLECTIONS)
 export const addCollection = collection => post(url.ADD_COLLECTION, collection)
 
 export const updateCollection = collection =>
-  put(`${url.UPDATE_COLLECTION}${collection._id}`, {})
+  put(`${url.UPDATE_COLLECTION}${collection._id}`, {
+    name : collection.name,
+    // add after API change
+    // image : collection.image,
+  })
 
 export const deleteColletion = collectionId =>
   del(`${url.DELETE_COLLECTION}${collectionId}`)

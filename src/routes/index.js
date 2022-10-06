@@ -34,7 +34,7 @@ import EcommerceCustomers from "../pages/Ecommerce/EcommerceCustomers/index"
 import EcommerceCart from "../pages/Ecommerce/EcommerceCart"
 import EcommerceCheckout from "../pages/Ecommerce/EcommerceCheckout"
 import EcommerceShops from "../pages/Ecommerce/EcommerceShops/index"
-import EcommerceAddProduct from "../pages/Ecommerce/EcommerceAddProduct"
+import EcommerceAddProduct from "pages/Ecommerce/EcommerceAddProduct/EcommerceAddProduct"
 
 //Email
 import EmailInbox from "../pages/Email/email-inbox"
@@ -111,7 +111,7 @@ import BasicTables from "../pages/Tables/BasicTables"
 import DatatableTables from "../pages/Tables/DatatableTables"
 import ResponsiveTables from "../pages/Tables/ResponsiveTables"
 import EditableTables from "../pages/Tables/EditableTables"
-import DragDropTables from '../pages/Tables/DragDropTables'
+import DragDropTables from "../pages/Tables/DragDropTables"
 
 //Blog
 import BlogList from "../pages/Blog/BlogList/index"
@@ -153,9 +153,9 @@ import UiRating from "../pages/Ui/UiRating"
 import UiRangeSlider from "../pages/Ui/UiRangeSlider"
 import UiNotifications from "../pages/Ui/ui-notifications"
 import UiOffCanvas from "pages/Ui/UiOffCanvas"
-import UiBreadcrumb from '../pages/Ui/UiBreadcrumb';
-import UiPlaceholders from "../pages/Ui/UiPlaceholders";
-import UiToasts from "../pages/Ui/UiToast";
+import UiBreadcrumb from "../pages/Ui/UiBreadcrumb"
+import UiPlaceholders from "../pages/Ui/UiPlaceholders"
+import UiToasts from "../pages/Ui/UiToast"
 
 //Pages
 import PagesStarter from "../pages/Utility/pages-starter"
@@ -200,7 +200,10 @@ const authProtectedRoutes = [
   { path: "/profile", component: UserProfile },
 
   //Ecommerce
-  { path: "/ecommerce-collection-details/:_id", component: EcommerceCollectionDetails },
+  {
+    path: "/ecommerce-collection-details/:_id",
+    component: EcommerceCollectionDetails,
+  },
   { path: "/ecommerce-collections", component: EcommerceCollections },
   { path: "/ecommerce-product-detail/:id", component: EcommerceProductDetail },
   { path: "/ecommerce-products", component: EcommerceProducts },
@@ -308,8 +311,8 @@ const authProtectedRoutes = [
   { path: "/ui-notifications", component: UiNotifications },
   { path: "/ui-offcanvas", component: UiOffCanvas },
   { path: "/ui-breadcrumb", component: UiBreadcrumb },
-  { path : "/ui-placeholders" , component : UiPlaceholders},
-  { path : "/ui-toasts" , component : UiToasts},
+  { path: "/ui-placeholders", component: UiPlaceholders },
+  { path: "/ui-toasts", component: UiToasts },
 
   //Utility
   { path: "/pages-starter", component: PagesStarter },
