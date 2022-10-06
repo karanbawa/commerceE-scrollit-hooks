@@ -149,7 +149,7 @@ const Ecommerce = (state = INIT_STATE, action) => {
     case ADD_ORDER_SUCCESS:
       return {
         ...state,
-        orders: [...state.orders, action.payload],
+        orders: action.payload,
       }
 
     case ADD_ORDER_FAIL:

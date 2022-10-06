@@ -112,6 +112,8 @@ export const addNewEvent = event => post(url.ADD_NEW_EVENT, event);
 // update Event
 export const updateEvent = event => put(url.UPDATE_EVENT, event);
 
+export const orderEvent = event => put(url.UPDATE_EVENT, order);
+
 // delete Event
 export const deleteEvent = event =>
   del(url.DELETE_EVENT, { headers: { event } });
@@ -139,24 +141,12 @@ export const addMessage = message => post(url.ADD_MESSAGE, message);
 export const getOrders = () => get(url.GET_ORDERS);
 
 // add order
-export const addNewOrder = order => post(`${url.ADD_NEW_ORDER}` , order);
-
+export const addNewOrder = order => post(`${url.ADD_NEW_ORDER}`,order);
 
 
 //update order
-export const updateOrder = order => {put(`${url.UPDATE_ORDER}/${order._id}`, {
-  orderId: values.orderId,
-  billingName: values.billingName,
-  shippingAddress1:values.shippingAddress1,
-  shippingAddress2:values.shippingAddress2,
-  orderdate: values.orderdate,
-  paymentStatus: values.paymentStatus,
-  paymentMethod: values.paymentMethod,
-  badgeclass: values.badgeclass,
+export const updateOrder = order => put(`${url.UPDATE_ORDER}/${order._id}`,order)
 
-})
-console.log(order._id)
-};
 
 
 // delete order
@@ -170,8 +160,9 @@ export const getCartData = () => get(url.GET_CART_DATA);
 export const getCustomers = () => get(url.GET_CUSTOMERS);
 
 // add CUSTOMER
-export const addNewCustomer = customer => post(url.ADD_NEW_CUSTOMER, customer);
-
+export const addNewCustomer = customer => {post(url.ADD_NEW_CUSTOMER, customer);
+  console.log(customer)
+}
 // update CUSTOMER
 export const updateCustomer = customer => {put(url.UPDATE_CUSTOMER, customer);
 

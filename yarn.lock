@@ -10461,6 +10461,11 @@
     "dns-packet" "^1.3.1"
     "thunky" "^1.0.2"
 
+"multiselect-react-dropdown@^2.0.25":
+  "integrity" "sha512-z8kUSyBNOuV7vn4Dk35snzXWtIfTdSEEXhgDdLMvOmR+xJFx35vc1voUlSuOvrk3khb+hXC219Qs9szOvNm25Q=="
+  "resolved" "https://registry.npmjs.org/multiselect-react-dropdown/-/multiselect-react-dropdown-2.0.25.tgz"
+  "version" "2.0.25"
+
 "mute-stream@~0.0.4":
   "version" "0.0.7"
 
@@ -12875,6 +12880,13 @@
     "babel-runtime" "^6.26.0"
     "prop-types" "^15.5.8"
 
+"react-dropdown@^1.11.0":
+  "integrity" "sha512-E2UWetRPxNdIhQahXw6b984ME7WmcgDj9AEAjrtS/oyLCFVo+2qkCfcS06C22JR0Zj+YLnygwv0Ozf6VKKDq7g=="
+  "resolved" "https://registry.npmjs.org/react-dropdown/-/react-dropdown-1.11.0.tgz"
+  "version" "1.11.0"
+  dependencies:
+    "classnames" "^2.2.3"
+
 "react-dropzone@^11.3.2":
   "integrity" "sha512-ocYzYn7Qgp0tFc1gQtUTOaHHSzVTwhWHxxY+r7cj2jJTPfMTZB5GWSJHdIVoxsl+EQENpjJ/6Zvcw0BqKZQ+Eg=="
   "resolved" "https://registry.npmjs.org/react-dropzone/-/react-dropzone-11.4.2.tgz"
@@ -13037,6 +13049,11 @@
     "prop-types" "^15.7.2"
     "react-lifecycles-compat" "^3.0.0"
     "warning" "^4.0.3"
+
+"react-multiple-select-dropdown-lite@^2.0.6":
+  "integrity" "sha512-dyO7SnCl6K4mkr9VYbCbm42FjXZL2TGWjVYwre7cZRfN81GJVqiEsg+Ix73TxIZ7MGBT8Kg/yI9SgYV5T+kAhA=="
+  "resolved" "https://registry.npmjs.org/react-multiple-select-dropdown-lite/-/react-multiple-select-dropdown-lite-2.0.6.tgz"
+  "version" "2.0.6"
 
 "react-native-inline-datepicker@^1.2.0":
   "integrity" "sha512-bJxDGdDIJnW4vkebro0PLjuFV4O17Rfl5On+hORpi+2W5qtzkyOOSZY6vBA82Ru1y9oqDpRBZskfZNOtyRK9Tg=="

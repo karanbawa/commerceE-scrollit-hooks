@@ -233,6 +233,7 @@ function* onImportCustomers({ payload: customers }) {
 function* onAddNewCustomer({ payload: customer }) {
   try {
     const response = yield call(addNewCustomer, customer)
+    console.log(response)
     yield put(addCustomerSuccess(customer))
   } catch (error) {
     yield put(addCustomerFail(error))
@@ -270,10 +271,11 @@ function* onDeleteOrder({ payload: order }) {
 }
 
 function* onAddNewOrder({ payload: order }) {
+  console.log(order)
   try {
     const response = yield call(addNewOrder, order)
     console.log(response)
-    yield put(addOrderSuccess(response))
+     yield put(addOrderSuccess(response.data.order))
   } catch (error) {
     yield put(addOrderFail(error))
   }
