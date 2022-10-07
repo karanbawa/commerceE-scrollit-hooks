@@ -1,7 +1,8 @@
 import { Tooltip } from "chart.js"
-import React from "react"
+import React, { useEffect } from "react"
 import { useState } from "react"
 import { MetaTags } from "react-meta-tags"
+import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 import {
   Button,
@@ -24,9 +25,40 @@ import {
   Row,
   UncontrolledDropdown,
 } from "reactstrap"
+import { getCollections } from "store/actions"
 
 export default function EcommerceAddProduct() {
+  const [collectionList, setCollectionList] = useState([])
+  const [newCollection, setNewCollection] = useState({
+    name: "",
+    included: true,
+  })
+  const [addNewCollection, setAddNewCollection] = useState(false)
+  const dispatch = useDispatch()
+
+  // states for toggles
   const [inventoryShipping, setInventoryShipping] = useState(false)
+
+  // states for tooltips
+
+  // states for modals
+
+  const { collections } = useSelector(state => ({
+    collections: state.ecommerce.collections,
+  }))
+
+  useEffect(() => {
+    if (collections && !collections.length) {
+      dispatch(getCollections())
+    }
+  }, [collections])
+
+  useEffect(() => {
+    setCollectionList(collections)
+  }, [collections])
+
+  console.log(newCollection)
+
   return (
     <React.Fragment>
       <MetaTags>
@@ -171,17 +203,66 @@ export default function EcommerceAddProduct() {
                     <CardTitle>Collections</CardTitle>
                   </CardHeader>
                   <ListGroup flush>
+                    {collectionList.map(collection => (
+                      <ListGroupItem key={collection._id}>
+                        <Input
+                          type="checkbox"
+                          key={collection._id}
+                          defaultChecked={collection._id === "all-products"}
+                          disabled={collection._id === "all-products"}
+                          className="mx-2"
+                        />
+                        {collection.name}
+                      </ListGroupItem>
+                    ))}
                     <ListGroupItem>
-                      <Input type="checkbox" className="mx-2" />
-                      Collection
-                    </ListGroupItem>
-                    <ListGroupItem>
-                      <i className="mdi mdi-email-open me-2" />
-                      Send email campaign
-                    </ListGroupItem>
-                    <ListGroupItem>
-                      <i className="mdi mdi-web me-2" />
-                      Edit SEO settings
+                      {addNewCollection ? (
+                        <div className="d-flex align-items-center ">
+                          <Input
+                            className="me-3 p-2"
+                            type="checkbox"
+                            checked={newCollection.included}
+                            onClick={() => {
+                              setNewCollection({
+                                name: newCollection.name,
+                                included: !newCollection.included,
+                              })
+                            }}
+                          />
+                          <Input
+                            className="p-1 mx-1 me-3"
+                            value={newCollection.name}
+                            onChange={e => {
+                              setNewCollection({
+                                included: newCollection.included,
+                                name: e.target.value,
+                              })
+                            }}
+                          />
+                          <i
+                            className="mdi mdi-check mdi-24px mx-2 text-success"
+                            style={{ cursor: "pointer" }}
+                          />
+                          <i
+                            onClick={() => {
+                              setAddNewCollection(!addNewCollection)
+                            }}
+                            className="mdi mdi-close mdi-24px me-1 text-danger"
+                            style={{ cursor: "pointer" }}
+                          />
+                        </div>
+                      ) : (
+                        <CardLink
+                          className="mx-2"
+                          onClick={() => {
+                            setAddNewCollection(!addNewCollection)
+                          }}
+                        >
+                          {" "}
+                          <i className="mdi mdi-plus me-1" />
+                          Add new collection
+                        </CardLink>
+                      )}
                     </ListGroupItem>
                   </ListGroup>
                 </Card>
