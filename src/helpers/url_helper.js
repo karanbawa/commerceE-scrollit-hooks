@@ -113,15 +113,9 @@ export const DELETE_USER = "/delete/user"
 export const GET_WEEKLY_DATA = "/weekly-data"
 export const GET_YEARLY_DATA = "/yearly-data"
 export const GET_MONTHLY_DATA = "/monthly-data"
-
 export const TOP_SELLING_DATA = "/top-selling-data"
-
 export const GET_EARNING_DATA = "/earning-charts-data"
-
 export const GET_PRODUCT_COMMENTS = "/comments-product"
-
 export const ON_LIKNE_COMMENT = "/comments-product-action"
-
 export const ON_ADD_REPLY = "/comments-product-add-reply"
-
 export const ON_ADD_COMMENT = "/comments-product-add-comment"

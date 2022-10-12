@@ -31,11 +31,11 @@ export default function EcommerceCollections() {
     }
   }, [])
 
-  useEffect(()=>{
+  useEffect(() => {
     if (collections && !collections.length && products.length && products) {
       dispatch(getCollections())
     }
-  },[collections,products])
+  }, [collections, products])
 
   useEffect(() => {
     setCollectionList(collections)

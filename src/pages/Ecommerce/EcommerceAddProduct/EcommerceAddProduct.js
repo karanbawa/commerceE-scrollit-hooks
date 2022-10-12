@@ -118,7 +118,7 @@ export default function EcommerceAddProduct() {
             </Col>
           </Row>
           <Row>
-            <Col xs="8">
+            <Col xs="8" className="me-4">
               <Row>
                 <Card className="p-0">
                   <CardHeader>
@@ -132,6 +132,33 @@ export default function EcommerceAddProduct() {
                   <CardHeader>
                     <CardTitle>Product info</CardTitle>
                   </CardHeader>
+                  <CardBody>
+                    <Row>
+                      <Col className="col-7">
+                        <FormGroup>
+                          <Label for="productName">Name</Label>
+                          <Input id="productName" name="productname" />
+                        </FormGroup>
+                      </Col>
+                      <Col>
+                        <FormGroup>
+                          <Label for="ribbon">Ribbon</Label>
+                          <Input id="ribbon" name="ribbon" />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Label for="description">Description</Label>
+                      <Col>
+                        <Input
+                          id="description"
+                          name="text"
+                          type="textarea"
+                          className="col-10"
+                        />
+                      </Col>
+                    </Row>
+                  </CardBody>
                 </Card>
               </Row>
               <Row>
@@ -186,7 +213,7 @@ export default function EcommerceAddProduct() {
                 </Card>
               </Row>
             </Col>
-            <Col xs="4">
+            <Col xs="3">
               <Row>
                 <Card className="p-0">
                   <CardBody>
