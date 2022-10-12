@@ -253,7 +253,7 @@ function* onUpdateOrder({ payload: order }) {
   try {
     const response = yield call(updateOrder, order)
     console.log(order)
-    yield put(updateOrderSuccess(response))
+    yield put(updateOrderSuccess(response.data.order))
   } catch (error) {
     yield put(updateOrderFail(error))
   }
@@ -262,13 +262,17 @@ function* onUpdateOrder({ payload: order }) {
 function* onDeleteOrder({ payload: order }) {
   try {
     const response = yield call(deleteOrder, order)
-    // console.log("response", response)
-    yield put(deleteOrderSuccess(response))
+    console.log(response)
+    console.log("hello")
+    yield put(deleteOrderSuccess(response.data.order))
   } catch (error) {
     // console.log("error", error)
     yield put(deleteOrderFail(error))
   }
 }
+
+
+
 
 function* onAddNewOrder({ payload: order }) {
   console.log(order)

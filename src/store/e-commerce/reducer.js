@@ -9,6 +9,8 @@ import {
   UPDATE_CUSTOMER_FAIL,
   DELETE_CUSTOMER_SUCCESS,
   DELETE_CUSTOMER_FAIL,
+  DELETE_ALL_ORDER_SUCCESS,
+  DELETE_ALL_ORDER_FAIL,
   GET_ORDERS_FAIL,
   GET_ORDERS_SUCCESS,
   GET_PRODUCTS_FAIL,
@@ -149,7 +151,7 @@ const Ecommerce = (state = INIT_STATE, action) => {
     case ADD_ORDER_SUCCESS:
       return {
         ...state,
-        orders: action.payload,
+        orders: [...state.orders, action.payload],
       }
 
     case ADD_ORDER_FAIL:
@@ -168,7 +170,6 @@ const Ecommerce = (state = INIT_STATE, action) => {
         ),
         }
 
-
     case UPDATE_ORDER_FAIL:
       return {
         ...state,
@@ -182,6 +183,17 @@ const Ecommerce = (state = INIT_STATE, action) => {
           order => order.id.toString() !== action.payload.id.toString()
         ),
       }
+      case DELETE_ALL_ORDER_SUCCESS:
+        return {
+          ...state,
+          orders: [],
+        }
+  
+      case DELETE_ALL_ORDER_FAIL:
+        return {
+          ...state,
+          error: action.payload,
+        }
 
     case DELETE_ORDER_FAIL:
       return {

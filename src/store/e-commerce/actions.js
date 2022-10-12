@@ -12,6 +12,7 @@ import {
   UPDATE_ORDER_SUCCESS,
   UPDATE_ORDER_FAIL,
   DELETE_ORDER,
+  DELETE_ALL_ORDERS,
   DELETE_ORDER_SUCCESS,
   DELETE_ORDER_FAIL,
   GET_PRODUCTS,
@@ -308,6 +309,18 @@ export const importCustomerFail = error => ({
 
 export const deleteAllCustomers = () => ({
   type: DELETE_ALL_CUSTOMERS,
+})
+
+export const deleteAllOrders = () => ({
+  type: DELETE_ALL_ORDERS,
+})
+
+export const deleteAllOrdersSuccess = () => ({
+  type: DELETE_ALL_ORDER_SUCCESS,
+})
+
+export const deleteAllOrdersFail = () => ({
+  type: DELETE_ALL_ORDER_FAIL,
 })
 
 export const deleteAllCustomersSuccess = () => ({

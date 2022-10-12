@@ -63,7 +63,7 @@ export const GET_ORDERS = "/v1/orders"
 export const ADD_NEW_ORDER = "/v1/orders"
 export const UPDATE_ORDER = "/v1/orders"
 export const DELETE_ORDER = "/v1/orders"
-
+export const DELETE_ALL_ORDER = "/v1/orders"
 //CART DATA
 export const GET_CART_DATA = "/cart"
 

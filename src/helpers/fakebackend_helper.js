@@ -152,6 +152,7 @@ export const updateOrder = order => put(`${url.UPDATE_ORDER}/${order._id}`,order
 // delete order
 export const deleteOrder = order =>
   del(`${url.DELETE_ORDER}${order._id}`, { headers: { order } });
+  
  
 // get cart data
 export const getCartData = () => get(url.GET_CART_DATA);
@@ -168,9 +169,6 @@ export const updateCustomer = customer => {put(url.UPDATE_CUSTOMER, customer);
 
   console.log(customer)
 }
-
-
-
 // delete CUSTOMER
 export const deleteCustomer = customer =>
   del(url.DELETE_CUSTOMER, { headers: { customer } });

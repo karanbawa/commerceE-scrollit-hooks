@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react"
 import MetaTags from "react-meta-tags"
 import PropTypes from "prop-types"
 import { withRouter, Link } from "react-router-dom"
-import { isEmpty } from "lodash"
+import { isEmpty, set } from "lodash"
 import BootstrapTable from "react-bootstrap-table-next"
 import paginationFactory, {
   PaginationListStandalone,
@@ -46,27 +46,41 @@ import {
   updateOrder as onUpdateOrder,
   deleteOrder as onDeleteOrder,
   getProductList as getProductListdata,
-
+  deleteAllOrders as ondeleteAllOrders
 } from "store/actions"
 
 import EcommerceOrdersModal from "./EcommerceOrdersModal"
 
 const EcommerceOrders = props => {
+  const inputArr = [
+    {
+
+      quantity:"",
+      product:""
+    }
+
+  ];
 
 
   const [orderList, setOrderList] = useState([])
   const [order, setOrder] = useState([])
   const [productList, setProductList] = useState([])
+  // console.log(orderList)
   // const [productList1, setProductList1] = useState([{name:"Sjbkjf"}])
-  const [formRows, setFormRows] = useState([{ id: 1 }]);
+  const [formRows, setFormRows] = useState(inputArr);
+ 
   const dispatch = useDispatch()
+  
 
+  // console.log(order)
   // validation
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
 
     initialValues: {
+      orderItems: (order && order.orderItems) || [],
+
       billingName: (order && order.billingName) || "",
       // productName: (order && order.productName) || "",
       // productQuantity:(order && order.productQuantity) || "",
@@ -76,9 +90,11 @@ const EcommerceOrders = props => {
       badgeclass: (order && order.badgeclass) || "success",
       paymentMethod: (order && order.paymentMethod) || "Mastercard",
       city: (order && order.city) || "",
+      state: (order && order.state) || "",
       country: (order && order.country) || "",
       phone: (order && order.phone) || "",
-      zip:(order && order.zip) || ""
+      zip: (order && order.zip) || "",
+      methodIcon: (order && order.methodIcon) || "fa-cc-mastercard"
     },
     // validationSchema: Yup.object({
     //   billingName: Yup.string().required("Please Enter Your Billing Name"),
@@ -90,15 +106,24 @@ const EcommerceOrders = props => {
     //   badgeclass: Yup.string().required("Please Enter Your Badge Class"),
     //   paymentMethod: Yup.string().required("Please Enter Your Payment Method"),
     //   city: Yup.string().required("Please Enter Your city"),
+    //   state: Yup.string().required("Please Enter Your state"),
     //   country: Yup.string().required("Please Enter Your country"),
     //   phone: Yup.string().required("Please Enter Your phone"),
     //   zip:Yup.string().required("Please Enter Your zip"),
+    //    methodIcon.yup.string().required("Please Enter Your methodIcon ")
     // }),
     onSubmit: values => {
+      console.log(values)
       console.log("hell")
       if (isEdit) {
         const updateOrder = {
           ...order,
+
+          orderItems: values["orderItems"].map((item, i) => {
+
+            return <div key={i}>  {item.quantity}|| {item.product}
+            </div>
+          }),
           billingName: values.billingName,
           // productName: values.productName,
           // productQuantity:values.productQuantity,
@@ -108,9 +133,11 @@ const EcommerceOrders = props => {
           paymentMethod: values.paymentMethod,
           badgeclass: values.badgeclass,
           city: values.city,
+          state: values.state,
           country: values.country,
           phone: values.phone,
-          zip:values.zip
+          zip: values.zip,
+          methodIcon: values.methodIcon
         }
         console.log("text")
         // update order
@@ -118,19 +145,10 @@ const EcommerceOrders = props => {
 
         validation.resetForm()
       } else {
+        console.log(values)
         const newOrder = {
-          orderItems:
-            [
-              {
-                  "quantity": 3,
-                  "product": "632c9a041074f11c9e8adc80"
-              },
-              {
-                  "quantity": 3,
-                  "product": "632c9a041074f11c9e8adc80"
-              }
-          ],
-          billingName: "sobha",
+          orderItems: arr,
+          billingName: values["billingName"],
           //productName: values["productName"],
           //productQuantity:values["productQuantity"],
           shippingAddress1: values["shippingAddress1"],
@@ -139,10 +157,11 @@ const EcommerceOrders = props => {
           paymentMethod: values["paymentMethod"],
           badgeclass: values["badgeclass"],
           city: values["city"],
+          state: values["state"],
           country: values["country"],
-          methodIcon:"fa-cc-mastercard",
+          methodIcon: "fa-cc-mastercard",
           phone: values["phone"],
-          zip:"textvalueszip"
+          zip: values["zip"]
         }
         console.log("tett")
         // save new order
@@ -160,7 +179,30 @@ const EcommerceOrders = props => {
 
   //console.log(products)
 
+ 
+  // const addInput = () => {
+  //   setFormRows(s => {
+  //     return [
+  //       ...s,
+  //       {
+  //         quantity:"",
+  //         product:""
+  //       }
+  //     ];
+  //   });
+  // };
 
+  const handleChange = e => {
+    e.preventDefault();
+
+    const index = e.target.id;
+    setFormRows(s => {
+      const newArr = s.slice();
+      newArr[index].value = e.target.value;
+
+      return newArr;
+    });
+  };
 
 
   const selectRow = {
@@ -174,7 +216,7 @@ const EcommerceOrders = props => {
   //pagination customization
   const pageOptions = {
     sizePerPage: 10,
-    totalSize: orders.length, // replace later with size(orders),
+    totalSize: orderList.length, // replace later with size(orders),
     custom: true,
   }
   const { SearchBar } = Search
@@ -187,7 +229,7 @@ const EcommerceOrders = props => {
   const toLowerCase1 = str => {
     return str === "" || str === undefined ? "" : str.toLowerCase()
   }
-  
+
   const onDeleteFormRow = id => {
     if (id !== 1) {
       var modifiedRows = [...formRows];
@@ -197,10 +239,19 @@ const EcommerceOrders = props => {
   };
 
   const onAddFormRow = () => {
-    const modifiedRows = [...formRows];
-    modifiedRows.push({ id: modifiedRows.length + 1 });
-    setFormRows(modifiedRows);
- 
+    // const modifiedRows = [...formRows];
+    // modifiedRows.push({ id: modifiedRows.length + 1 });
+    // setFormRows(modifiedRows);
+      setFormRows(s => {
+        return [
+          ...s,
+          {
+            quantity:"",
+            product:""
+          }
+        ];
+      });
+    
   };
 
   const EcommerceOrderColumns = toggleModal => [
@@ -365,7 +416,7 @@ const EcommerceOrders = props => {
   }
 
   const handleOrderClick = arg => {
-
+    console.log(arg)
     setOrder(arg)
 
     setIsEdit(true)
@@ -390,24 +441,32 @@ const EcommerceOrders = props => {
   const [deleteModal, setDeleteModal] = useState(false)
 
   const onClickDelete = order => {
-    //console.log(order)
+    console.log(order)
     setOrder(order)
     setDeleteModal(true)
   }
 
   const handleDeleteOrder = () => {
-
+    console.log(order)
     if (order._id) {
       dispatch(onDeleteOrder(order))
       onPaginationPageChange(1)
       setDeleteModal(false)
     }
   }
+
+  const handleDeleteAllOrders = () => {
+    dispatch(ondeleteAllOrders())
+    setDeleteModal(false)
+  }
+
   const handleOrderClicks = () => {
-    setOrderList("")
+    setOrder("")
     setIsEdit(false)
     toggle()
   }
+
+
 
   const handleValidDate = date => {
     const date1 = moment(new Date(date)).format("DD MMM Y")
@@ -429,6 +488,11 @@ const EcommerceOrders = props => {
         onDeleteClick={handleDeleteOrder}
         onCloseClick={() => setDeleteModal(false)}
       />
+      <DeleteModal
+        show={deleteModal}
+        onDeleteClick={handleDeleteAllOrders}
+        onCloseClick={() => setDeleteModal(false)}
+      />
 
       <div className="page-content">
         <MetaTags>
@@ -444,12 +508,12 @@ const EcommerceOrders = props => {
                     pagination={paginationFactory(pageOptions)}
                     keyField="id"
                     columns={EcommerceOrderColumns(toggle)}
-                    data={orders}
+                    data={orderList}
                   >
                     {({ paginationProps, paginationTableProps }) => (
                       <ToolkitProvider
                         keyField="id"
-                        data={orders}
+                        data={orderList}
                         columns={EcommerceOrderColumns(toggle)}
                         bootstrap4
                         search
@@ -475,6 +539,15 @@ const EcommerceOrders = props => {
                                   >
                                     <i className="mdi mdi-plus me-1" />
                                     Add New Order
+                                  </Button>
+                                  <Button
+                                    type="button"
+                                    color="danger"
+                                    className="btn-rounded  mb-2 me-2"
+                                    onClick={() => { setDeleteModal(true) }}
+                                  >
+                                    <i className="mdi mdi-delete me-1" />
+                                    Delete all orders
                                   </Button>
                                 </div>
                               </Col>
@@ -511,10 +584,9 @@ const EcommerceOrders = props => {
                                         validation.handleSubmit()
                                         return false
                                       }}
-                                    >
+                                    > 
                                       <Row form>
                                         <Col className="col-12">
-
                                           <div className="mb-3">
                                             <Label className="form-label">
                                               Billing Name
@@ -547,102 +619,98 @@ const EcommerceOrders = props => {
                                             ) : null}
                                           </div>
 
-                                      <div>
-                                          {(formRows || []).map((formRow, key) => (
-                                            <Row key={key}>
-                                              <Col className="mb-3">
-                                                <div className="mb-3">
-                                                  <Label className="form-label">
-                                                    Product Name
-                                                  </Label>
-                                                  <Input
-                                                    name="productName"
-                                                    type="select"
-                                                    className="form-select"
-                                                    onChange={validation.handleChange}
-                                                    onBlur={validation.handleBlur}
+                                          <div>
 
-                                                    value={
-                                                      validation.values
-                                                        .productName || ""
-                                                    }
-                                                  >
+                                            {(formRows || []).map((formRow, key) => (
+                                              <Row key={key}>
+                                                <Col className="mb-3">
+                                                  <div className="mb-3">
+                                                    <Label className="form-label">
+                                                      Product Name
+                                                    </Label>
+                                                    <Input
+                                                      name="productName"
+                                                      type="select"
+                                                      className="form-select"
+                                                      onChange={validation.handleChange}
 
-                                                    {products.length > 0 && products.map((item, index) =>
-                                                      <option key={index}>{item.name}</option>
-                                                    )
-                                                    }
-                                                  </Input>
-                                                  {validation.touched.productName &&
-                                                    validation.errors.productName ? (
-                                                    <FormFeedback type="invalid">
-                                                      {
-                                                        validation.errors
-                                                          .productName
+                                                      onBlur={validation.handleBlur}
+
+                                                      value={
+                                                        formRow.product || ""
                                                       }
-                                                    </FormFeedback>
-                                                  ) : null}
-                                                </div>
-                                              </Col>
+                                                    >
 
-                                              <Col className="mb-3">
-                                                <div className="mb-3">
-                                                  <Label className="form-label">
-                                                    Product Quality
-                                                  </Label>
-                                                  <Input
-                                                    name="productQuality"
-                                                    type="text"
-                                                    validate={{
-                                                      required: { value: true },
-                                                    }}
-                                                    onChange={validation.handleChange}
-                                                    onBlur={validation.handleBlur}
-                                                    value={
-                                                      validation.values.productQuality ||
-                                                      ""
-                                                    }
-                                                    invalid={
-                                                      validation.touched
-                                                        .productQuality &&
-                                                        validation.errors.productQuality
-                                                        ? true
-                                                        : false
-                                                    }
-                                                  />
-                                                  {validation.touched.productQuality &&
-                                                    validation.errors.productQuality ? (
-                                                    <FormFeedback type="invalid">
-                                                      {validation.errors.productQuality}
-                                                    </FormFeedback>
-                                                  ) : null}
-                                                </div>
+                                                      {products.length > 0 && products.map((item, index) =>
+                                                        <option key={index}>{item.name}</option>
+                                                      )
+                                                      }
+                                                    </Input>
+                                                    {validation.touched.productName &&
+                                                      validation.errors.productName ? (
+                                                      <FormFeedback type="invalid">
+                                                        {
+                                                          validation.errors
+                                                            .productName
+                                                        }
+                                                      </FormFeedback>
+                                                    ) : null}
+                                                  </div>
+                                                </Col>
 
-                                              </Col>
+                                                <Col className="mb-3">
+                                                  <div className="mb-3">
+                                                    <Label className="form-label">
+                                                      Product Quality
+                                                    </Label>
+                                                    <Input
+                                                      name="productQuality"
+                                                      type="text"
+                                                      validate={{
+                                                        required: { value: true },
+                                                      }}
+                                                      onChange={validation.handleChange}
+                                                      onBlur={validation.handleBlur}
+                                                      value={
+                                                       formRow.quantity || ""
+                                                      }
+                                                      invalid={
+                                                        validation.touched
+                                                          .productQuality &&
+                                                          validation.errors.productQuality
+                                                          ? true
+                                                          : false
+                                                      }
+                                                    />
+                                                    {validation.touched.productQuality &&
+                                                      validation.errors.productQuality ? (
+                                                      <FormFeedback type="invalid">
+                                                        {validation.errors.productQuality}
+                                                      </FormFeedback>
+                                                    ) : null}
+                                                  </div>
 
-                                              <Col className="align-self-center">
-                                                <div className="d-grid mb-2">
-                                                  <input
-                                                    type="button"
-                                                    className="btn btn-danger"
-                                                    value="Delete"
-                                                    onClick={() => onDeleteFormRow(formRow.id)}
-                                                  />
-                                                </div>
-                                              </Col>
-                                            </Row>
-                                          ))}
-                                         </div>
+                                                </Col>
+
+                                                <Col className="align-self-center">
+                                                  <div className="d-grid mb-2">
+                                                    <input
+                                                      type="button"
+                                                      className="btn btn-danger"
+                                                      value="Delete"
+                                                      onClick={() => onDeleteFormRow(formRow.id)}
+                                                    />
+                                                  </div>
+                                                </Col>
+                                              </Row>
+                                            ))}
+                                          </div>
                                           <input
                                             type="button"
                                             className="btn btn-success mb-2 mt-lg-0"
                                             value="Add"
                                             onClick={() => onAddFormRow()}
                                           />
-
-                                         
-
-
 
                                           <div className="mb-3">
                                             <Label className="form-label">
@@ -741,7 +809,37 @@ const EcommerceOrders = props => {
                                             ) : null}
                                           </div>
 
-
+                                          <div className="mb-3">
+                                            <Label className="form-label">
+                                              state
+                                            </Label>
+                                            <Input
+                                              name="state"
+                                              type="text"
+                                              validate={{
+                                                required: { value: true },
+                                              }}
+                                              onChange={validation.handleChange}
+                                              onBlur={validation.handleBlur}
+                                              value={
+                                                validation.values.state ||
+                                                ""
+                                              }
+                                              invalid={
+                                                validation.touched
+                                                  .state &&
+                                                  validation.errors.state
+                                                  ? true
+                                                  : false
+                                              }
+                                            />
+                                            {validation.touched.state &&
+                                              validation.errors.state ? (
+                                              <FormFeedback type="invalid">
+                                                {validation.errors.state}
+                                              </FormFeedback>
+                                            ) : null}
+                                          </div>
 
                                           <div className="mb-3">
                                             <Label className="form-label">
@@ -835,6 +933,39 @@ const EcommerceOrders = props => {
                                               </FormFeedback>
                                             ) : null}
                                           </div>
+
+                                          <div className="mb-3">
+                                            <Label className="form-label">
+                                              Zip
+                                            </Label>
+                                            <Input
+                                              name="zip"
+                                              type="text"
+                                              validate={{
+                                                required: { value: true },
+                                              }}
+                                              onChange={validation.handleChange}
+                                              onBlur={validation.handleBlur}
+                                              value={
+                                                validation.values.zip ||
+                                                ""
+                                              }
+                                              invalid={
+                                                validation.touched
+                                                  .zip &&
+                                                  validation.errors.zip
+                                                  ? true
+                                                  : false
+                                              }
+                                            />
+                                            {validation.touched.zip &&
+                                              validation.errors.zip ? (
+                                              <FormFeedback type="invalid">
+                                                {validation.errors.zip}
+                                              </FormFeedback>
+                                            ) : null}
+                                          </div>
+
                                           <div className="mb-3">
                                             <Label className="form-label">
                                               Badge Class
@@ -925,7 +1056,8 @@ EcommerceOrders.propTypes = {
   onAddNewOrder: PropTypes.func,
   onDeleteOrder: PropTypes.func,
   onUpdateOrder: PropTypes.func,
-  getProductListdata: PropTypes.func
+  getProductListdata: PropTypes.func,
+  handleDeleteAllOrders: PropTypes.func
 }
 
 export default withRouter(EcommerceOrders)
