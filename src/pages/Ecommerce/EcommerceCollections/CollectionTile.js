@@ -46,7 +46,7 @@ function CollectionTile({ _id, name, icon, color, productIds, isMutable }) {
                     <i className="mdi mdi-file-image me-3" />
                     Update Image
                   </DropdownItem>
-                  {isMutable ? (
+                  {!(_id === 'all-products') ? (
                     <DropdownItem
                       href="#"
                       onClick={() => handleCollectionDelete()}

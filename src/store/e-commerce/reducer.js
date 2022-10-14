@@ -73,14 +73,7 @@ const Ecommerce = (state = INIT_STATE, action) => {
             _id: "all-products",
             productIds: state.productList,
           },
-          ...action.payload.map(collection => ({
-            name: collection.name,
-            image: collection.image,
-            _id: collection._id,
-            productIds: state.productList.filter(
-              product => product.category === collection._id
-            ),
-          })),
+          ...action.payload,
         ],
       }
 

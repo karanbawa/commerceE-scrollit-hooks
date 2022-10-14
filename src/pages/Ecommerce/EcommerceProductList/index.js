@@ -150,6 +150,14 @@ const EcommerceProductList = props => {
       dataField: "category",
       text: "Category",
       sort: true,
+      formatter: (cellContent, row) => (
+        // Replace with Switch
+        <div>
+          {cellContent.map(item => (
+            <div key={item._id}>{item.name}</div>
+          ))}
+        </div>
+      ),
     },
     {
       dataField: "displayProduct",
@@ -293,7 +301,6 @@ const EcommerceProductList = props => {
               count={productList.length}
               breadcrumbItem="Product List"
             />
-            <div>{}</div>
           </div>
 
           <Row>

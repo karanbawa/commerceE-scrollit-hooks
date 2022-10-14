@@ -24,24 +24,31 @@ import {
   ListGroupItem,
   Row,
   UncontrolledDropdown,
+  UncontrolledTooltip,
 } from "reactstrap"
 import { getCollections } from "store/actions"
 
 export default function EcommerceAddProduct() {
+  const dispatch = useDispatch()
+
+  // states for data
   const [collectionList, setCollectionList] = useState([])
   const [newCollection, setNewCollection] = useState({
     name: "",
-    included: true,
   })
-  const [addNewCollection, setAddNewCollection] = useState(false)
-  const dispatch = useDispatch()
+  const [productCollections, setProductCollection] = useState(["all-products"])
+  const [priceDetails, setPriceDetails] = useState({
+    price: 0,
+    discont: 0,
+    salePrice: 0,
+  })
 
   // states for toggles
   const [inventoryShipping, setInventoryShipping] = useState(false)
-
-  // states for tooltips
-
-  // states for modals
+  const [onSale, setOnSale] = useState(false)
+  const [addNewCollection, setAddNewCollection] = useState(false)
+  const [isPercent, setIsPercent] = useState("PERCENT")
+  const [showPricePerUnit, setShowPricePerUnit] = useState(false)
 
   const { collections } = useSelector(state => ({
     collections: state.ecommerce.collections,
@@ -57,7 +64,7 @@ export default function EcommerceAddProduct() {
     setCollectionList(collections)
   }, [collections])
 
-  console.log(newCollection)
+  console.log(productCollections)
 
   return (
     <React.Fragment>
@@ -166,7 +173,177 @@ export default function EcommerceAddProduct() {
                   <CardHeader>
                     <CardTitle>Pricing</CardTitle>
                   </CardHeader>
-                  <CardBody></CardBody>
+                  <CardBody>
+                    <div className="m-3">
+                      <Row className="my-2">
+                        <Col>
+                          <div className="col-4">
+                            <Label for="price">Price</Label>
+                            <Input id="price"></Input>
+                          </div>
+                        </Col>
+                      </Row>
+                      <div className="my-3">
+                        <Row>
+                          <Col>
+                            <div className="d-flex m-2">
+                              <FormGroup switch>
+                                <Input
+                                  type="checkbox"
+                                  checked={onSale}
+                                  onClick={() => {
+                                    setOnSale(!onSale)
+                                  }}
+                                ></Input>
+                              </FormGroup>
+                              <div>On Sale</div>
+                            </div>
+                          </Col>
+                        </Row>
+                        {onSale ? (
+                          <Row>
+                            <Col>
+                              <Label for="discount">Discount</Label>
+                              <Input id="discount" />
+                            </Col>
+                            <Col>
+                              <Label for="saleprice">Sale Price</Label>
+                              <Input id="saleprice" />
+                            </Col>
+                          </Row>
+                        ) : null}
+                      </div>
+                      <Row>
+                        <Col>
+                          <div className="d-flex">
+                            <FormGroup switch>
+                              <Input
+                                type="checkbox"
+                                checked={showPricePerUnit}
+                                onClick={() => {
+                                  setShowPricePerUnit(!showPricePerUnit)
+                                }}
+                              ></Input>
+                            </FormGroup>
+                            <div>
+                              Show price per unit{" "}
+                              <i
+                                id="sppr-info"
+                                className="mdi mdi-information me-2 mx-1"
+                              />
+                              <UncontrolledTooltip
+                                placement="top"
+                                target="sppr-info"
+                              >
+                                Let customers see prices based on fixed
+                                measurement units, e.g., price per 100 grams of
+                                cheese.
+                              </UncontrolledTooltip>
+                            </div>
+                          </div>
+                        </Col>
+                      </Row>
+                      {showPricePerUnit ? (
+                        <div>
+                          <Row>
+                            <Col>
+                              <Label for="pqunits">
+                                Total product Quantity in units
+                                <i
+                                  id="product-quanitiy-info"
+                                  className="mdi mdi-information me-2 mx-1"
+                                />
+                                <UncontrolledTooltip
+                                  placement="top"
+                                  target="product-quanitiy-info"
+                                >
+                                  Set your product’s unit of measurement to
+                                  calculate the base price, e.g., for a product
+                                  weighing 1 kilo, you may set the base units to
+                                  100 g.
+                                </UncontrolledTooltip>
+                              </Label>
+                              <Input id="pqunits" />
+                            </Col>
+                            <Col>
+                              <Label for="baseunits">
+                                Base units
+                                <i
+                                  id="base-info"
+                                  className="mdi mdi-information me-2 mx-1"
+                                />
+                                <UncontrolledTooltip
+                                  placement="top"
+                                  target="base-info"
+                                >
+                                  Set your product’s total quantity in units,
+                                  e.g., if your product weighs 100 grams and the
+                                  unit is grams, then the quantity is 100.
+                                </UncontrolledTooltip>
+                              </Label>
+                              <Input id="baseunits" />
+                            </Col>
+                          </Row>
+                          <Row>
+                            <div>Base Price per unit</div>
+                            <div>0.00</div>
+                          </Row>
+                        </div>
+                      ) : null}
+                      <Row>
+                        <Col>
+                          <Label for="costofgoods">
+                            Cost of Goods
+                            <i
+                              id="cost-info"
+                              className="mdi mdi-information me-2 mx-1"
+                            />
+                            <UncontrolledTooltip
+                              placement="top"
+                              target="cost-info"
+                            >
+                              The amount you’re spending to produce and sell
+                              this product. Your customers won’t see this.
+                            </UncontrolledTooltip>
+                          </Label>
+                          <Input id="costofgoods" />
+                        </Col>
+                        <Col>
+                          <Label for="profit-fixed">
+                            Profit
+                            <i
+                              id="profit-fixed-info"
+                              className="mdi mdi-information me-2 mx-1"
+                            />
+                            <UncontrolledTooltip
+                              placement="top"
+                              target="profit-fixed-info"
+                            >
+                              The price of the product minus your cost of goods.
+                            </UncontrolledTooltip>
+                          </Label>
+                          <Input id="profit-fixed" />
+                        </Col>
+                        <Col>
+                          <Label for="margin">
+                            Margin
+                            <i
+                              id="margin-info"
+                              className="mdi mdi-information me-2 mx-1"
+                            />
+                            <UncontrolledTooltip
+                              placement="top"
+                              target="margin-info"
+                            >
+                              The percentage of the price that’s left after
+                              deducting your cost of goods.
+                            </UncontrolledTooltip>
+                          </Label>
+                          <Input id="margin" />
+                        </Col>
+                      </Row>
+                    </div>
+                  </CardBody>
                 </Card>
               </Row>
               <Row>
@@ -235,9 +412,21 @@ export default function EcommerceAddProduct() {
                         <Input
                           type="checkbox"
                           key={collection._id}
-                          defaultChecked={collection._id === "all-products"}
+                          checked={productCollections.includes(collection._id)}
                           disabled={collection._id === "all-products"}
                           className="mx-2"
+                          onClick={() => {
+                            productCollections.includes(collection._id)
+                              ? setProductCollection(
+                                  productCollections.filter(
+                                    cid => cid !== collection._id
+                                  )
+                                )
+                              : setProductCollection([
+                                  ...productCollections,
+                                  collection._id,
+                                ])
+                          }}
                         />
                         {collection.name}
                       </ListGroupItem>
@@ -245,17 +434,6 @@ export default function EcommerceAddProduct() {
                     <ListGroupItem>
                       {addNewCollection ? (
                         <div className="d-flex align-items-center ">
-                          <Input
-                            className="me-3 p-2"
-                            type="checkbox"
-                            checked={newCollection.included}
-                            onClick={() => {
-                              setNewCollection({
-                                name: newCollection.name,
-                                included: !newCollection.included,
-                              })
-                            }}
-                          />
                           <Input
                             className="p-1 mx-1 me-3"
                             value={newCollection.name}
@@ -325,9 +503,16 @@ export default function EcommerceAddProduct() {
                       <Label for="fulfilled-select">
                         Fulfilled by{" "}
                         <i
+                          href="#"
                           id="fulfilled-info"
                           className="mdi mdi-information me-2 mx-1"
                         />
+                        <UncontrolledTooltip
+                          placement="top"
+                          target="fulfilled-info"
+                        >
+                          Choose who is packing and shipping this product.
+                        </UncontrolledTooltip>
                       </Label>
                       <Input
                         id="fulfilled-select"
@@ -346,6 +531,13 @@ export default function EcommerceAddProduct() {
                           id="brand-info"
                           className="mdi mdi-information me-2 mx-1"
                         />
+                        <UncontrolledTooltip
+                          placement="top"
+                          target="brand-info"
+                        >
+                          Including a brand name can help improve your site’s
+                          visibility on search engines.
+                        </UncontrolledTooltip>
                       </Label>
                       <Input id="brand" />
                     </div>

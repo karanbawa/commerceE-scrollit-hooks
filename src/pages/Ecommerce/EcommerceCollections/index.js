@@ -17,7 +17,8 @@ import { useEffect } from "react"
 
 export default function EcommerceCollections() {
   const [collectionList, setCollectionList] = useState([])
-  const sortedCollections = []
+  const [productList, setProductList] = useState(null)
+  const [filteredCollections, setFilteredCollections] = useState([])
   const dispatch = useDispatch()
   const { collections, products } = useSelector(state => ({
     collections: state.ecommerce.collections,
@@ -29,17 +30,26 @@ export default function EcommerceCollections() {
     if (products && !products.length) {
       dispatch(getProductList())
     }
-  }, [])
+  }, [dispatch])
 
   useEffect(() => {
-    if (collections && !collections.length && products.length && products) {
-      dispatch(getCollections())
+    if (productList !== null) {
+      if (collections && !collections.length) {
+        dispatch(getCollections())
+      }
     }
-  }, [collections, products])
+  }, [products])
 
   useEffect(() => {
     setCollectionList(collections)
+    if (filteredCollections) {
+      setFilteredCollections(collections)
+    }
   }, [collections])
+
+  useEffect(() => {
+    setProductList(products)
+  }, [products])
 
   return (
     <React.Fragment>
@@ -61,6 +71,13 @@ export default function EcommerceCollections() {
                       type="text"
                       className="form-control"
                       placeholder="Search"
+                      onChange={e => {
+                        setFilteredCollections(
+                          collectionList.filter(collection =>
+                            collection.name.toUpperCase().includes(e.target.value.toUpperCase())
+                          )
+                        )
+                      }}
                     />
                     <i className="bx bx-search-alt search-icon" />
                   </div>
@@ -82,7 +99,7 @@ export default function EcommerceCollections() {
             Group related products into collections and add them to your site.
           </Row>
           <Row className="mt-2">
-            {collectionList.map(collection => (
+            {filteredCollections.map(collection => (
               <CollectionTile
                 key={collection._id}
                 _id={collection._id}

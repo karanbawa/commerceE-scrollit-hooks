@@ -108,7 +108,7 @@ export default function EcommerceCollectionDetails() {
           key={CollectionProductPreviewItem._id}
           index={index}
           id={CollectionProductPreviewItem.id}
-          img={CollectionProductPreviewItem.media[0].url}
+          img={CollectionProductPreviewItem.media ? CollectionProductPreviewItem.media[0].url : ""}
           text={CollectionProductPreviewItem.name}
           moveCollectionProductPreview={moveCollectionProductPreview}
         />
@@ -259,6 +259,7 @@ export default function EcommerceCollectionDetails() {
                       onChange={event => {
                         setCollectionName(event.target.value)
                       }}
+                      disabled={_id === 'all-products'}
                     />
                   </div>
                   <div className="m-1 mt-3">
