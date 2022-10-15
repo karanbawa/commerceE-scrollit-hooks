@@ -1,4 +1,5 @@
 import { Tooltip } from "chart.js"
+import { point } from "leaflet"
 import React, { useEffect } from "react"
 import { useState } from "react"
 import { MetaTags } from "react-meta-tags"
@@ -10,6 +11,7 @@ import {
   CardBody,
   CardHeader,
   CardLink,
+  CardSubtitle,
   CardText,
   CardTitle,
   Col,
@@ -39,16 +41,29 @@ export default function EcommerceAddProduct() {
   const [productCollections, setProductCollection] = useState(["all-products"])
   const [priceDetails, setPriceDetails] = useState({
     price: 0,
-    discont: 0,
+    discount: 0,
     salePrice: 0,
+    isPercent: true,
+    cost: 0,
+  })
+  const [inventoryDetails, setInventoryDetails] = useState({
+    status: "In stock",
+    SKU: "",
+    shippingWeight: 0,
+  })
+  const [preOrderDetails, setPreorderDetails] = useState({
+    message: "",
+    limit: false,
+    limitCount: 0,
   })
 
   // states for toggles
   const [inventoryShipping, setInventoryShipping] = useState(false)
   const [onSale, setOnSale] = useState(false)
   const [addNewCollection, setAddNewCollection] = useState(false)
-  const [isPercent, setIsPercent] = useState("PERCENT")
   const [showPricePerUnit, setShowPricePerUnit] = useState(false)
+  const [showInWebstie, setShowInWebsite] = useState(false)
+  const [preOrder, setPreorder] = useState(false)
 
   const { collections } = useSelector(state => ({
     collections: state.ecommerce.collections,
@@ -64,7 +79,7 @@ export default function EcommerceAddProduct() {
     setCollectionList(collections)
   }, [collections])
 
-  console.log(productCollections)
+  console.log(inventoryDetails)
 
   return (
     <React.Fragment>
@@ -175,11 +190,27 @@ export default function EcommerceAddProduct() {
                   </CardHeader>
                   <CardBody>
                     <div className="m-3">
-                      <Row className="my-2">
+                      <Row className="my-3">
                         <Col>
                           <div className="col-4">
                             <Label for="price">Price</Label>
-                            <Input id="price"></Input>
+                            <Input
+                              type="number"
+                              id="price"
+                              value={priceDetails.price}
+                              onChange={e => {
+                                const pri = parseInt(e.target.value)
+                                setPriceDetails({
+                                  ...priceDetails,
+                                  price: pri,
+                                  salePrice: priceDetails.isPercent
+                                    ? Math.round(
+                                        (1 - priceDetails.discount / 100) * pri
+                                      )
+                                    : pri - priceDetails.discount,
+                                })
+                              }}
+                            ></Input>
                           </div>
                         </Col>
                       </Row>
@@ -192,11 +223,16 @@ export default function EcommerceAddProduct() {
                                   type="checkbox"
                                   checked={onSale}
                                   onClick={() => {
+                                    setPriceDetails({
+                                      ...priceDetails,
+                                      discount: 0,
+                                      salePrice: priceDetails.price,
+                                    })
                                     setOnSale(!onSale)
                                   }}
                                 ></Input>
                               </FormGroup>
-                              <div>On Sale</div>
+                              <div style={{ fontSize: "2 rem" }}>On Sale</div>
                             </div>
                           </Col>
                         </Row>
@@ -204,92 +240,176 @@ export default function EcommerceAddProduct() {
                           <Row>
                             <Col>
                               <Label for="discount">Discount</Label>
-                              <Input id="discount" />
+                              <div className="d-flex">
+                                <Input
+                                  className="me-2"
+                                  type="number"
+                                  id="discount"
+                                  value={priceDetails.discount}
+                                  onChange={e => {
+                                    let dis = parseInt(e.target.value)
+                                    setPriceDetails({
+                                      ...priceDetails,
+                                      discount: dis,
+                                      salePrice: priceDetails.isPercent
+                                        ? Math.round(
+                                            priceDetails.price *
+                                              (1 - parseInt(dis) / 100)
+                                          )
+                                        : priceDetails.price - parseInt(dis),
+                                    })
+                                  }}
+                                />
+                                <div
+                                  onClick={() => {
+                                    setPriceDetails({
+                                      ...priceDetails,
+                                      isPercent: true,
+                                      salePrice:
+                                        priceDetails.price *
+                                        (1 - priceDetails.discount / 100),
+                                    })
+                                  }}
+                                  className={
+                                    priceDetails.isPercent
+                                      ? "text-primary mx-2"
+                                      : "mx-2"
+                                  }
+                                  style={{
+                                    fontSize: "20px",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  %
+                                </div>
+                                <div
+                                  onClick={() => {
+                                    setPriceDetails({
+                                      ...priceDetails,
+                                      isPercent: false,
+                                      salePrice:
+                                        priceDetails.price -
+                                        priceDetails.discount,
+                                    })
+                                  }}
+                                  className={
+                                    priceDetails.isPercent
+                                      ? "mx-2"
+                                      : "text-primary mx-2"
+                                  }
+                                  style={{
+                                    fontSize: "20px",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  &#8377;
+                                </div>
+                              </div>
                             </Col>
                             <Col>
                               <Label for="saleprice">Sale Price</Label>
-                              <Input id="saleprice" />
+                              <Input
+                                type="number"
+                                id="saleprice"
+                                value={priceDetails.salePrice}
+                                onChange={e => {
+                                  const sal = parseInt(e.target.value)
+                                  setPriceDetails({
+                                    ...priceDetails,
+                                    salePrice: sal,
+                                    discount: priceDetails.isPercent
+                                      ? ((priceDetails.price - sal) /
+                                          priceDetails.price) *
+                                        100
+                                      : priceDetails.price - sal,
+                                  })
+                                }}
+                              />
                             </Col>
                           </Row>
                         ) : null}
                       </div>
-                      <Row>
-                        <Col>
-                          <div className="d-flex">
-                            <FormGroup switch>
-                              <Input
-                                type="checkbox"
-                                checked={showPricePerUnit}
-                                onClick={() => {
-                                  setShowPricePerUnit(!showPricePerUnit)
-                                }}
-                              ></Input>
-                            </FormGroup>
-                            <div>
-                              Show price per unit{" "}
-                              <i
-                                id="sppr-info"
-                                className="mdi mdi-information me-2 mx-1"
-                              />
-                              <UncontrolledTooltip
-                                placement="top"
-                                target="sppr-info"
-                              >
-                                Let customers see prices based on fixed
-                                measurement units, e.g., price per 100 grams of
-                                cheese.
-                              </UncontrolledTooltip>
+                      <div className="mb-3">
+                        <Row>
+                          <Col>
+                            <div className="d-flex mx-2">
+                              <FormGroup switch>
+                                <Input
+                                  type="checkbox"
+                                  checked={showPricePerUnit}
+                                  onClick={() => {
+                                    setShowPricePerUnit(!showPricePerUnit)
+                                  }}
+                                ></Input>
+                              </FormGroup>
+                              <div>
+                                Show price per unit{" "}
+                                <i
+                                  id="sppr-info"
+                                  className="mdi mdi-information me-2 mx-1"
+                                />
+                                <UncontrolledTooltip
+                                  placement="top"
+                                  target="sppr-info"
+                                >
+                                  Let customers see prices based on fixed
+                                  measurement units, e.g., price per 100 grams
+                                  of cheese.
+                                </UncontrolledTooltip>
+                              </div>
                             </div>
+                          </Col>
+                        </Row>
+                        {showPricePerUnit ? (
+                          <div>
+                            <Row className="my-3">
+                              <Col>
+                                <Label for="pqunits">
+                                  Total product Quantity in units
+                                  <i
+                                    id="product-quanitiy-info"
+                                    className="mdi mdi-information me-2 mx-1"
+                                  />
+                                  <UncontrolledTooltip
+                                    placement="top"
+                                    target="product-quanitiy-info"
+                                  >
+                                    Set your product’s unit of measurement to
+                                    calculate the base price, e.g., for a
+                                    product weighing 1 kilo, you may set the
+                                    base units to 100 g.
+                                  </UncontrolledTooltip>
+                                </Label>
+                                <Input id="pqunits" />
+                              </Col>
+                              <Col>
+                                <Label for="baseunits">
+                                  Base units
+                                  <i
+                                    id="base-info"
+                                    className="mdi mdi-information me-2 mx-1"
+                                  />
+                                  <UncontrolledTooltip
+                                    placement="top"
+                                    target="base-info"
+                                  >
+                                    Set your product’s total quantity in units,
+                                    e.g., if your product weighs 100 grams and
+                                    the unit is grams, then the quantity is 100.
+                                  </UncontrolledTooltip>
+                                </Label>
+                                <Input id="baseunits" />
+                              </Col>
+                            </Row>
+                            <Row className="">
+                              <div style={{ fontWeight: 600 }}>
+                                Base Price per unit
+                              </div>
+                              <div>&#8377; 0.00</div>
+                            </Row>
                           </div>
-                        </Col>
-                      </Row>
-                      {showPricePerUnit ? (
-                        <div>
-                          <Row>
-                            <Col>
-                              <Label for="pqunits">
-                                Total product Quantity in units
-                                <i
-                                  id="product-quanitiy-info"
-                                  className="mdi mdi-information me-2 mx-1"
-                                />
-                                <UncontrolledTooltip
-                                  placement="top"
-                                  target="product-quanitiy-info"
-                                >
-                                  Set your product’s unit of measurement to
-                                  calculate the base price, e.g., for a product
-                                  weighing 1 kilo, you may set the base units to
-                                  100 g.
-                                </UncontrolledTooltip>
-                              </Label>
-                              <Input id="pqunits" />
-                            </Col>
-                            <Col>
-                              <Label for="baseunits">
-                                Base units
-                                <i
-                                  id="base-info"
-                                  className="mdi mdi-information me-2 mx-1"
-                                />
-                                <UncontrolledTooltip
-                                  placement="top"
-                                  target="base-info"
-                                >
-                                  Set your product’s total quantity in units,
-                                  e.g., if your product weighs 100 grams and the
-                                  unit is grams, then the quantity is 100.
-                                </UncontrolledTooltip>
-                              </Label>
-                              <Input id="baseunits" />
-                            </Col>
-                          </Row>
-                          <Row>
-                            <div>Base Price per unit</div>
-                            <div>0.00</div>
-                          </Row>
-                        </div>
-                      ) : null}
+                        ) : null}
+                      </div>
                       <Row>
                         <Col>
                           <Label for="costofgoods">
@@ -306,7 +426,15 @@ export default function EcommerceAddProduct() {
                               this product. Your customers won’t see this.
                             </UncontrolledTooltip>
                           </Label>
-                          <Input id="costofgoods" />
+                          <Input
+                            id="costofgoods"
+                            type="number"
+                            value={priceDetails.cost}
+                            onChange={e => {
+                              const cos = parseInt(e.target.value)
+                              setPriceDetails({ ...priceDetails, cost: cos })
+                            }}
+                          />
                         </Col>
                         <Col>
                           <Label for="profit-fixed">
@@ -322,7 +450,12 @@ export default function EcommerceAddProduct() {
                               The price of the product minus your cost of goods.
                             </UncontrolledTooltip>
                           </Label>
-                          <Input id="profit-fixed" />
+                          <Input
+                            type="number"
+                            disabled={true}
+                            value={priceDetails.salePrice - priceDetails.cost}
+                            id="profit-fixed"
+                          />
                         </Col>
                         <Col>
                           <Label for="margin">
@@ -339,7 +472,16 @@ export default function EcommerceAddProduct() {
                               deducting your cost of goods.
                             </UncontrolledTooltip>
                           </Label>
-                          <Input id="margin" />
+                          <Input
+                            id="margin"
+                            disabled
+                            type="number"
+                            value={Math.round(
+                              ((priceDetails.salePrice - priceDetails.cost) /
+                                priceDetails.salePrice) *
+                                100
+                            )}
+                          />
                         </Col>
                       </Row>
                     </div>
@@ -381,21 +523,175 @@ export default function EcommerceAddProduct() {
                     <CardTitle>Inventory and Shipping</CardTitle>
                   </CardHeader>
                   <CardBody>
-                    <div>
-                      <FormGroup switch>
-                        <Input type="checkbox"></Input>
+                    <Row>
+                      <Col>
+                        <div className="d-flex">
+                          <FormGroup switch>
+                            <Input
+                              type="checkbox"
+                              checked={inventoryShipping}
+                              onClick={() => {
+                                setInventoryShipping(!inventoryShipping)
+                              }}
+                            ></Input>
+                          </FormGroup>
+                          <div>Track Inventory</div>
+                          <i
+                            href="#"
+                            id="inventory-info"
+                            className="mdi mdi-information me-2 mx-1"
+                          />
+                          <UncontrolledTooltip
+                            placement="top"
+                            target="inventory-info"
+                          >
+                            Track this products inventory by adding stock
+                            quantities per variant.
+                          </UncontrolledTooltip>
+                        </div>
+                      </Col>
+                    </Row>
+                    <Row className="my-3">
+                      <Col>
+                        {/* {inventoryShipping ? (
+                          <div></div>
+                        ) : (
+                          
+                        )} */}
+                        <div>
+                          <Label for="status">Inventory</Label>
+                          <Input id="status" name="status" type="select">
+                            <option>In stock</option>
+                            <option>Out of stock</option>
+                          </Input>
+                        </div>
+                      </Col>
+                      <Col>
+                        <Label for="sku">
+                          SKU
+                          <i
+                            id="cost-info"
+                            className="mdi mdi-information me-2 mx-1"
+                          />
+                          <UncontrolledTooltip
+                            placement="top"
+                            target="cost-info"
+                          >
+                            A “Stock Keeping Unit” is a unique code you can
+                            create for each product or variant you have in your
+                            store. Using SKUs helps with tracking inventory.
+                          </UncontrolledTooltip>
+                        </Label>
+                        <Input
+                          value={inventoryDetails.SKU}
+                          onChange={e => {
+                            setInventoryDetails({
+                              ...inventoryDetails,
+                              SKU: e.target.value,
+                            })
+                          }}
+                          id="sku"
+                        />
+                      </Col>
+                      <Col>
+                        <div>
+                          <Label for="shpwgt">
+                            Shipping Weight
+                            <i
+                              id="shwgt-info"
+                              className="mdi mdi-information me-2 mx-1"
+                            />
+                            <UncontrolledTooltip
+                              placement="top"
+                              target="shwgt-info"
+                            >
+                              A “Stock Keeping Unit” is a unique code you can
+                              create for each product or variant you have in
+                              your store. Using SKUs helps with tracking
+                              inventory.
+                            </UncontrolledTooltip>
+                          </Label>
+                          <Input
+                            id="shpwgt"
+                            value={parseInt(inventoryDetails.shippingWeight)}
+                            onChange={e => {
+                              setInventoryDetails({
+                                ...inventoryDetails,
+                                shippingWeight: parseInt(e.target.value),
+                              })
+                            }}
+                          />
+                        </div>
+                      </Col>
+                    </Row>
+                  </CardBody>
+                </Card>
+              </Row>
+              <Row>
+                <Card className="p-0">
+                  <CardHeader>
+                    <CardTitle>Pre-Order</CardTitle>
+                  </CardHeader>
+                  <CardBody>
+                    <div className="d-flex justify-content-between">
+                      <div>
+                        <div>
+                          Let customers buy this product before it’s released or
+                          when it’s out of stock.
+                        </div>
+                        <CardLink>Learn about pre-order</CardLink>
+                      </div>
+                      <FormGroup switch className="m-3">
+                        <Input
+                          type="checkbox"
+                          checked={preOrder}
+                          onClick={() => {
+                            setPreorder(!preOrder)
+                          }}
+                        ></Input>
                       </FormGroup>
                     </div>
+                    {preOrder ? (
+                      <div>
+                        <div>
+                          <CardTitle>PRE-ORDER MESSAGE</CardTitle>
+                          <CardSubtitle>
+                            Add a note that customers will see on the product
+                            page and during checkout.
+                          </CardSubtitle>
+                          <Input />
+                        </div>
+                        <div>
+                          <CardTitle>RE-ORDER LIMIT</CardTitle>
+                          <CardSubtitle>
+                            Limit the total number of items available for
+                            pre-order. If this product has variants, the limit
+                            will apply to each one individually.
+                          </CardSubtitle>
+                          <div>No limit</div>
+                          <div className="d-flex">
+                            <div>Limit to</div> <Input type="number" />
+                          </div>
+                        </div>
+                      </div>
+                    ) : null}
                   </CardBody>
                 </Card>
               </Row>
             </Col>
-            <Col xs="3">
+            <Col>
               <Row>
                 <Card className="p-0">
                   <CardBody>
                     <div className="p-2">
-                      <Input type="checkbox" className="p-1 mx-2" />
+                      <Input
+                        type="checkbox"
+                        checked={showInWebstie}
+                        onClick={() => {
+                          setShowInWebsite(!showInWebstie)
+                        }}
+                        className="p-1 mx-2"
+                      />
                       Show in online store
                     </div>
                   </CardBody>
