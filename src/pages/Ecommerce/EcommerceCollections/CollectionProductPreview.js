@@ -2,16 +2,7 @@ import PropTypes from "prop-types"
 import React from "react"
 import { useRef } from "react"
 import { useDrag, useDrop } from "react-dnd"
-import {
-  Badge,
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Col,
-  Row,
-} from "reactstrap"
+import { Badge, Button, Card, CardFooter } from "reactstrap"
 import "./CollectionProductPreview-styles.scss"
 
 export default function CollectionProductPreview({
@@ -20,6 +11,8 @@ export default function CollectionProductPreview({
   img,
   index,
   moveCollectionProductPreview,
+  setCollectionProductIds,
+  collectionProductIds,
 }) {
   const ref = useRef(null)
   const [{ handlerId }, drop] = useDrop({
@@ -68,6 +61,9 @@ export default function CollectionProductPreview({
           <Button
             className="btn-transparent btn-rounded border-0 mx-2 delete-product-in-collection"
             outline
+            onClick={() => {
+              setCollectionProductIds(id)
+            }}
           >
             <i className="mdi mdi-close text-sm-end text-white opacity-100" />
           </Button>
@@ -84,4 +80,6 @@ CollectionProductPreview.propTypes = {
   index: PropTypes.any,
   moveCollectionProductPreview: PropTypes.func,
   img: PropTypes.string,
+  collectionProductIds: PropTypes.array,
+  setCollectionProductIds: PropTypes.func,
 }

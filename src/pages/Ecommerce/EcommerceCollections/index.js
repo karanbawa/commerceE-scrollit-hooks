@@ -7,6 +7,10 @@ import {
   Button,
   CardHeader,
   Input,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from "reactstrap"
 import { MetaTags } from "react-meta-tags"
 import { Link } from "react-router-dom"
@@ -19,6 +23,8 @@ export default function EcommerceCollections() {
   const [collectionList, setCollectionList] = useState([])
   const [productList, setProductList] = useState(null)
   const [filteredCollections, setFilteredCollections] = useState([])
+  
+
   const dispatch = useDispatch()
   const { collections, products } = useSelector(state => ({
     collections: state.ecommerce.collections,
@@ -54,6 +60,7 @@ export default function EcommerceCollections() {
   return (
     <React.Fragment>
       <div className="page-content">
+      
         <MetaTags>
           <title>Collections | Scrollit</title>
         </MetaTags>

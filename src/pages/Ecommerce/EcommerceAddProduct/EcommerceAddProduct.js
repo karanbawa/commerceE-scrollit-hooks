@@ -29,16 +29,20 @@ import {
   UncontrolledTooltip,
 } from "reactstrap"
 import { getCollections } from "store/actions"
+import * as convert from "convert-units"
+import RichTextEditor from "react-rte"
 
 export default function EcommerceAddProduct() {
   const dispatch = useDispatch()
-
   // states for data
   const [collectionList, setCollectionList] = useState([])
   const [newCollection, setNewCollection] = useState({
     name: "",
   })
   const [productCollections, setProductCollection] = useState(["all-products"])
+  const [descCont, setDescCont] = useState({
+    value: RichTextEditor.createEmptyValue(),
+  })
   const [priceDetails, setPriceDetails] = useState({
     price: 0,
     discount: 0,
@@ -56,6 +60,17 @@ export default function EcommerceAddProduct() {
     limit: false,
     limitCount: 0,
   })
+  const [perUnitDetails, setPerUnitDetails] = useState({
+    total: 0,
+    tunits: "g",
+    base: 0,
+    bunits: "g",
+  })
+  const [customTextDetails, setCustomTextDetails] = useState({
+    title: "",
+    charLin: 500,
+    mandatoryField: false,
+  })
 
   // states for toggles
   const [inventoryShipping, setInventoryShipping] = useState(false)
@@ -64,6 +79,7 @@ export default function EcommerceAddProduct() {
   const [showPricePerUnit, setShowPricePerUnit] = useState(false)
   const [showInWebstie, setShowInWebsite] = useState(false)
   const [preOrder, setPreorder] = useState(false)
+  const [customText, setCustomText] = useState(false)
 
   const { collections } = useSelector(state => ({
     collections: state.ecommerce.collections,
@@ -80,6 +96,11 @@ export default function EcommerceAddProduct() {
   }, [collections])
 
   console.log(inventoryDetails)
+
+  const desChnage = value => {
+    setDescCont({ value })
+    console.log(value.toString("html"))
+  }
 
   return (
     <React.Fragment>
@@ -172,11 +193,15 @@ export default function EcommerceAddProduct() {
                     <Row>
                       <Label for="description">Description</Label>
                       <Col>
-                        <Input
+                        {/* <Input
                           id="description"
                           name="text"
                           type="textarea"
                           className="col-10"
+                        /> */}
+                        <RichTextEditor
+                          value={descCont.value}
+                          onChange={desChnage}
                         />
                       </Col>
                     </Row>
@@ -194,23 +219,34 @@ export default function EcommerceAddProduct() {
                         <Col>
                           <div className="col-4">
                             <Label for="price">Price</Label>
-                            <Input
-                              type="number"
-                              id="price"
-                              value={priceDetails.price}
-                              onChange={e => {
-                                const pri = parseInt(e.target.value)
-                                setPriceDetails({
-                                  ...priceDetails,
-                                  price: pri,
-                                  salePrice: priceDetails.isPercent
-                                    ? Math.round(
-                                        (1 - priceDetails.discount / 100) * pri
-                                      )
-                                    : pri - priceDetails.discount,
-                                })
-                              }}
-                            ></Input>
+                            <div className="d-flex">
+                              <Input
+                                type="number"
+                                id="price"
+                                value={priceDetails.price}
+                                onChange={e => {
+                                  const pri = parseInt(e.target.value)
+                                  setPriceDetails({
+                                    ...priceDetails,
+                                    price: pri,
+                                    salePrice: priceDetails.isPercent
+                                      ? Math.round(
+                                          (1 - priceDetails.discount / 100) *
+                                            pri
+                                        )
+                                      : pri - priceDetails.discount,
+                                  })
+                                }}
+                              />
+                              <div
+                                className={"mx-3"}
+                                style={{
+                                  fontSize: "20px",
+                                }}
+                              >
+                                &#8377;
+                              </div>
+                            </div>
                           </div>
                         </Col>
                       </Row>
@@ -232,7 +268,12 @@ export default function EcommerceAddProduct() {
                                   }}
                                 ></Input>
                               </FormGroup>
-                              <div style={{ fontSize: "2 rem" }}>On Sale</div>
+                              <div
+                                style={{ fontSize: "0.9rem", fontWeight: 500 }}
+                                className="mx-1"
+                              >
+                                On Sale
+                              </div>
                             </div>
                           </Col>
                         </Row>
@@ -308,23 +349,34 @@ export default function EcommerceAddProduct() {
                             </Col>
                             <Col>
                               <Label for="saleprice">Sale Price</Label>
-                              <Input
-                                type="number"
-                                id="saleprice"
-                                value={priceDetails.salePrice}
-                                onChange={e => {
-                                  const sal = parseInt(e.target.value)
-                                  setPriceDetails({
-                                    ...priceDetails,
-                                    salePrice: sal,
-                                    discount: priceDetails.isPercent
-                                      ? ((priceDetails.price - sal) /
-                                          priceDetails.price) *
-                                        100
-                                      : priceDetails.price - sal,
-                                  })
-                                }}
-                              />
+                              <div className="d-flex">
+                                <Input
+                                  type="number"
+                                  id="saleprice"
+                                  value={priceDetails.salePrice}
+                                  onChange={e => {
+                                    const sal = parseInt(e.target.value)
+                                    setPriceDetails({
+                                      ...priceDetails,
+                                      salePrice: sal,
+                                      discount: priceDetails.isPercent
+                                        ? ((priceDetails.price - sal) /
+                                            priceDetails.price) *
+                                          100
+                                        : priceDetails.price - sal,
+                                    })
+                                  }}
+                                />{" "}
+                                <div
+                                  className={"text-primary mx-3"}
+                                  style={{
+                                    fontSize: "20px",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  &#8377;
+                                </div>
+                              </div>
                             </Col>
                           </Row>
                         ) : null}
@@ -342,8 +394,11 @@ export default function EcommerceAddProduct() {
                                   }}
                                 ></Input>
                               </FormGroup>
-                              <div>
-                                Show price per unit{" "}
+                              <div
+                                style={{ fontSize: "0.9rem", fontWeight: 500 }}
+                                className="mx-1"
+                              >
+                                Show price per unit
                                 <i
                                   id="sppr-info"
                                   className="mdi mdi-information me-2 mx-1"
@@ -380,7 +435,88 @@ export default function EcommerceAddProduct() {
                                     base units to 100 g.
                                   </UncontrolledTooltip>
                                 </Label>
-                                <Input id="pqunits" />
+                                <Row>
+                                  <Col xs="8">
+                                    <Input id="pqunits" />
+                                  </Col>
+                                  <Col>
+                                    <Input
+                                      value={perUnitDetails.tunits}
+                                      type="select"
+                                      onChange={e => {
+                                        setPerUnitDetails({
+                                          ...perUnitDetails,
+                                          tunits: e.target.value,
+                                        })
+                                      }}
+                                    >
+                                      <option
+                                        style={{
+                                          fontWeight: 700,
+                                          backgroundColor: "whitesmoke",
+                                        }}
+                                        disabled
+                                      >
+                                        Length
+                                      </option>
+                                      {convert()
+                                        .possibilities("length")
+                                        .map(metric => (
+                                          <option key={"mn" + metric}>
+                                            {metric}
+                                          </option>
+                                        ))}
+                                      <option
+                                        style={{
+                                          fontWeight: 700,
+                                          backgroundColor: "whitesmoke",
+                                        }}
+                                        disabled
+                                      >
+                                        Mass
+                                      </option>
+                                      {convert()
+                                        .possibilities("mass")
+                                        .map(metric => (
+                                          <option key={"mn" + metric}>
+                                            {metric}
+                                          </option>
+                                        ))}
+                                      <option
+                                        disabled
+                                        style={{
+                                          fontWeight: 700,
+                                          backgroundColor: "whitesmoke",
+                                        }}
+                                      >
+                                        Volume
+                                      </option>
+                                      {convert()
+                                        .possibilities("volume")
+                                        .map(metric => (
+                                          <option key={"mn" + metric}>
+                                            {metric}
+                                          </option>
+                                        ))}
+                                      <option
+                                        style={{
+                                          fontWeight: 700,
+                                          backgroundColor: "whitesmoke",
+                                        }}
+                                        disabled
+                                      >
+                                        Area
+                                      </option>
+                                      {convert()
+                                        .possibilities("area")
+                                        .map(metric => (
+                                          <option key={"mn" + metric}>
+                                            {metric}
+                                          </option>
+                                        ))}
+                                    </Input>
+                                  </Col>
+                                </Row>
                               </Col>
                               <Col>
                                 <Label for="baseunits">
@@ -398,7 +534,23 @@ export default function EcommerceAddProduct() {
                                     the unit is grams, then the quantity is 100.
                                   </UncontrolledTooltip>
                                 </Label>
-                                <Input id="baseunits" />
+                                <Row>
+                                  <Col>
+                                    <Input id="baseunits" />
+                                  </Col>
+                                  <Col>
+                                    <Input type="select">
+                                      {convert()
+                                        .from(perUnitDetails.tunits)
+                                        .possibilities()
+                                        .map(metric => (
+                                          <option key={"syb" + metric}>
+                                            {metric}
+                                          </option>
+                                        ))}
+                                    </Input>
+                                  </Col>
+                                </Row>
                               </Col>
                             </Row>
                             <Row className="">
@@ -410,7 +562,7 @@ export default function EcommerceAddProduct() {
                           </div>
                         ) : null}
                       </div>
-                      <Row>
+                      <Row className="my-4">
                         <Col>
                           <Label for="costofgoods">
                             Cost of Goods
@@ -426,15 +578,25 @@ export default function EcommerceAddProduct() {
                               this product. Your customers won’t see this.
                             </UncontrolledTooltip>
                           </Label>
-                          <Input
-                            id="costofgoods"
-                            type="number"
-                            value={priceDetails.cost}
-                            onChange={e => {
-                              const cos = parseInt(e.target.value)
-                              setPriceDetails({ ...priceDetails, cost: cos })
-                            }}
-                          />
+                          <div className="d-flex ">
+                            <Input
+                              id="costofgoods"
+                              type="number"
+                              value={priceDetails.cost}
+                              onChange={e => {
+                                const cos = parseInt(e.target.value)
+                                setPriceDetails({ ...priceDetails, cost: cos })
+                              }}
+                            />
+                            <div
+                              className={" mx-3"}
+                              style={{
+                                fontSize: "20px",
+                              }}
+                            >
+                              &#8377;
+                            </div>
+                          </div>
                         </Col>
                         <Col>
                           <Label for="profit-fixed">
@@ -450,12 +612,22 @@ export default function EcommerceAddProduct() {
                               The price of the product minus your cost of goods.
                             </UncontrolledTooltip>
                           </Label>
-                          <Input
-                            type="number"
-                            disabled={true}
-                            value={priceDetails.salePrice - priceDetails.cost}
-                            id="profit-fixed"
-                          />
+                          <div className="d-flex">
+                            <Input
+                              type="number"
+                              disabled={true}
+                              value={priceDetails.salePrice - priceDetails.cost}
+                              id="profit-fixed"
+                            />
+                            <div
+                              className={"mx-3"}
+                              style={{
+                                fontSize: "20px",
+                              }}
+                            >
+                              &#8377;
+                            </div>
+                          </div>
                         </Col>
                         <Col>
                           <Label for="margin">
@@ -472,16 +644,26 @@ export default function EcommerceAddProduct() {
                               deducting your cost of goods.
                             </UncontrolledTooltip>
                           </Label>
-                          <Input
-                            id="margin"
-                            disabled
-                            type="number"
-                            value={Math.round(
-                              ((priceDetails.salePrice - priceDetails.cost) /
-                                priceDetails.salePrice) *
-                                100
-                            )}
-                          />
+                          <div className="d-flex">
+                            <Input
+                              id="margin"
+                              disabled
+                              type="number"
+                              value={Math.round(
+                                ((priceDetails.salePrice - priceDetails.cost) /
+                                  priceDetails.salePrice) *
+                                  100
+                              )}
+                            />
+                            <div
+                              className={"mx-3"}
+                              style={{
+                                fontSize: "20px",
+                              }}
+                            >
+                              %
+                            </div>
+                          </div>
                         </Col>
                       </Row>
                     </div>
@@ -496,9 +678,75 @@ export default function EcommerceAddProduct() {
                       Allow customers to personalize this product with a custom
                       text field.
                     </CardText>
-                    <Button className="btn-rounded" color="success" outline>
-                      Add Custom Text Field
-                    </Button>
+                    {customText ? (
+                      <div>
+                        <Row>
+                          <Col>
+                            <div
+                              onClick={() => {
+                                setCustomText(!customText)
+                              }}
+                              className="text-sm-end text-danger"
+                              style={{ fontSize: "20px", cursor: "pointer" }}
+                            >
+                              <span className="mdi mdi-delete"></span>
+                            </div>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col>
+                            <Label for="cus-title">Text field title</Label>
+                            <Input
+                              id="cus-title"
+                              placeholder="e.g., 'What would you like engraved on your watch?'"
+                            />
+                          </Col>
+                          <Col xs="3">
+                            <Label for="char-lim">Char limit</Label>
+                            <Input
+                              type="number"
+                              id="char-lim"
+                              value={customTextDetails.charLin}
+                              onChange={e => {
+                                setCustomTextDetails({
+                                  ...customTextDetails,
+                                  charLin: parseInt(e.target.value),
+                                })
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row>
+                          <div className="d-flex mt-3">
+                            <FormGroup>
+                              <Input
+                                type="checkbox"
+                                checked={customTextDetails.mandatoryField}
+                                onClick={() => {
+                                  setCustomTextDetails({
+                                    ...customTextDetails,
+                                    mandatoryField:
+                                      !customTextDetails.mandatoryField,
+                                  })
+                                }}
+                              ></Input>
+                            </FormGroup>
+                            <div className="mx-2">Mandatory Field</div>
+                          </div>
+                        </Row>
+                      </div>
+                    ) : (
+                      <Button
+                        onClick={() => {
+                          setCustomText(!customText)
+                        }}
+                        className="btn-rounded"
+                        color="success"
+                        outline
+                      >
+                        Add Custom Text Field
+                      </Button>
+                    )}
                   </CardBody>
                 </Card>
               </Row>
@@ -552,20 +800,20 @@ export default function EcommerceAddProduct() {
                       </Col>
                     </Row>
                     <Row className="my-3">
-                      <Col>
-                        {/* {inventoryShipping ? (
-                          <div></div>
-                        ) : (
-                          
-                        )} */}
-                        <div>
-                          <Label for="status">Inventory</Label>
-                          <Input id="status" name="status" type="select">
+                      {inventoryShipping ? (
+                        <Col>
+                          <Label for="inv-set">Inventory</Label>
+                          <Input id="inv-set" type="number" />
+                        </Col>
+                      ) : (
+                        <Col>
+                          <Label for="status-set">Status</Label>
+                          <Input id="status-set" type="select">
                             <option>In stock</option>
                             <option>Out of stock</option>
                           </Input>
-                        </div>
-                      </Col>
+                        </Col>
+                      )}
                       <Col>
                         <Label for="sku">
                           SKU

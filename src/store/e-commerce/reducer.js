@@ -71,7 +71,7 @@ const Ecommerce = (state = INIT_STATE, action) => {
             name: "All Products",
             image: "some link",
             _id: "all-products",
-            productIds: state.productList,
+            productIds: state.productList.map(product => product._id),
           },
           ...action.payload,
         ],

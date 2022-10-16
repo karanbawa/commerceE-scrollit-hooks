@@ -15,8 +15,9 @@ export const updateProductInList = product =>
     // Change after API is updated
     // createdAt: product.createdAt,
     // displayProduct: product.displayProduct,
-    // category : product.category
+    category : product.category
   })
+
 
 export const deleteProductInList = product =>
   del(`${url.DELETE_PRODUCT_IN_LIST}${product._id}`, { headers: { product } })
@@ -55,6 +56,7 @@ export const addCollection = collection => post(url.ADD_COLLECTION, collection)
 export const updateCollection = collection =>
   put(`${url.UPDATE_COLLECTION}${collection._id}`, {
     name : collection.name,
+    productIds : collection.productIds
     // add after API change
     // image : collection.image,
   })
