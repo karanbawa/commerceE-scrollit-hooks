@@ -89,7 +89,7 @@ export default function EcommerceCollections() {
                     <i className="bx bx-search-alt search-icon" />
                   </div>
                 </div>
-                <Link to="/ecommerce-collection-details/untitled-collection">
+                <Link to="/ecommerce-create-collection">
                   <Button
                     type="button"
                     color="success"

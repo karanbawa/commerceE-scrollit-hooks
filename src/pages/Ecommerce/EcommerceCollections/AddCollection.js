@@ -36,6 +36,7 @@ import CollectionProductPreview from "./CollectionProductPreview"
 import { useCallback } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import {
+  addCollection,
   deleteCollection,
   getCollections,
   getProductList,
@@ -46,14 +47,12 @@ import { useEffect } from "react"
 import { hover } from "@testing-library/user-event/dist/hover"
 import FileResizer from "react-image-file-resizer"
 
-export default function EcommerceCollectionDetails() {
+export default function AddCollection() {
   const dispatch = useDispatch()
   const history = useHistory()
-  const { _id } = useParams()
 
   // Getting collections and products from store
-  const { collections, products } = useSelector(state => ({
-    collections: state.ecommerce.collections,
+  const { products } = useSelector(state => ({
     products: state.ecommerce.productList,
   }))
 
@@ -64,20 +63,9 @@ export default function EcommerceCollectionDetails() {
 
   //states for data
   const [productList, setProductList] = useState([])
-
-  // Getting page specific collection from collections
-  const collection = collections.filter(collection => collection._id === _id)[0]
-
-  // Creating a local set of values that will enable editing
-  const [collectionName, setCollectionName] = useState(
-    collection ? collection.name : ""
-  )
-  const [collectionImage, setCollectionImage] = useState(
-    collection ? collection.image : ""
-  )
-  const [collectionProductIds, setCollectionProductIds] = useState(
-    collection ? collection.productIds : []
-  )
+  const [collectionName, setCollectionName] = useState("")
+  const [collectionImage, setCollectionImage] = useState("")
+  const [collectionProductIds, setCollectionProductIds] = useState([])
 
   const [productsToAdd, setProductsToAdd] = useState([])
 
@@ -89,21 +77,8 @@ export default function EcommerceCollectionDetails() {
   }, [products])
 
   useEffect(() => {
-    if (collections && !collections.length) {
-      dispatch(getCollections())
-    }
-  }, [collections])
-
-  // redirect to collections page if a wrong id is entered in the address bar by the user
-  useEffect(() => {
-    if (!collection && _id !== "untitled-collection") {
-      history.push("/ecommerce-collections")
-    }
-  }, [collection, products])
-
-  useEffect(() => {
     setProductList(products)
-  })
+  }, [products])
 
   useEffect(() => {
     setProductsToAdd(
@@ -132,6 +107,8 @@ export default function EcommerceCollectionDetails() {
     )
   })
 
+  console.log(products)
+
   // rendering drag drop product cards
   const renderCollectionProductPreview = useCallback(
     (CollectionProductId, index) => {
@@ -155,39 +132,21 @@ export default function EcommerceCollectionDetails() {
     []
   )
 
-  // handling save action
-  const handleSaveCollection = () => {
-    if (_id === "untitled-collection") {
-    }
-    if (
-      collection.name === collectionName &&
-      collection.image === collectionImage &&
-      JSON.stringify(collectionProductIds) ==
-        JSON.stringify(collection.productIds)
-    ) {
-      history.push("/ecommerce-collections")
-      return
-    } else {
-      dispatch(
-        updateCollection({
-          name: collectionName,
-          image: collectionImage,
-          _id: _id,
-          productIds: collectionProductIds,
-        })
-      )
-    }
+  // handling create action
+  const handleCreateCollection = () => {
+    dispatch(
+      addCollection({
+        name: collectionName ? collectionImage : "Untitled Collection",
+        image: collectionImage ? collectionImage : "broken!",
+        productIds: collectionProductIds,
+      })
+    )
     history.push("/ecommerce-collections")
   }
 
   // update fuction after save collection to site is defined
   const handleSaveCollectiontoSite = () => {
     console.log("I do nothing!!")
-  }
-
-  const handleDeleteCollection = () => {
-    dispatch(deleteCollection(_id))
-    history.push("/ecommerce-collections")
   }
   const toggle = () => setModal(!modal)
 
@@ -207,8 +166,6 @@ export default function EcommerceCollectionDetails() {
       )
     })
 
-    console.log(collectionImage)
-
   return (
     <React.Fragment>
       <div className="page-content">
@@ -218,12 +175,10 @@ export default function EcommerceCollectionDetails() {
               <Row>
                 <Col>
                   <Link to={"/ecommerce-collections"}>Collections</Link> &gt;{" "}
-                  {collection ? collection.name : "Untitled Product"}
+                  Untitled Product
                 </Col>
               </Row>
-              <Row className="display-6 m-3">
-                {collection ? collection.name : "Untitled Product"}
-              </Row>
+              <Row className="display-6 m-3">Untitled Product</Row>
             </Col>
             <Col className="h-100">
               <div className="text-sm-end align-bottom m-4">
@@ -239,18 +194,9 @@ export default function EcommerceCollectionDetails() {
                     <i className="mdi mdi-dots-horizontal" />
                   </DropdownToggle>
                   <DropdownMenu className="dropdown-menu-end">
-                    <DropdownItem href="#" onClick={handleSaveCollection}>
+                    <DropdownItem href="#" onClick={handleSaveCollectiontoSite}>
                       <i className="mdi mdi-plus text-success me-2" />
                       Add Collection to Site
-                    </DropdownItem>
-                    <DropdownItem
-                      href="#"
-                      onClick={() => {
-                        handleDeleteCollection()
-                      }}
-                    >
-                      <i className="mdi mdi-delete text-danger me-2" />
-                      Delete Collection
                     </DropdownItem>
                   </DropdownMenu>
                 </UncontrolledDropdown>
@@ -269,10 +215,10 @@ export default function EcommerceCollectionDetails() {
                   color="success"
                   className="btn-rounded  mb-2 me-2"
                   onClick={() => {
-                    handleSaveCollection()
+                    handleCreateCollection()
                   }}
                 >
-                  Save
+                  Create Collection
                 </Button>
               </div>
             </Col>
@@ -334,7 +280,6 @@ export default function EcommerceCollectionDetails() {
                       onChange={event => {
                         setCollectionName(event.target.value)
                       }}
-                      disabled={_id === "all-products"}
                     />
                   </div>
                   <div className="m-1 mt-3">
@@ -360,7 +305,7 @@ export default function EcommerceCollectionDetails() {
                     type="button"
                     color="success"
                     className="btn-rounded  m-3"
-                    onClick={handleSaveCollection}
+                    onClick={handleSaveCollectiontoSite}
                   >
                     <i className="mdi mdi-plus me-1" />
                     Add Collection to Site
@@ -412,7 +357,7 @@ export default function EcommerceCollectionDetails() {
         </Modal>
         <Modal isOpen={modal1} toggle={toggle1}>
           <ModalHeader toggle={toggle1}>
-            Add Product to {collection.name}
+            Add Product to {collectionName}
           </ModalHeader>
           <ModalBody style={{ overflowY: "scroll" }}>
             <ListGroup style={{ maxHeight: "50vh" }}>

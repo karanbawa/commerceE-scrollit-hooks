@@ -11,8 +11,7 @@ export default function CollectionProductPreview({
   img,
   index,
   moveCollectionProductPreview,
-  setCollectionProductIds,
-  collectionProductIds,
+  deleteCollectionProductPreview
 }) {
   const ref = useRef(null)
   const [{ handlerId }, drop] = useDrop({
@@ -62,7 +61,7 @@ export default function CollectionProductPreview({
             className="btn-transparent btn-rounded border-0 mx-2 delete-product-in-collection"
             outline
             onClick={() => {
-              setCollectionProductIds(id)
+              deleteCollectionProductPreview(index)
             }}
           >
             <i className="mdi mdi-close text-sm-end text-white opacity-100" />
@@ -81,5 +80,5 @@ CollectionProductPreview.propTypes = {
   moveCollectionProductPreview: PropTypes.func,
   img: PropTypes.string,
   collectionProductIds: PropTypes.array,
-  setCollectionProductIds: PropTypes.func,
+  deleteCollectionProductPreview: PropTypes.func,
 }

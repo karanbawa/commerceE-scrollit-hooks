@@ -172,6 +172,7 @@ import ContactsGrid from "../pages/Contacts/contacts-grid"
 import ContactsList from "../pages/Contacts/ContactList/contacts-list"
 import ContactsProfile from "../pages/Contacts/ContactsProfile/contacts-profile"
 import EcommerceCollectionDetails from "pages/Ecommerce/EcommerceCollections/CollectionDetails"
+import AddCollection from "pages/Ecommerce/EcommerceCollections/AddCollection"
 
 const authProtectedRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -205,6 +206,7 @@ const authProtectedRoutes = [
     component: EcommerceCollectionDetails,
   },
   { path: "/ecommerce-collections", component: EcommerceCollections },
+  { path: "/ecommerce-create-collection", component: AddCollection },
   { path: "/ecommerce-product-detail/:id", component: EcommerceProductDetail },
   { path: "/ecommerce-products", component: EcommerceProducts },
   { path: "/ecommerce-product-list", component: EcommerceProductList },
