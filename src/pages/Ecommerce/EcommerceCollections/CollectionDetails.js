@@ -206,9 +206,7 @@ export default function EcommerceCollectionDetails() {
         "base64"
       )
     })
-
-    console.log(collectionImage)
-
+    
   return (
     <React.Fragment>
       <div className="page-content">
@@ -368,10 +366,10 @@ export default function EcommerceCollectionDetails() {
                 </CardFooter>
               </Card>
               <Card>
-                <CardHeader>
+              <CardHeader>
                   <CardTitle>Promote</CardTitle>
                 </CardHeader>
-                <CardBody clas>
+                <CardBody >
                   <ListGroup flush>
                     <ListGroupItem>
                       <i className="mdi mdi-ticket me-2" />

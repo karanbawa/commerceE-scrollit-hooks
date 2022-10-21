@@ -136,9 +136,12 @@ export default function AddCollection() {
   const handleCreateCollection = () => {
     dispatch(
       addCollection({
-        name: collectionName ? collectionImage : "Untitled Collection",
+        name: collectionName ? collectionName : "Untitled Collection",
         image: collectionImage ? collectionImage : "broken!",
         productIds: collectionProductIds,
+        // remove after api updation
+        color: "some color",
+        icon: "something",
       })
     )
     history.push("/ecommerce-collections")
@@ -316,7 +319,7 @@ export default function AddCollection() {
                 <CardHeader>
                   <CardTitle>Promote</CardTitle>
                 </CardHeader>
-                <CardBody clas>
+                <CardBody >
                   <ListGroup flush>
                     <ListGroupItem>
                       <i className="mdi mdi-ticket me-2" />

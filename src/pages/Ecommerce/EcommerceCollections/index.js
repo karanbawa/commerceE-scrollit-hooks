@@ -23,7 +23,6 @@ export default function EcommerceCollections() {
   const [collectionList, setCollectionList] = useState([])
   const [productList, setProductList] = useState(null)
   const [filteredCollections, setFilteredCollections] = useState([])
-  
 
   const dispatch = useDispatch()
   const { collections, products } = useSelector(state => ({
@@ -44,7 +43,7 @@ export default function EcommerceCollections() {
         dispatch(getCollections())
       }
     }
-  }, [products])
+  }, [productList])
 
   useEffect(() => {
     setCollectionList(collections)
@@ -57,10 +56,11 @@ export default function EcommerceCollections() {
     setProductList(products)
   }, [products])
 
+  console.log(productList)
+
   return (
     <React.Fragment>
       <div className="page-content">
-      
         <MetaTags>
           <title>Collections | Scrollit</title>
         </MetaTags>
@@ -81,7 +81,9 @@ export default function EcommerceCollections() {
                       onChange={e => {
                         setFilteredCollections(
                           collectionList.filter(collection =>
-                            collection.name.toUpperCase().includes(e.target.value.toUpperCase())
+                            collection.name
+                              .toUpperCase()
+                              .includes(e.target.value.toUpperCase())
                           )
                         )
                       }}
@@ -120,7 +122,7 @@ export default function EcommerceCollections() {
             <div className="col-4 pt-4" style={{ minHeight: "280px" }}>
               <Link
                 className=" rounded bg-success d-flex justify-content-center align-items-center h-100"
-                to={`/ecommerce-collection-details/untitled-collection`}
+                to={`/ecommerce-create-collection`}
               >
                 <i className="mdi mdi-plus mdi-48px me-1 text-white" />
               </Link>

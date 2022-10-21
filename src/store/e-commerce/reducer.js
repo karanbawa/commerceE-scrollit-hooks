@@ -45,6 +45,8 @@ import {
   DELETE_COLLECTION_SUCCESS,
   UPDATE_COLLECTION_SUCCESS,
   UPDATE_COLLECTION_FAIL,
+  ADD_COLLECTION,
+  ADD_COLLECTION_SUCCESS,
 } from "./actionTypes"
 
 const INIT_STATE = {
@@ -106,6 +108,12 @@ const Ecommerce = (state = INIT_STATE, action) => {
         collections: state.collections.filter(
           collection => collection._id.toString() !== action.payload.toString()
         ),
+      }
+
+    case ADD_COLLECTION_SUCCESS:
+      return {
+        ...state,
+        collections: [...state.collections, action.payload],
       }
 
     case GET_PRODUCTS_SUCCESS:

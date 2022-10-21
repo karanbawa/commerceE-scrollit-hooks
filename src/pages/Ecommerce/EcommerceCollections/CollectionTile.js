@@ -62,7 +62,7 @@ function CollectionTile({ _id, name, icon, color, productIds, isMutable }) {
         </Row>
         <div className="m-2 position-fixed-bottom text-white p-2 mx-3 font-size-18">
           {name}
-          <span className="mx-2">{productIds.length}</span>
+          <span className="mx-2">{productIds ? productIds.length : 0 }</span>
         </div>
       </Link>
     </div>

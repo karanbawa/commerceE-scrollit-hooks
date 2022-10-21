@@ -83,6 +83,8 @@ import {
   updateCollectionFail,
   deleteCollectionSuccess,
   deleteCollectionFail,
+  addCollectionSuccess,
+  addCollectionFail,
 } from "./actions"
 
 //Include Both Helper File with needed methods
@@ -116,6 +118,7 @@ import {
   getCollections,
   updateCollection,
   deleteColletion,
+  addCollection,
 } from "helpers/backend_helper"
 
 function* fetchProducts() {
@@ -315,12 +318,13 @@ function* onDeleteCollection({ payload: collectionId }) {
   }
 }
 
-function* onAddCollection({ payload: order }) {
+function* onAddCollection({ payload: collection }) {
   try {
-    const response = yield call(addNewOrder, order)
-    yield put(addOrderSuccess(response))
+    const response = yield call(addCollection, collection)
+    yield put(addCollectionSuccess(response.data.category))
+    console.log(response.data)
   } catch (error) {
-    yield put(addOrderFail(error))
+    yield put(addCollectionFail(error))
   }
 }
 
