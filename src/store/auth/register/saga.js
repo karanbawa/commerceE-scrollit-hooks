@@ -23,9 +23,10 @@ function* registerUser({ payload: { user } }) {
         user.email,
         user.password
       )
+
       yield put(registerUserSuccessful(response))
     } else if (process.env.REACT_APP_DEFAULTAUTH === "jwt") { 
-      const response = yield call(postJwtRegister, url, user)
+      const response = yield call(postJwtRegister, user)
       yield put(registerUserSuccessful(response))
     } else if (process.env.REACT_APP_DEFAULTAUTH === "fake") {
       const response = yield call(postFakeRegister, user)
@@ -37,6 +38,7 @@ function* registerUser({ payload: { user } }) {
 }
 
 export function* watchUserRegister() {
+  console.log("text suuces")
   yield takeEvery(REGISTER_USER, registerUser)
 }
 

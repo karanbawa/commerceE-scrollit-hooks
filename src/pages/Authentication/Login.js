@@ -50,6 +50,9 @@ const Login = props => {
     }),
     onSubmit: (values) => {
       dispatch(loginUser(values, props.history)); 
+      if(values){
+        JSON.stringify({email:"",password:""})
+      }
     }
   });
 

@@ -1,6 +1,9 @@
-import axios from "axios";
+
 import { del, get, post, put } from "./api_helper";
 import * as url from "./url_helper";
+import toastr from "toastr";
+
+const showToast = (message, title) => {    toastr.options = {    positionClass: "toast-top-right",    newestOnTop: true,    extendedTimeOut: 1000,    showEasing: "swing",    hideEasing: "linear",    showMethod: "fadeIn",    hideMethod: "fadeOut",    showDuration: 300,    hideDuration: 1000,    timeOut: 5000,    closeButton: true,    debug: true,    preventDuplicates: true,    extendedTimeOut: 1000,  };  toastr.error(message, title);};
 
 // Gets the logged in user data from local session
 const getLoggedInUser = () => {
@@ -16,11 +19,10 @@ const isUserAuthenticated = () => {
 
 // Register Method
 const postFakeRegister = data => {
-  return axios
-    .post(url.POST_FAKE_REGISTER, data)
+  return post(url.POST_FAKE_REGISTER, data)
     .then(response => {
-      if (response.status >= 200 || response.status <= 299) return response.data;
-      throw response.data;
+    console.log(response,'response')
+     showToast("Please verify email", "Login failed");
     })
     .catch(err => {
       let message;
@@ -56,10 +58,12 @@ const postJwtProfile = data => post(url.POST_EDIT_JWT_PROFILE, data);
 
 const postFakeProfile = data => post(url.POST_EDIT_PROFILE, data);
 
+
+
 // Register Method
-const postJwtRegister = (url, data) => {
-  return axios
-    .post(url, data)
+const postJwtRegister = ( data) => {
+  console.log("textbchjdbchd",data)
+  return post(url.SIGNUP, data)
     .then(response => {
       if (response.status >= 200 || response.status <= 299) return response.data;
       throw response.data;
@@ -86,6 +90,8 @@ const postJwtRegister = (url, data) => {
       throw message;
     });
 };
+
+export const signup = data => post(url.SIGNUP,data);
 
 // Login Method
 const postJwtLogin = data => post(url.POST_SIGNIN_JWT_LOGIN, data);
