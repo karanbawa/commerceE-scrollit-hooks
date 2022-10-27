@@ -20,13 +20,11 @@ const Register2 = () => {
 
     initialValues: {
       email: '',
-      username: '',
       password: '',
     },
     validationSchema: Yup.object({
       email: Yup.string().required("Please Enter Your Email"),
-      username: Yup.string().required("Please Enter Your Username"),
-      password: Yup.string().required("Please Enter Your Password"),
+       password: Yup.string().required("Please Enter Your Password"),
     }),
     onSubmit: (values) => {
       console.log(values);
@@ -79,6 +77,7 @@ const Register2 = () => {
                             return false;
                           }}
                         >
+               
                           <div className="mb-3">
                             <Label className="form-label">Email</Label>
                             <Input
@@ -99,23 +98,7 @@ const Register2 = () => {
                             ) : null}
                           </div>
 
-                          <div className="mb-3">
-                            <Label className="form-label">Username</Label>
-                            <Input
-                              name="username"
-                              type="text"
-                              placeholder="Enter username"
-                              onChange={validation.handleChange}
-                              onBlur={validation.handleBlur}
-                              value={validation.values.username || ""}
-                              invalid={
-                                validation.touched.username && validation.errors.username ? true : false
-                              }
-                            />
-                            {validation.touched.username && validation.errors.username ? (
-                              <FormFeedback type="invalid">{validation.errors.username}</FormFeedback>
-                            ) : null}
-                          </div>
+                    
                           <div className="mb-3">
                             <Label className="form-label">Password</Label>
                             <Input
@@ -180,7 +163,7 @@ const Register2 = () => {
                               <li className="list-inline-item">
                                 <Link
                                   to="#"
-                                  className="social-list-item bg-danger text-white border-danger"
+                                  className="social-list-item bg-danger text-white Sborder-danger"
                                 >
                                   <i className="mdi mdi-google"></i>
                                 </Link>

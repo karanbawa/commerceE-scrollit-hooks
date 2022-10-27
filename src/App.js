@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React from "react"
 
+
 import { Switch, BrowserRouter as Router } from "react-router-dom"
 import { connect } from "react-redux"
 
@@ -83,6 +84,7 @@ const App = props => {
           ))}
         </Switch>
       </Router>
+  
     </React.Fragment>
   )
 }
