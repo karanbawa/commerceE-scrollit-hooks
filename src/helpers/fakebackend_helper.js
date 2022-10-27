@@ -21,8 +21,6 @@ const isUserAuthenticated = () => {
 const postFakeRegister = data => {
   return post(url.POST_FAKE_REGISTER, data)
     .then(response => {
-    console.log(response,'response')
-     showToast("Please verify email", "Login failed");
     })
     .catch(err => {
       let message;
@@ -49,6 +47,7 @@ const postFakeRegister = data => {
 
 // Login Method
 const postFakeLogin = data => post(url.POST_FAKE_LOGIN, data);
+
 
 // postForgetPwd
 const postFakeForgetPwd = data => post(url.POST_FAKE_PASSWORD_FORGET, data);

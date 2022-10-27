@@ -56,7 +56,6 @@ function* registerUser({ payload: { user } }) {
   }
 }
 export function* watchUserRegister() {
-  console.log("text suuces")
   yield takeEvery(REGISTER_USER, registerUser)
 }
 function* accountSaga() {

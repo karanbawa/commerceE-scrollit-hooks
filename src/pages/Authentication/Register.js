@@ -140,7 +140,7 @@ const Register = props => {
                      
 
                       <div className="mb-3">
-                        <Label className="form-label">First Name</Label>
+                        <Label className="form-label">First Name <span style={{color:"red"}}> * </span></Label>
                         <Input
                           name="firstName"
                           type="text"
@@ -158,7 +158,7 @@ const Register = props => {
                       </div>
 
                       <div className="mb-3">
-                        <Label className="form-label">Last Name</Label>
+                        <Label className="form-label">Last Name <span style={{color:"red"}}>* </span></Label>
                         <Input
                           name="lastName"
                           type="text"
@@ -176,7 +176,7 @@ const Register = props => {
                       </div>
 
                       <div className="mb-3">
-                        <Label className="form-label">Email</Label>
+                        <Label className="form-label">Email <span style={{color:"red"}}>*</span></Label>
                         <Input
                           id="email"
                           name="email"
@@ -197,7 +197,7 @@ const Register = props => {
                       </div>
 
                       <div className="mb-3">
-                        <Label className="form-label">Phone Number</Label>
+                        <Label className="form-label">Phone Number <span style={{color:"red"}}>* </span></Label>
                         <Input
                           id="phoneNumber"
                           name="phoneNumber"
@@ -219,7 +219,7 @@ const Register = props => {
 
 
                       <div className="mb-3">
-                        <Label className="form-label">Password</Label>
+                        <Label className="form-label">Password <span style={{color:"red"}}>*</span></Label>
                         <Input
                           name="password"
                           type="password"
@@ -237,7 +237,7 @@ const Register = props => {
                       </div>
 
                       <div className="mb-3">
-                        <Label className="form-label"> Confirm Password</Label>
+                        <Label className="form-label">Confirm Password <span style={{color:"red"}}>*</span></Label>
                         <Input
                           name="confirmPassword"
                           type="password"
