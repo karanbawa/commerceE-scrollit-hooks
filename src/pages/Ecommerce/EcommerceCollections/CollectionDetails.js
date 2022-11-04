@@ -45,6 +45,8 @@ import {
 import { useEffect } from "react"
 import { hover } from "@testing-library/user-event/dist/hover"
 import FileResizer from "react-image-file-resizer"
+import { CirclePicker } from "react-color"
+import IconSelector from "./IconSelector"
 
 export default function EcommerceCollectionDetails() {
   const dispatch = useDispatch()
@@ -78,6 +80,13 @@ export default function EcommerceCollectionDetails() {
   const [collectionProductIds, setCollectionProductIds] = useState(
     collection ? collection.productIds : []
   )
+  const [collectionColor, setCollectionColor] = useState({
+    a: 1,
+    b: 54,
+    g: 67,
+    r: 244,
+  })
+  const [collectionIcon, setCollectionIcon] = useState("")
 
   const [productsToAdd, setProductsToAdd] = useState([])
 
@@ -206,7 +215,8 @@ export default function EcommerceCollectionDetails() {
         "base64"
       )
     })
-    
+
+
   return (
     <React.Fragment>
       <div className="page-content">
@@ -352,6 +362,26 @@ export default function EcommerceCollectionDetails() {
                       />
                     </div>
                   </div>
+                  <div className="m-1 mt-3">
+                    <Label for="ccol">Collection Color</Label>
+                    <div className="d-flex jusitfy-content-between">
+                      <CirclePicker
+                        color={collectionColor}
+                        width="100%"
+                        id="ccol"
+                        onChange={e => {
+                          setCollectionColor(e.rgb)
+                          console.log(e)
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="m-1 mt-3">
+                    <Label for="cicon">Collection Icon</Label>
+                    <div className="align-center">
+                      <IconSelector />
+                    </div>
+                  </div>
                 </CardBody>
                 <CardFooter className="text-sm-center">
                   <Button
@@ -366,10 +396,10 @@ export default function EcommerceCollectionDetails() {
                 </CardFooter>
               </Card>
               <Card>
-              <CardHeader>
+                <CardHeader>
                   <CardTitle>Promote</CardTitle>
                 </CardHeader>
-                <CardBody >
+                <CardBody>
                   <ListGroup flush>
                     <ListGroupItem>
                       <i className="mdi mdi-ticket me-2" />

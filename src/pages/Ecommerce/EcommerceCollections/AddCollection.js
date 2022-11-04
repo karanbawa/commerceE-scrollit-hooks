@@ -46,6 +46,9 @@ import {
 import { useEffect } from "react"
 import { hover } from "@testing-library/user-event/dist/hover"
 import FileResizer from "react-image-file-resizer"
+import { CirclePicker } from "react-color"
+import IconBoxicons from "pages/Icons/IconBoxicons"
+import IconSelector from "./IconSelector"
 
 export default function AddCollection() {
   const dispatch = useDispatch()
@@ -66,6 +69,8 @@ export default function AddCollection() {
   const [collectionName, setCollectionName] = useState("")
   const [collectionImage, setCollectionImage] = useState("")
   const [collectionProductIds, setCollectionProductIds] = useState([])
+  const [collectionColor, setCollectionColor] = useState("#607d8b")
+  const [collectionIcon, setCollectionIcon] = useState("")
 
   const [productsToAdd, setProductsToAdd] = useState([])
 
@@ -168,6 +173,14 @@ export default function AddCollection() {
         "base64"
       )
     })
+
+  console.log([
+    collectionName,
+    collectionImage,
+    collectionColor,
+    collectionIcon,
+    collectionProductIds,
+  ])
 
   return (
     <React.Fragment>
@@ -302,6 +315,23 @@ export default function AddCollection() {
                       />
                     </div>
                   </div>
+                  <div className="m-1 mt-3">
+                    <Label for="cimg">Collection Colour</Label>
+                    <div>
+                      <CirclePicker
+                        width="100%"
+                        color={collectionColor}
+                        onChange={e => {
+                          setCollectionColor(e.hex)
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="m-1 mt-3">
+                    <Label for="cimg">Collection Icon</Label>
+                    <IconSelector />
+                    ``
+                  </div>
                 </CardBody>
                 <CardFooter className="text-sm-center">
                   <Button
@@ -319,7 +349,7 @@ export default function AddCollection() {
                 <CardHeader>
                   <CardTitle>Promote</CardTitle>
                 </CardHeader>
-                <CardBody >
+                <CardBody>
                   <ListGroup flush>
                     <ListGroupItem>
                       <i className="mdi mdi-ticket me-2" />

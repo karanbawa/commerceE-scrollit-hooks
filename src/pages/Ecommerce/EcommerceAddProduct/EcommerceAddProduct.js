@@ -28,7 +28,7 @@ import {
   UncontrolledDropdown,
   UncontrolledTooltip,
 } from "reactstrap"
-import { getCollections } from "store/actions"
+import { addCollection, getCollections } from "store/actions"
 import * as convert from "convert-units"
 import RichTextEditor from "react-rte"
 
@@ -95,7 +95,7 @@ export default function EcommerceAddProduct() {
     setCollectionList(collections)
   }, [collections])
 
-  console.log(inventoryDetails)
+  console.log(collectionList)
 
   const desChnage = value => {
     setDescCont({ value })
@@ -155,7 +155,7 @@ export default function EcommerceAddProduct() {
                   color="success"
                   className="btn-rounded  mb-2 me-2"
                 >
-                  Save
+                  Create
                 </Button>
               </div>
             </Col>
@@ -165,9 +165,9 @@ export default function EcommerceAddProduct() {
               <Row>
                 <Card className="p-0">
                   <CardHeader>
-                    <CardTitle>Images and videos</CardTitle>
+                    <CardTitle>Images</CardTitle>
                   </CardHeader>
-                  <CardBody>asdasd</CardBody>
+                  <CardBody>{}</CardBody>
                 </Card>
               </Row>
               <Row>
@@ -821,10 +821,7 @@ export default function EcommerceAddProduct() {
                             id="cost-info"
                             className="mdi mdi-information me-2 mx-1"
                           />
-                          <UncontrolledTooltip
-                            placement="top"
-                            target="cost-info"
-                          >
+                          <UncontrolledTooltip placement="top" target="sku">
                             A “Stock Keeping Unit” is a unique code you can
                             create for each product or variant you have in your
                             store. Using SKUs helps with tracking inventory.
@@ -991,6 +988,18 @@ export default function EcommerceAddProduct() {
                           <i
                             className="mdi mdi-check mdi-24px mx-2 text-success"
                             style={{ cursor: "pointer" }}
+                            onClick={() => {
+                              newCollection.name
+                                ? dispatch(
+                                    addCollection({
+                                      name: newCollection.name,
+                                      icon: "broken",
+                                      color: "black",
+                                    })
+                                  )
+                                : null
+                                setAddNewCollection(!addNewCollection)
+                            }}
                           />
                           <i
                             onClick={() => {
