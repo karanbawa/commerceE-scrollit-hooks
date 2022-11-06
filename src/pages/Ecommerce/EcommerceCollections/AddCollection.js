@@ -329,8 +329,7 @@ export default function AddCollection() {
                   </div>
                   <div className="m-1 mt-3">
                     <Label for="cimg">Collection Icon</Label>
-                    <IconSelector />
-                    ``
+                    <IconSelector collectionIcon={collectionIcon} setCollectionIcon={setCollectionIcon} />
                   </div>
                 </CardBody>
                 <CardFooter className="text-sm-center">
