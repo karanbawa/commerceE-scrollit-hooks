@@ -28,26 +28,16 @@ import {
   CardLink,
   Label,
 } from "reactstrap"
-import Dropzone from "react-dropzone"
 import { Link, useHistory, useParams } from "react-router-dom"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import { DndProvider } from "react-dnd"
 import CollectionProductPreview from "./CollectionProductPreview"
 import { useCallback } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import {
-  addCollection,
-  deleteCollection,
-  getCollections,
-  getProductList,
-  updateCollection,
-  updateProductInList,
-} from "store/actions"
+import { addCollection, getProductList } from "store/actions"
 import { useEffect } from "react"
-import { hover } from "@testing-library/user-event/dist/hover"
 import FileResizer from "react-image-file-resizer"
 import { CirclePicker } from "react-color"
-import IconBoxicons from "pages/Icons/IconBoxicons"
 import IconSelector from "./IconSelector"
 
 export default function AddCollection() {
@@ -182,6 +172,8 @@ export default function AddCollection() {
     collectionProductIds,
   ])
 
+  console.log(productList, productsToAdd)
+
   return (
     <React.Fragment>
       <div className="page-content">
@@ -191,10 +183,12 @@ export default function AddCollection() {
               <Row>
                 <Col>
                   <Link to={"/ecommerce-collections"}>Collections</Link> &gt;{" "}
-                  Untitled Product
+                  {collectionName ? collectionName : "Untitled Collection"}
                 </Col>
               </Row>
-              <Row className="display-6 m-3">Untitled Product</Row>
+              <Row className="display-6 m-3">
+                {collectionName ? collectionName : "Untitled Collection"}
+              </Row>
             </Col>
             <Col className="h-100">
               <div className="text-sm-end align-bottom m-4">
@@ -329,7 +323,10 @@ export default function AddCollection() {
                   </div>
                   <div className="m-1 mt-3">
                     <Label for="cimg">Collection Icon</Label>
-                    <IconSelector collectionIcon={collectionIcon} setCollectionIcon={setCollectionIcon} />
+                    {/* <IconSelector
+                      collectionIcon={collectionIcon}
+                      setCollectionIcon={setCollectionIcon}
+                    /> */}
                   </div>
                 </CardBody>
                 <CardFooter className="text-sm-center">
@@ -388,9 +385,7 @@ export default function AddCollection() {
           </ModalFooter>
         </Modal>
         <Modal isOpen={modal1} toggle={toggle1}>
-          <ModalHeader toggle={toggle1}>
-            Add Product to {collectionName}
-          </ModalHeader>
+          <ModalHeader toggle={toggle1}>Add Products</ModalHeader>
           <ModalBody style={{ overflowY: "scroll" }}>
             <ListGroup style={{ maxHeight: "50vh" }}>
               {productsToAdd.map(product => (
