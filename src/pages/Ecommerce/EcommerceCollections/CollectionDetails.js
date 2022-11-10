@@ -147,6 +147,7 @@ export default function EcommerceCollectionDetails() {
       const prod = products.filter(
         product => product._id === CollectionProductId
       )[0]
+      console.log(prod)
       return (
         <CollectionProductPreview
           key={prod._id}

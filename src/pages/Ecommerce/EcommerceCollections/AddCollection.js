@@ -37,7 +37,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { addCollection, getProductList } from "store/actions"
 import { useEffect } from "react"
 import FileResizer from "react-image-file-resizer"
-import { CirclePicker } from "react-color"
+import { CirclePicker, SketchPicker } from "react-color"
 import IconSelector from "./IconSelector"
 
 export default function AddCollection() {
@@ -53,6 +53,7 @@ export default function AddCollection() {
   const [modal, setModal] = useState(false)
   const [modal1, setModal1] = useState(false)
   const toggle1 = () => setModal1(!modal1)
+  const [showColorPicker, setShowColorPicker] = useState(false)
 
   //states for data
   const [productList, setProductList] = useState([])
@@ -61,7 +62,6 @@ export default function AddCollection() {
   const [collectionProductIds, setCollectionProductIds] = useState([])
   const [collectionColor, setCollectionColor] = useState("#607d8b")
   const [collectionIcon, setCollectionIcon] = useState("")
-
   const [productsToAdd, setProductsToAdd] = useState([])
 
   // call APIs if products or collections is empty
@@ -102,14 +102,13 @@ export default function AddCollection() {
     )
   })
 
-  console.log(products)
-
   // rendering drag drop product cards
   const renderCollectionProductPreview = useCallback(
-    (CollectionProductId, index) => {
+    (CollectionProductId, index, products) => {
       const prod = products.filter(
         product => product._id === CollectionProductId
       )[0]
+      console.log(productList, products, productsToAdd)
       return (
         <CollectionProductPreview
           key={prod._id}
@@ -134,9 +133,8 @@ export default function AddCollection() {
         name: collectionName ? collectionName : "Untitled Collection",
         image: collectionImage ? collectionImage : "broken!",
         productIds: collectionProductIds,
-        // remove after api updation
-        color: "some color",
-        icon: "something",
+        color: collectionColor,
+        icon: collectionIcon,
       })
     )
     history.push("/ecommerce-collections")
@@ -164,15 +162,15 @@ export default function AddCollection() {
       )
     })
 
-  console.log([
-    collectionName,
-    collectionImage,
-    collectionColor,
-    collectionIcon,
-    collectionProductIds,
-  ])
+  // console.log([
+  //   collectionName,
+  //   collectionImage,
+  //   collectionColor,
+  //   collectionIcon,
+  //   collectionProductIds,
+  // ])
 
-  console.log(productList, productsToAdd)
+  // console.log(productList, productsToAdd)
 
   return (
     <React.Fragment>
@@ -266,7 +264,8 @@ export default function AddCollection() {
                           (CollectionProductPreview, i) =>
                             renderCollectionProductPreview(
                               CollectionProductPreview,
-                              i
+                              i,
+                              products
                             )
                         )}
                       </CardGroup>
@@ -295,25 +294,32 @@ export default function AddCollection() {
                   <div className="m-1 mt-3">
                     <Label for="cimg">Collection Image</Label>
                     <div className="mh-50">
-                      <Input
+                      <Input 
                         id="cimg"
                         onChange={async e => {
-                          const image = await resizeFile(e.target.files[0])
-                          try {
-                            console.log(image)
-                          } catch (e) {
-                            console.log(e)
+                          if (
+                            ["jpeg", "jpg", "png"].includes(
+                              e.target.files[0].name.split(".").pop()
+                            )
+                          ) {
+                            const image = await resizeFile(e.target.files[0])
+                          } else {
+                            e.target.files = FileList()
                           }
                         }}
                         type="file"
+                        
                       />
                     </div>
                   </div>
                   <div className="m-1 mt-3">
                     <Label for="cimg">Collection Colour</Label>
                     <div>
-                      <CirclePicker
-                        width="100%"
+                      <div clas>
+
+                      </div>
+                      <SketchPicker
+                        width="60%"
                         color={collectionColor}
                         onChange={e => {
                           setCollectionColor(e.hex)
