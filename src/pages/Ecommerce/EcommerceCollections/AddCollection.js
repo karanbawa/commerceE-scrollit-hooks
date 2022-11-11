@@ -54,6 +54,7 @@ export default function AddCollection() {
   const [modal1, setModal1] = useState(false)
   const toggle1 = () => setModal1(!modal1)
   const [showColorPicker, setShowColorPicker] = useState(false)
+  const [showIconSelector, setShowIconSelector] = useState(false)
 
   //states for data
   const [productList, setProductList] = useState([])
@@ -294,7 +295,7 @@ export default function AddCollection() {
                   <div className="m-1 mt-3">
                     <Label for="cimg">Collection Image</Label>
                     <div className="mh-50">
-                      <Input 
+                      <Input
                         id="cimg"
                         onChange={async e => {
                           if (
@@ -308,31 +309,60 @@ export default function AddCollection() {
                           }
                         }}
                         type="file"
-                        
                       />
                     </div>
                   </div>
                   <div className="m-1 mt-3">
                     <Label for="cimg">Collection Colour</Label>
                     <div>
-                      <div clas>
-
-                      </div>
-                      <SketchPicker
-                        width="60%"
-                        color={collectionColor}
-                        onChange={e => {
-                          setCollectionColor(e.hex)
+                      <div
+                        style={{
+                          padding: "5px",
+                          background: "#fff",
+                          borderRadius: "1px",
+                          boxShadow: "0 0 0 1px rgba(0,0,0,.1)",
+                          display: "inline-block",
+                          cursor: "pointer",
                         }}
-                      />
+                        onClick={() => {
+                          setShowColorPicker(!showColorPicker)
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: "36px",
+                            height: "14px",
+                            borderRadius: "2px",
+                            backgroundColor : collectionColor
+                          }}
+                        />
+                      </div>
+                      {showColorPicker ? (
+                        <SketchPicker
+                          width="60%"
+                          color={collectionColor}
+                          onChange={e => {
+                            setCollectionColor(e.hex)
+                          }}
+                        />
+                      ) : null}
                     </div>
                   </div>
                   <div className="m-1 mt-3">
                     <Label for="cimg">Collection Icon</Label>
-                    {/* <IconSelector
-                      collectionIcon={collectionIcon}
-                      setCollectionIcon={setCollectionIcon}
-                    /> */}
+                    <i
+                      onClick={() => {
+                        setShowIconSelector(!showIconSelector)
+                      }}
+                    >
+                      This is icon
+                    </i>
+                    {showIconSelector ? (
+                      <IconSelector
+                        collectionIcon={collectionIcon}
+                        setCollectionIcon={setCollectionIcon}
+                      />
+                    ) : null}
                   </div>
                 </CardBody>
                 <CardFooter className="text-sm-center">
