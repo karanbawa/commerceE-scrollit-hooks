@@ -62,7 +62,7 @@ export default function AddCollection() {
   const [collectionImage, setCollectionImage] = useState("")
   const [collectionProductIds, setCollectionProductIds] = useState([])
   const [collectionColor, setCollectionColor] = useState("#607d8b")
-  const [collectionIcon, setCollectionIcon] = useState("")
+  const [collectionIcon, setCollectionIcon] = useState("zip-disk")
   const [productsToAdd, setProductsToAdd] = useState([])
 
   // call APIs if products or collections is empty
@@ -313,57 +313,74 @@ export default function AddCollection() {
                     </div>
                   </div>
                   <div className="m-1 mt-3">
-                    <Label for="cimg">Collection Colour</Label>
-                    <div>
-                      <div
-                        style={{
-                          padding: "5px",
-                          background: "#fff",
-                          borderRadius: "1px",
-                          boxShadow: "0 0 0 1px rgba(0,0,0,.1)",
-                          display: "inline-block",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => {
-                          setShowColorPicker(!showColorPicker)
-                        }}
-                      >
-                        <div
-                          style={{
-                            width: "36px",
-                            height: "14px",
-                            borderRadius: "2px",
-                            backgroundColor : collectionColor
-                          }}
-                        />
-                      </div>
-                      {showColorPicker ? (
-                        <SketchPicker
-                          width="60%"
-                          color={collectionColor}
-                          onChange={e => {
-                            setCollectionColor(e.hex)
-                          }}
-                        />
-                      ) : null}
-                    </div>
+                    <Row>
+                      <Col>
+                        <Label for="cimg">Collection Colour</Label>
+                        <div>
+                          <div
+                            style={{
+                              padding: "5px",
+                              background: "#fff",
+                              borderRadius: "1px",
+                              boxShadow: "0 0 0 1px rgba(0,0,0,.1)",
+                              display: "inline-block",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                              setShowColorPicker(!showColorPicker)
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: "36px",
+                                height: "14px",
+                                borderRadius: "2px",
+                                backgroundColor: collectionColor,
+                              }}
+                            />
+                          </div>
+                          {showColorPicker ? (
+                            <SketchPicker
+                              width="100%"
+                              color={collectionColor}
+                              onChange={e => {
+                                setCollectionColor(e.hex)
+                              }}
+                            />
+                          ) : null}
+                        </div>
+                      </Col>
+                      <Col>
+                        <Label for="cimg">Collection Icon</Label>
+                        <div>
+                          <i
+                            onClick={() => {
+                              setShowIconSelector(!showIconSelector)
+                            }}
+                            className={`mdi mdi-${collectionIcon}`}
+                            style={{
+                              fontSize: "23px",
+                              cursor: "pointer",
+                              padding: 0,
+                              margin: 0,
+                            }}
+                          ></i>
+                        </div>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                        {showIconSelector ? (
+                          <IconSelector
+                            setShowIconSelector= {setShowIconSelector}
+                            collectionIcon={collectionIcon}
+                            setCollectionIcon={setCollectionIcon}
+                          />
+                        ) : null}
+                      </Col>
+                    </Row>
                   </div>
-                  <div className="m-1 mt-3">
-                    <Label for="cimg">Collection Icon</Label>
-                    <i
-                      onClick={() => {
-                        setShowIconSelector(!showIconSelector)
-                      }}
-                    >
-                      This is icon
-                    </i>
-                    {showIconSelector ? (
-                      <IconSelector
-                        collectionIcon={collectionIcon}
-                        setCollectionIcon={setCollectionIcon}
-                      />
-                    ) : null}
-                  </div>
+                  <div className="m-1 mt-3"></div>
                 </CardBody>
                 <CardFooter className="text-sm-center">
                   <Button

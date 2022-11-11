@@ -23438,14 +23438,14 @@ const icons = [
 
 // icons = JSON.parse(icons)
 
-export default function IconSelector({ collectionIcon, setCollectionIcon }) {
+export default function IconSelector({ collectionIcon, setCollectionIcon,setShowIconSelector }) {
   const [search, setSearch] = useState('')
   return (
-    <div style={{ maxHeight: "200px", overflowY: "scroll" }}>
-      <Input value={search} onChange={e => {setSearch(e.target.value)}} />
+    <div >
+      <Input placeholder="Search for Icons here" value={search} onChange={e => {setSearch(e.target.value)}} />
       <div
         className="d-flex flex-row flex-wrap"
-        style={{ letterSpacing: "7px" }}
+        style={{ letterSpacing: "5px", maxHeight: "200px", overflowY: "scroll" }}
       >
         {icons.filter(icon => icon.name.includes(search.toLowerCase())).map(icon => {
           return (
@@ -23453,10 +23453,12 @@ export default function IconSelector({ collectionIcon, setCollectionIcon }) {
               className={`mdi mdi-${icon.name} ${
                 collectionIcon === icon.name ? "text-primary" : "text-secondary"
               }`}
-              style={{ fontSize: "28px", cursor: "pointer" }}
+              style={{ fontSize: "25px", cursor: "pointer" }}
               key={icon.name}
               onClick={() => {
                 setCollectionIcon(icon.name)
+                setShowIconSelector(false)
+
               }}
             ></i>
           )
@@ -23469,4 +23471,5 @@ export default function IconSelector({ collectionIcon, setCollectionIcon }) {
 IconSelector.propTypes = {
   collectionIcon: PropTypes.string,
   setCollectionIcon: PropTypes.func,
+  setShowIconSelector : PropTypes.func
 }
