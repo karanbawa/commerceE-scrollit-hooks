@@ -290,9 +290,20 @@ function* onAddNewOrder({ payload: order }) {
 
 function* fetchCollections() {
   try {
+    const products = yield call(getProductList)
     const response = yield call(getCollections)
-    console.log(response)
-    yield put(getCollectionsSuccess(response.data))
+    yield put(
+      getCollectionsSuccess([
+        {
+          name: "All Products",
+          _id: "all-products",
+          icon: "ballot",
+          color: "#7A8D96",
+          productIds: products.data.products.map(product => product._id),
+        },
+        ...response.data,
+      ])
+    )
   } catch (error) {
     yield put(getCollectionsFail)
   }

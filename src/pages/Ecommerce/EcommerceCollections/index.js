@@ -17,34 +17,25 @@ import { MetaTags } from "react-meta-tags"
 import { Link } from "react-router-dom"
 import CollectionTile from "./CollectionTile"
 import { useDispatch, useSelector } from "react-redux"
-import { getCollections, getProductList } from "store/actions"
+import { getCollections } from "store/actions"
 import { useEffect } from "react"
 
 export default function EcommerceCollections() {
   const [collectionList, setCollectionList] = useState([])
-  const [productList, setProductList] = useState(null)
   const [filteredCollections, setFilteredCollections] = useState([])
 
   const dispatch = useDispatch()
-  const { collections, products } = useSelector(state => ({
+  const { collections } = useSelector(state => ({
     collections: state.ecommerce.collections,
-    products: state.ecommerce.productList,
   }))
 
   //Getting Collections from store
-  useEffect(() => {
-    if (products && !products.length) {
-      dispatch(getProductList())
-    }
-  }, [dispatch])
 
   useEffect(() => {
-    if (productList !== null) {
-      if (collections && !collections.length) {
-        dispatch(getCollections())
-      }
+    if (collectionList && !collectionList.length) {
+      dispatch(getCollections())
     }
-  }, [productList])
+  }, [collections])
 
   useEffect(() => {
     setCollectionList(collections)
@@ -53,13 +44,7 @@ export default function EcommerceCollections() {
     }
   }, [collections])
 
-  useEffect(() => {
-    setProductList(products)
-  }, [products])
-
-  console.log(productList)
-
-  if (!collectionList && !productList) {
+  if (!collectionList) {
     return (
       <React.Fragment>
         <div className="page-content">

@@ -18,35 +18,30 @@ function CollectionTile({ _id, name, icon, color, productIds, isMutable }) {
   const handleCollectionDelete = () => {
     dispatch(deleteCollection(_id))
   }
+  console.log(color)
 
   return (
     <div className="col-4 pt-4">
       <Link
         to={`/ecommerce-collection-details/${_id}`}
-        className={
-          "bg-secondary rounded d-flex flex-column justify-content-between"
-        }
-        style={{ minHeight: "280px" }}
+        className={`${
+          color ? "" : "bg-secondary "
+        } rounded d-flex flex-column justify-content-between`}
+        style={{ minHeight: "280px", background: color }}
       >
         <Row>
           <Col className="text-sm-end m-3 mx-4">
             <Link to="#">
               <UncontrolledDropdown direction="left">
                 <DropdownToggle href="#" className="card-drop" tag="i">
-                  <Button className="btn btn-transparent btn-rounded">
                     <i className="mdi mdi-dots-horizontal mdi-24px text-white" />
-                  </Button>
                 </DropdownToggle>
                 <DropdownMenu className="dropdown-menu-end">
-                  {/* <DropdownItem href="#">
-                    <i className="fas fa-pencil-alt me-3" />
-                    Edit
-                  </DropdownItem> */}
                   <DropdownItem href="#" onClick={() => console.log("hello!!")}>
                     <i className="mdi mdi-file-image me-3" />
                     Update Image
                   </DropdownItem>
-                  {!(_id === 'all-products') ? (
+                  {!(_id === "all-products") ? (
                     <DropdownItem
                       href="#"
                       onClick={() => handleCollectionDelete()}
@@ -62,7 +57,7 @@ function CollectionTile({ _id, name, icon, color, productIds, isMutable }) {
         </Row>
         <div className="m-2 position-fixed-bottom text-white p-2 mx-3 font-size-18">
           {name}
-          <span className="mx-2">{productIds ? productIds.length : 0 }</span>
+          <span className="mx-2">{productIds ? productIds.length : 0}</span>
         </div>
       </Link>
     </div>

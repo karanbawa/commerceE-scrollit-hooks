@@ -68,15 +68,7 @@ const Ecommerce = (state = INIT_STATE, action) => {
     case GET_COLLECTIONS_SUCCESS:
       return {
         ...state,
-        collections: [
-          {
-            name: "All Products",
-            image: "some link",
-            _id: "all-products",
-            productIds: state.productList.map(product => product._id),
-          },
-          ...action.payload,
-        ],
+        collections: action.payload
       }
 
     case GET_COLLECTIONS_FAIL:
