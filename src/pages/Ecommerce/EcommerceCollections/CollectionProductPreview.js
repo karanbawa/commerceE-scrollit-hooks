@@ -11,7 +11,7 @@ export default function CollectionProductPreview({
   img,
   index,
   moveCollectionProductPreview,
-  deleteCollectionProductPreview
+  deleteCollectionProductPreview,mutable
 }) {
   const ref = useRef(null)
   const [{ handlerId }, drop] = useDrop({
@@ -57,7 +57,7 @@ export default function CollectionProductPreview({
           <Badge pill color="light " className=" opacity-75 mx-3">
             {index + 1}
           </Badge>
-          <Button
+          {mutable ? <Button
             className="btn-transparent btn-rounded border-0 mx-2 delete-product-in-collection"
             outline
             onClick={() => {
@@ -65,7 +65,7 @@ export default function CollectionProductPreview({
             }}
           >
             <i className="mdi mdi-close text-sm-end text-white opacity-100" />
-          </Button>
+          </Button> : null}
         </div>
         <CardFooter className="bg-white w-100 h-25">{text}</CardFooter>
       </Card>
@@ -81,4 +81,5 @@ CollectionProductPreview.propTypes = {
   img: PropTypes.string,
   collectionProductIds: PropTypes.array,
   deleteCollectionProductPreview: PropTypes.func,
+  mutable : PropTypes.bool
 }

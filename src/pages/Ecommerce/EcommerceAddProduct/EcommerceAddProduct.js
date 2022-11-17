@@ -35,6 +35,8 @@ import RichTextEditor from "react-rte"
 export default function EcommerceAddProduct() {
   const dispatch = useDispatch()
   // states for data
+  const [productName, setProductName] = useState("")
+  const [productMedia, setProductMedia] = useState([])
   const [collectionList, setCollectionList] = useState([])
   const [newCollection, setNewCollection] = useState({
     name: "",
@@ -95,12 +97,24 @@ export default function EcommerceAddProduct() {
     setCollectionList(collections)
   }, [collections])
 
-  console.log(collectionList)
-
   const desChnage = value => {
     setDescCont({ value })
     console.log(value.toString("html"))
   }
+
+  console.log({
+    name: productName,
+    productItemsSummary: descCont.value.toString("html"),
+    price: priceDetails.price,
+    currency: "INR",
+    discount: onSale
+      ? {
+          mode: priceDetails.isPercent ? "PERCENT" : "AMOUNT",
+          value: priceDetails.discount,
+        }
+      : { mode: "PERCENT", value: 0 },
+    isVisible: showInWebstie,
+  })
 
   return (
     <React.Fragment>
@@ -167,7 +181,13 @@ export default function EcommerceAddProduct() {
                   <CardHeader>
                     <CardTitle>Images</CardTitle>
                   </CardHeader>
-                  <CardBody>{}</CardBody>
+                  <CardBody>
+                    {productMedia.length ? (
+                      <div></div>
+                    ) : (
+                      <div>There are no images</div>
+                    )}
+                  </CardBody>
                 </Card>
               </Row>
               <Row>
@@ -180,7 +200,14 @@ export default function EcommerceAddProduct() {
                       <Col className="col-7">
                         <FormGroup>
                           <Label for="productName">Name</Label>
-                          <Input id="productName" name="productname" />
+                          <Input
+                            id="productName"
+                            name="productname"
+                            value={productName}
+                            onChange={e => {
+                              setProductName(e.target.value)
+                            }}
+                          />
                         </FormGroup>
                       </Col>
                       <Col>
@@ -998,7 +1025,7 @@ export default function EcommerceAddProduct() {
                                     })
                                   )
                                 : null
-                                setAddNewCollection(!addNewCollection)
+                              setAddNewCollection(!addNewCollection)
                             }}
                           />
                           <i

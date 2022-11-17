@@ -168,6 +168,7 @@ export default function EcommerceCollectionDetails() {
           moveCollectionProductPreview={moveCollectionProductPreview}
           collectionProductIds={collectionProductIds}
           deleteCollectionProductPreview={deleteCollectionProductPreview}
+          mutable={collectionName !== 'All Products'}
         />
       )
     },

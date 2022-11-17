@@ -128,6 +128,7 @@ export default function AddCollection() {
           moveCollectionProductPreview={moveCollectionProductPreview}
           collectionProductIds={collectionProductIds}
           deleteCollectionProductPreview={deleteCollectionProductPreview}
+          mutable={true}
         />
       )
     },
