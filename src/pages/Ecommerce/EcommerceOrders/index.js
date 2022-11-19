@@ -30,6 +30,10 @@ import {
   Input,
   FormFeedback,
   Label,
+  Dropdown,
+  DropdownItem,
+  DropdownToggle,
+  DropdownMenu,
 } from "reactstrap"
 
 //redux
@@ -38,52 +42,60 @@ import { useSelector, useDispatch } from "react-redux"
 //Import Breadcrumb
 import Breadcrumbs from "components/Common/Breadcrumb"
 
-
-
 import {
   getOrders as onGetOrders,
   addNewOrder as onAddNewOrder,
   updateOrder as onUpdateOrder,
   deleteOrder as onDeleteOrder,
   getProductList as getProductListdata,
-  deleteAllOrders as ondeleteAllOrders
+  deleteAllOrders as ondeleteAllOrders,
+  getCustomers,
 } from "store/actions"
 
 import EcommerceOrdersModal from "./EcommerceOrdersModal"
+import Select from "react-select"
+import { select } from "redux-saga/effects"
 
 const EcommerceOrders = props => {
-  const inputArr = [
-    {
-
-      quantity:"",
-      product:""
-    }
-
-  ];
-
-
+  const [billingNameSuggest, setBillingNameSuggest] = useState(false)
+  const toggle3 = () => {
+    validation.setFieldValue("billingName", "")
+  }
   const [orderList, setOrderList] = useState([])
   const [order, setOrder] = useState([])
   const [productList, setProductList] = useState([])
-  // console.log(orderList)
-  // const [productList1, setProductList1] = useState([{name:"Sjbkjf"}])
-  const [formRows, setFormRows] = useState(inputArr);
- 
-  const dispatch = useDispatch()
-  
+  const [customerList, setCustomerList] = useState([])
 
-  // console.log(order)
-  // validation
+  const dispatch = useDispatch()
+
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
 
     initialValues: {
-      orderItems: (order && order.orderItems) || [],
-
+      orderItems: (order && order.orderItems) || [
+        {
+          _id: "634c079bf8905c5d1f67432c",
+          quantity: 10,
+          product: { name: "Suit 1" },
+        },
+        {
+          _id: "634c077bf8905c5d1f67431f",
+          quantity: 15,
+          product: { name: "Green Shirt" },
+        },
+        {
+          _id: "v94tn958vyj57c4",
+          quantity: 5,
+          product: { name: "Black Pant" },
+        },
+        {
+          _id: "nv5uo68w37m5ywv6",
+          quantity: 20,
+          product: { name: "Blue Shirt" },
+        },
+      ],
       billingName: (order && order.billingName) || "",
-      // productName: (order && order.productName) || "",
-      // productQuantity:(order && order.productQuantity) || "",
       shippingAddress1: (order && order.shippingAddress1) || "",
       shippingAddress2: (order && order.shippingAddress2) || "",
       paymentStatus: (order && order.paymentStatus) || "Paid",
@@ -94,39 +106,36 @@ const EcommerceOrders = props => {
       country: (order && order.country) || "",
       phone: (order && order.phone) || "",
       zip: (order && order.zip) || "",
-      methodIcon: (order && order.methodIcon) || "fa-cc-mastercard"
+      methodIcon: (order && order.methodIcon) || "fa-cc-mastercard",
     },
-    // validationSchema: Yup.object({
-    //   billingName: Yup.string().required("Please Enter Your Billing Name"),
-    //   productName: Yup.string().required("Please Enter Your productName"),
-    //   productQuantity:Yup.string().required("Please Enter Your  productQuantity"),
-    //   shippingAddress1: Yup.string().required("Please Enter Your shipping address 1"),
-    //   shippingAddress2: Yup.string().required("Please Enter Your shipping address 2"),
-    //   paymentStatus: Yup.string().required("Please Enter Your Payment Status"),
-    //   badgeclass: Yup.string().required("Please Enter Your Badge Class"),
-    //   paymentMethod: Yup.string().required("Please Enter Your Payment Method"),
-    //   city: Yup.string().required("Please Enter Your city"),
-    //   state: Yup.string().required("Please Enter Your state"),
-    //   country: Yup.string().required("Please Enter Your country"),
-    //   phone: Yup.string().required("Please Enter Your phone"),
-    //   zip:Yup.string().required("Please Enter Your zip"),
-    //    methodIcon.yup.string().required("Please Enter Your methodIcon ")
-    // }),
+    validationSchema: Yup.object({
+      billingName: Yup.string().required("Please Enter Your Billing Name"),
+      productName: Yup.string().required("Please Enter Your productName"),
+      productQuantity: Yup.string().required(
+        "Please Enter Your  productQuantity"
+      ),
+      shippingAddress1: Yup.string().required(
+        "Please Enter Your shipping address 1"
+      ),
+      shippingAddress2: Yup.string().required(
+        "Please Enter Your shipping address 2"
+      ),
+      paymentStatus: Yup.string().required("Please Enter Your Payment Status"),
+      badgeclass: Yup.string().required("Please Enter Your Badge Class"),
+      paymentMethod: Yup.string().required("Please Enter Your Payment Method"),
+      city: Yup.string().required("Please Enter Your city"),
+      state: Yup.string().required("Please Enter Your state"),
+      country: Yup.string().required("Please Enter Your country"),
+      phone: Yup.string().required("Please Enter Your phone"),
+      zip: Yup.string().required("Please Enter Your zip"),
+      methodIcon: Yup.string().required("Please Enter Your methodIcon "),
+      orderItems: Yup.array().required("Please select atleast one product"),
+    }),
     onSubmit: values => {
-      console.log(values)
-      console.log("hell")
       if (isEdit) {
         const updateOrder = {
           ...order,
-
-          orderItems: values["orderItems"].map((item, i) => {
-
-            return <div key={i}>  {item.quantity}|| {item.product}
-            </div>
-          }),
           billingName: values.billingName,
-          // productName: values.productName,
-          // productQuantity:values.productQuantity,
           shippingAddress1: values.shippingAddress1,
           shippingAddress2: values.shippingAddress2,
           paymentStatus: values.paymentStatus,
@@ -137,20 +146,15 @@ const EcommerceOrders = props => {
           country: values.country,
           phone: values.phone,
           zip: values.zip,
-          methodIcon: values.methodIcon
+          methodIcon: values.methodIcon,
         }
-        console.log("text")
-        // update order
         dispatch(onUpdateOrder(updateOrder))
 
         validation.resetForm()
       } else {
-        console.log(values)
         const newOrder = {
-          orderItems: arr,
+          orderItems: values["orderItems"],
           billingName: values["billingName"],
-          //productName: values["productName"],
-          //productQuantity:values["productQuantity"],
           shippingAddress1: values["shippingAddress1"],
           shippingAddress2: values["shippingAddress2"],
           paymentStatus: values["paymentStatus"],
@@ -161,9 +165,8 @@ const EcommerceOrders = props => {
           country: values["country"],
           methodIcon: "fa-cc-mastercard",
           phone: values["phone"],
-          zip: values["zip"]
+          zip: values["zip"],
         }
-        console.log("tett")
         // save new order
         dispatch(onAddNewOrder(newOrder))
         validation.resetForm()
@@ -172,44 +175,31 @@ const EcommerceOrders = props => {
     },
   })
 
-  const { orders, products } = useSelector(state => ({
+  const { orders, products, customers } = useSelector(state => ({
     orders: state.ecommerce.orders,
-    products: state.ecommerce.productList
+    products: state.ecommerce.productList,
+    customers: state.ecommerce.customers,
   }))
 
-  //console.log(products)
-
- 
-  // const addInput = () => {
-  //   setFormRows(s => {
-  //     return [
-  //       ...s,
-  //       {
-  //         quantity:"",
-  //         product:""
-  //       }
-  //     ];
-  //   });
-  // };
-
   const handleChange = e => {
-    e.preventDefault();
+    e.preventDefault()
 
-    const index = e.target.id;
+    const index = e.target.id
     setFormRows(s => {
-      const newArr = s.slice();
-      newArr[index].value = e.target.value;
+      const newArr = s.slice()
+      newArr[index].value = e.target.value
 
-      return newArr;
-    });
-  };
-
+      return newArr
+    })
+  }
 
   const selectRow = {
     mode: "checkbox",
   }
 
   const [modal, setModal] = useState(false)
+  const [nestedModal, setNestedModal] = useState(false)
+  const [closeAll, setCloseAll] = useState(false)
   const [modal1, setModal1] = useState(false)
   const [isEdit, setIsEdit] = useState(false)
 
@@ -230,32 +220,7 @@ const EcommerceOrders = props => {
     return str === "" || str === undefined ? "" : str.toLowerCase()
   }
 
-  const onDeleteFormRow = id => {
-    if (id !== 1) {
-      var modifiedRows = [...formRows];
-      modifiedRows = modifiedRows.filter(x => x["id"] !== id);
-      setFormRows(modifiedRows);
-    }
-  };
-
-  const onAddFormRow = () => {
-    // const modifiedRows = [...formRows];
-    // modifiedRows.push({ id: modifiedRows.length + 1 });
-    // setFormRows(modifiedRows);
-      setFormRows(s => {
-        return [
-          ...s,
-          {
-            quantity:"",
-            product:""
-          }
-        ];
-      });
-    
-  };
-
   const EcommerceOrderColumns = toggleModal => [
-
     {
       dataField: "billingName",
       text: "Billing Name",
@@ -385,8 +350,13 @@ const EcommerceOrders = props => {
   }, [])
 
   useEffect(() => {
-    if (products && !products.length) {
+    if (customers && !customers.length) {
+      dispatch(getCustomers())
+    }
+  }, [])
 
+  useEffect(() => {
+    if (products && !products.length) {
       dispatch(getProductListdata())
     }
   }, [])
@@ -398,6 +368,17 @@ const EcommerceOrders = props => {
   useEffect(() => {
     setOrderList(orders)
   }, [orders])
+
+  useEffect(() => {
+    setCustomerList(
+      customers.map(customer => ({
+        value: customer.username,
+        label: customer.username,
+      }))
+    )
+  }, [customers])
+
+  console.log(validation.values.orderItems)
 
   useEffect(() => {
     if (!isEmpty(orders) && !!isEdit) {
@@ -413,6 +394,16 @@ const EcommerceOrders = props => {
     } else {
       setModal(true)
     }
+  }
+
+  const toggleNested = () => {
+    setNestedModal(!nestedModal)
+    setCloseAll(false)
+  }
+
+  const toggleAll = () => {
+    setNestedModal(!nestedModal)
+    setCloseAll(true)
   }
 
   const handleOrderClick = arg => {
@@ -465,8 +456,6 @@ const EcommerceOrders = props => {
     setIsEdit(false)
     toggle()
   }
-
-
 
   const handleValidDate = date => {
     const date1 = moment(new Date(date)).format("DD MMM Y")
@@ -544,7 +533,9 @@ const EcommerceOrders = props => {
                                     type="button"
                                     color="danger"
                                     className="btn-rounded  mb-2 me-2"
-                                    onClick={() => { setDeleteModal(true) }}
+                                    onClick={() => {
+                                      setDeleteModal(true)
+                                    }}
                                   >
                                     <i className="mdi mdi-delete me-1" />
                                     Delete all orders
@@ -578,140 +569,125 @@ const EcommerceOrders = props => {
                                   <ModalBody>
                                     <Form
                                       onSubmit={e => {
-                                        console.log("text")
                                         e.preventDefault()
-                                        console.log("data")
                                         validation.handleSubmit()
                                         return false
                                       }}
-                                    > 
+                                    >
                                       <Row form>
                                         <Col className="col-12">
                                           <div className="mb-3">
                                             <Label className="form-label">
                                               Billing Name
                                             </Label>
-                                            <Input
-                                              name="billingName"
-                                              type="text"
-                                              validate={{
-                                                required: { value: true },
-                                              }}
-                                              onChange={validation.handleChange}
-                                              onBlur={validation.handleBlur}
-                                              value={
-                                                validation.values.billingName ||
-                                                ""
-                                              }
+                                            <Select
                                               invalid={
                                                 validation.touched
                                                   .billingName &&
-                                                  validation.errors.billingName
+                                                validation.errors.billingName
                                                   ? true
                                                   : false
                                               }
+                                              noOptionsMessage={() => (
+                                                <div
+                                                  className=""
+                                                  onClick={toggleNested}
+                                                  style={{ cursor: "pointer" }}
+                                                >
+                                                  <i className="mdi mdi-plus me-1" />
+                                                  Add New Customer
+                                                </div>
+                                              )}
+                                              onChange={selectedValue => {
+                                                validation.setFieldValue(
+                                                  "billingName",
+                                                  selectedValue
+                                                    ? selectedValue.value
+                                                    : ""
+                                                )
+                                              }}
+                                              isClearable={true}
+                                              options={customerList}
+                                              value={{
+                                                value:
+                                                  validation.values
+                                                    .billingName || "",
+                                                label:
+                                                  validation.values
+                                                    .billingName || "",
+                                              }}
                                             />
                                             {validation.touched.billingName &&
-                                              validation.errors.billingName ? (
+                                            validation.errors.billingName ? (
                                               <FormFeedback type="invalid">
                                                 {validation.errors.billingName}
                                               </FormFeedback>
                                             ) : null}
                                           </div>
-
+                                          <Modal
+                                            isOpen={nestedModal}
+                                            toggle={toggleNested}
+                                            onClosed={
+                                              closeAll ? toggle : undefined
+                                            }
+                                          >
+                                            <ModalHeader
+                                              toggle={toggleNested}
+                                              tag="h4"
+                                            >
+                                              Add Customer
+                                            </ModalHeader>
+                                          </Modal>
                                           <div>
-
-                                            {(formRows || []).map((formRow, key) => (
-                                              <Row key={key}>
-                                                <Col className="mb-3">
-                                                  <div className="mb-3">
-                                                    <Label className="form-label">
-                                                      Product Name
-                                                    </Label>
-                                                    <Input
-                                                      name="productName"
-                                                      type="select"
-                                                      className="form-select"
-                                                      onChange={validation.handleChange}
-
-                                                      onBlur={validation.handleBlur}
-
-                                                      value={
-                                                        formRow.product || ""
-                                                      }
-                                                    >
-
-                                                      {products.length > 0 && products.map((item, index) =>
-                                                        <option key={index}>{item.name}</option>
-                                                      )
-                                                      }
-                                                    </Input>
-                                                    {validation.touched.productName &&
-                                                      validation.errors.productName ? (
-                                                      <FormFeedback type="invalid">
-                                                        {
-                                                          validation.errors
-                                                            .productName
+                                            {validation.values.orderItems.map(
+                                              (product, index) => (
+                                                <div key={index}>
+                                                  <Row>
+                                                    <Col className="col-6">
+                                                      <Select
+                                                        value={{
+                                                          value:
+                                                            product.product
+                                                              .name,
+                                                          label:
+                                                            product.product
+                                                              .name,
+                                                        }}
+                                                        onChange={}
+                                                      />
+                                                    </Col>
+                                                    <Col className="col-4">
+                                                      <Input
+                                                        onChange={e => {
+                                                          console.log(validation.values.orderItems)
+                                                          validation.setFieldValue('orderItems',[
+                                                            ...validation.values.orderItems.slice(
+                                                              0,
+                                                              index
+                                                            ),
+                                                            {...validation.values.orderItems[index], quantity: parseInt(e.target.value)},
+                                                            ...validation.values.orderItems.slice(
+                                                              index+1,
+                                                              validation.values.orderItems.length
+                                                            ),
+                                                          ])
+                                                        }}
+                                                        value={
+                                                          validation.values
+                                                            .orderItems[index]
+                                                            .quantity
                                                         }
-                                                      </FormFeedback>
-                                                    ) : null}
-                                                  </div>
-                                                </Col>
-
-                                                <Col className="mb-3">
-                                                  <div className="mb-3">
-                                                    <Label className="form-label">
-                                                      Product Quality
-                                                    </Label>
-                                                    <Input
-                                                      name="productQuality"
-                                                      type="text"
-                                                      validate={{
-                                                        required: { value: true },
-                                                      }}
-                                                      onChange={validation.handleChange}
-                                                      onBlur={validation.handleBlur}
-                                                      value={
-                                                       formRow.quantity || ""
-                                                      }
-                                                      invalid={
-                                                        validation.touched
-                                                          .productQuality &&
-                                                          validation.errors.productQuality
-                                                          ? true
-                                                          : false
-                                                      }
-                                                    />
-                                                    {validation.touched.productQuality &&
-                                                      validation.errors.productQuality ? (
-                                                      <FormFeedback type="invalid">
-                                                        {validation.errors.productQuality}
-                                                      </FormFeedback>
-                                                    ) : null}
-                                                  </div>
-
-                                                </Col>
-
-                                                <Col className="align-self-center">
-                                                  <div className="d-grid mb-2">
-                                                    <input
-                                                      type="button"
-                                                      className="btn btn-danger"
-                                                      value="Delete"
-                                                      onClick={() => onDeleteFormRow(formRow.id)}
-                                                    />
-                                                  </div>
-                                                </Col>
-                                              </Row>
-                                            ))}
+                                                        type="number"
+                                                      />
+                                                    </Col>
+                                                    <Col className="">
+                                                      Delete
+                                                    </Col>
+                                                  </Row>
+                                                </div>
+                                              )
+                                            )}
                                           </div>
-                                          <input
-                                            type="button"
-                                            className="btn btn-success mb-2 mt-lg-0"
-                                            value="Add"
-                                            onClick={() => onAddFormRow()}
-                                          />
-
                                           <div className="mb-3">
                                             <Label className="form-label">
                                               Address1
@@ -725,25 +701,30 @@ const EcommerceOrders = props => {
                                               onChange={validation.handleChange}
                                               onBlur={validation.handleBlur}
                                               value={
-                                                validation.values.shippingAddress1 ||
-                                                ""
+                                                validation.values
+                                                  .shippingAddress1 || ""
                                               }
                                               invalid={
                                                 validation.touched
                                                   .shippingAddress1 &&
-                                                  validation.errors.shippingAddress1
+                                                validation.errors
+                                                  .shippingAddress1
                                                   ? true
                                                   : false
                                               }
                                             />
-                                            {validation.touched.shippingAddress1 &&
-                                              validation.errors.shippingAddress1 ? (
+                                            {validation.touched
+                                              .shippingAddress1 &&
+                                            validation.errors
+                                              .shippingAddress1 ? (
                                               <FormFeedback type="invalid">
-                                                {validation.errors.shippingAddress1}
+                                                {
+                                                  validation.errors
+                                                    .shippingAddress1
+                                                }
                                               </FormFeedback>
                                             ) : null}
                                           </div>
-
 
                                           <div className="mb-3">
                                             <Label className="form-label">
@@ -758,21 +739,27 @@ const EcommerceOrders = props => {
                                               onChange={validation.handleChange}
                                               onBlur={validation.handleBlur}
                                               value={
-                                                validation.values.shippingAddress2 ||
-                                                ""
+                                                validation.values
+                                                  .shippingAddress2 || ""
                                               }
                                               invalid={
                                                 validation.touched
                                                   .shippingAddress2 &&
-                                                  validation.errors.shippingAddress2
+                                                validation.errors
+                                                  .shippingAddress2
                                                   ? true
                                                   : false
                                               }
                                             />
-                                            {validation.touched.shippingAddress2 &&
-                                              validation.errors.shippingAddress2 ? (
+                                            {validation.touched
+                                              .shippingAddress2 &&
+                                            validation.errors
+                                              .shippingAddress2 ? (
                                               <FormFeedback type="invalid">
-                                                {validation.errors.shippingAddress2}
+                                                {
+                                                  validation.errors
+                                                    .shippingAddress2
+                                                }
                                               </FormFeedback>
                                             ) : null}
                                           </div>
@@ -790,19 +777,17 @@ const EcommerceOrders = props => {
                                               onChange={validation.handleChange}
                                               onBlur={validation.handleBlur}
                                               value={
-                                                validation.values.city ||
-                                                ""
+                                                validation.values.city || ""
                                               }
                                               invalid={
-                                                validation.touched
-                                                  .city &&
-                                                  validation.errors.city
+                                                validation.touched.city &&
+                                                validation.errors.city
                                                   ? true
                                                   : false
                                               }
                                             />
                                             {validation.touched.city &&
-                                              validation.errors.city ? (
+                                            validation.errors.city ? (
                                               <FormFeedback type="invalid">
                                                 {validation.errors.city}
                                               </FormFeedback>
@@ -822,19 +807,17 @@ const EcommerceOrders = props => {
                                               onChange={validation.handleChange}
                                               onBlur={validation.handleBlur}
                                               value={
-                                                validation.values.state ||
-                                                ""
+                                                validation.values.state || ""
                                               }
                                               invalid={
-                                                validation.touched
-                                                  .state &&
-                                                  validation.errors.state
+                                                validation.touched.state &&
+                                                validation.errors.state
                                                   ? true
                                                   : false
                                               }
                                             />
                                             {validation.touched.state &&
-                                              validation.errors.state ? (
+                                            validation.errors.state ? (
                                               <FormFeedback type="invalid">
                                                 {validation.errors.state}
                                               </FormFeedback>
@@ -854,19 +837,17 @@ const EcommerceOrders = props => {
                                               onChange={validation.handleChange}
                                               onBlur={validation.handleBlur}
                                               value={
-                                                validation.values.country ||
-                                                ""
+                                                validation.values.country || ""
                                               }
                                               invalid={
-                                                validation.touched
-                                                  .country &&
-                                                  validation.errors.country
+                                                validation.touched.country &&
+                                                validation.errors.country
                                                   ? true
                                                   : false
                                               }
                                             />
                                             {validation.touched.country &&
-                                              validation.errors.country ? (
+                                            validation.errors.country ? (
                                               <FormFeedback type="invalid">
                                                 {validation.errors.country}
                                               </FormFeedback>
@@ -885,19 +866,17 @@ const EcommerceOrders = props => {
                                               onChange={validation.handleChange}
                                               onBlur={validation.handleBlur}
                                               value={
-                                                validation.values.phone ||
-                                                ""
+                                                validation.values.phone || ""
                                               }
                                               invalid={
-                                                validation.touched
-                                                  .phone &&
-                                                  validation.errors.phone
+                                                validation.touched.phone &&
+                                                validation.errors.phone
                                                   ? true
                                                   : false
                                               }
                                             />
                                             {validation.touched.phone &&
-                                              validation.errors.phone ? (
+                                            validation.errors.phone ? (
                                               <FormFeedback type="invalid">
                                                 {validation.errors.phone}
                                               </FormFeedback>
@@ -924,7 +903,7 @@ const EcommerceOrders = props => {
                                               <option>Refund</option>
                                             </Input>
                                             {validation.touched.paymentStatus &&
-                                              validation.errors.paymentStatus ? (
+                                            validation.errors.paymentStatus ? (
                                               <FormFeedback type="invalid">
                                                 {
                                                   validation.errors
@@ -947,19 +926,17 @@ const EcommerceOrders = props => {
                                               onChange={validation.handleChange}
                                               onBlur={validation.handleBlur}
                                               value={
-                                                validation.values.zip ||
-                                                ""
+                                                validation.values.zip || ""
                                               }
                                               invalid={
-                                                validation.touched
-                                                  .zip &&
-                                                  validation.errors.zip
+                                                validation.touched.zip &&
+                                                validation.errors.zip
                                                   ? true
                                                   : false
                                               }
                                             />
                                             {validation.touched.zip &&
-                                              validation.errors.zip ? (
+                                            validation.errors.zip ? (
                                               <FormFeedback type="invalid">
                                                 {validation.errors.zip}
                                               </FormFeedback>
@@ -1017,8 +994,6 @@ const EcommerceOrders = props => {
                                               className="btn btn-success save-user"
                                             >
                                               Save
-
-
                                             </button>
                                           </div>
                                         </Col>
@@ -1057,7 +1032,7 @@ EcommerceOrders.propTypes = {
   onDeleteOrder: PropTypes.func,
   onUpdateOrder: PropTypes.func,
   getProductListdata: PropTypes.func,
-  handleDeleteAllOrders: PropTypes.func
+  handleDeleteAllOrders: PropTypes.func,
 }
 
 export default withRouter(EcommerceOrders)
