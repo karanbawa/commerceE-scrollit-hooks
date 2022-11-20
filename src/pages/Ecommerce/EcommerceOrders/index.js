@@ -65,6 +65,7 @@ const EcommerceOrders = props => {
   const [order, setOrder] = useState([])
   const [productList, setProductList] = useState([])
   const [customerList, setCustomerList] = useState([])
+  const [productOptions, setProductOptions] = useState([])
 
   const dispatch = useDispatch()
 
@@ -73,28 +74,7 @@ const EcommerceOrders = props => {
     enableReinitialize: true,
 
     initialValues: {
-      orderItems: (order && order.orderItems) || [
-        {
-          _id: "634c079bf8905c5d1f67432c",
-          quantity: 10,
-          product: { name: "Suit 1" },
-        },
-        {
-          _id: "634c077bf8905c5d1f67431f",
-          quantity: 15,
-          product: { name: "Green Shirt" },
-        },
-        {
-          _id: "v94tn958vyj57c4",
-          quantity: 5,
-          product: { name: "Black Pant" },
-        },
-        {
-          _id: "nv5uo68w37m5ywv6",
-          quantity: 20,
-          product: { name: "Blue Shirt" },
-        },
-      ],
+      orderItems: (order && order.orderItems) || [],
       billingName: (order && order.billingName) || "",
       shippingAddress1: (order && order.shippingAddress1) || "",
       shippingAddress2: (order && order.shippingAddress2) || "",
@@ -363,6 +343,9 @@ const EcommerceOrders = props => {
 
   useEffect(() => {
     setProductList(products)
+    setProductOptions(
+      products.map(product => ({ value: product._id, label: product.name }))
+    )
   }, [products])
 
   useEffect(() => {
@@ -647,30 +630,91 @@ const EcommerceOrders = props => {
                                                       <Select
                                                         value={{
                                                           value:
-                                                            product.product
-                                                              .name,
+                                                            validation.values
+                                                              .orderItems[index]
+                                                              .product._id,
                                                           label:
-                                                            product.product
-                                                              .name,
+                                                            validation.values
+                                                              .orderItems[index]
+                                                              .product.name,
                                                         }}
-                                                        onChange={}
+                                                        options={productOptions}
+                                                        onChange={selectedValue => {
+                                                          console.log(
+                                                            selectedValue.value
+                                                          )
+                                                          validation.setFieldValue(
+                                                            "orderItems",
+                                                            [
+                                                              ...validation.values.orderItems.slice(
+                                                                0,
+                                                                index
+                                                              ),
+                                                              {
+                                                                product:
+                                                                  productList.filter(
+                                                                    product =>
+                                                                      product._id ===
+                                                                      selectedValue.value
+                                                                  )[0],
+                                                                quantity:
+                                                                  validation
+                                                                    .values
+                                                                    .orderItems[
+                                                                    index
+                                                                  ].quantity,
+                                                              },
+                                                              ...validation.values.orderItems.slice(
+                                                                index + 1,
+                                                                validation
+                                                                  .values
+                                                                  .orderItems
+                                                                  .length
+                                                              ),
+                                                            ]
+                                                          )
+                                                          console.log(
+                                                            validation.values
+                                                              .orderItems
+                                                          )
+                                                        }}
                                                       />
                                                     </Col>
                                                     <Col className="col-4">
                                                       <Input
                                                         onChange={e => {
-                                                          console.log(validation.values.orderItems)
-                                                          validation.setFieldValue('orderItems',[
-                                                            ...validation.values.orderItems.slice(
-                                                              0,
-                                                              index
-                                                            ),
-                                                            {...validation.values.orderItems[index], quantity: parseInt(e.target.value)},
-                                                            ...validation.values.orderItems.slice(
-                                                              index+1,
-                                                              validation.values.orderItems.length
-                                                            ),
-                                                          ])
+                                                          console.log(
+                                                            validation.values
+                                                              .orderItems
+                                                          )
+                                                          validation.setFieldValue(
+                                                            "orderItems",
+                                                            [
+                                                              ...validation.values.orderItems.slice(
+                                                                0,
+                                                                index
+                                                              ),
+                                                              {
+                                                                ...validation
+                                                                  .values
+                                                                  .orderItems[
+                                                                  index
+                                                                ],
+                                                                quantity:
+                                                                  parseInt(
+                                                                    e.target
+                                                                      .value
+                                                                  ),
+                                                              },
+                                                              ...validation.values.orderItems.slice(
+                                                                index + 1,
+                                                                validation
+                                                                  .values
+                                                                  .orderItems
+                                                                  .length
+                                                              ),
+                                                            ]
+                                                          )
                                                         }}
                                                         value={
                                                           validation.values
@@ -678,15 +722,55 @@ const EcommerceOrders = props => {
                                                             .quantity
                                                         }
                                                         type="number"
+                                                        min='1'
                                                       />
                                                     </Col>
-                                                    <Col className="">
+                                                    <Col
+                                                      style={{
+                                                        cursor: "pointer",
+                                                      }}
+                                                      className="text-danger"
+                                                      onClick={() => {
+                                                        validation.setFieldValue(
+                                                          "orderItems",
+                                                          [
+                                                            ...validation.values.orderItems.slice(
+                                                              0,
+                                                              index
+                                                            ),
+                                                            ...validation.values.orderItems.slice(
+                                                              index + 1,
+                                                              validation.values
+                                                                .orderItems
+                                                                .length
+                                                            ),
+                                                          ]
+                                                        )
+                                                      }}
+                                                    >
                                                       Delete
                                                     </Col>
                                                   </Row>
                                                 </div>
                                               )
                                             )}
+                                            <Button
+                                              onClick={() => {
+                                                validation.setFieldValue(
+                                                  "orderItems",
+                                                  [
+                                                    ...validation.values
+                                                      .orderItems,
+                                                    {
+                                                      quantity: 1,
+                                                      product: [],
+                                                    },
+                                                  ]
+                                                )
+                                              }}
+                                            >
+                                              Add
+                                            </Button>
                                           </div>
                                           <div className="mb-3">
                                             <Label className="form-label">
