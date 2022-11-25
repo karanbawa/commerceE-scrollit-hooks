@@ -25,6 +25,7 @@ import {
   ADD_NEW_PRODUCT_IN_LIST,
   IMPORT_CUSTOMERS,
   DELETE_ALL_CUSTOMERS,
+  DELETE_ALL_ORDERS,
 } from "./actionTypes"
 import {
   getCartDataFail,
@@ -74,6 +75,9 @@ import {
   deleteAllCustomers,
   deleteAllCustomersSuccess,
   deleteAllCustomersFail,
+  deleteAllOrders,
+  deleteAllOrdersSuccess,
+  deleteAllOrdersFail,
 } from "./actions"
 
 //Include Both Helper File with needed methods
@@ -91,6 +95,7 @@ import {
   onLikeReply as onLikeReplyApi,
   onAddReply as onAddReplyApi,
   onAddComment as onAddCommentApi,
+  deleteAllOrdersCall,
 } from "helpers/fakebackend_helper"
 
 import {
@@ -215,6 +220,7 @@ function* onDeleteCustomer({ payload: customer }) {
 function* onDeleteAllCustomers() {
   try {
     const response = yield call(deleteEveryCustomer)
+    console.log(response)
     yield put(deleteAllCustomersSuccess())
   } catch (error) {
     yield put(deleteAllCustomersFail(error))
@@ -262,16 +268,22 @@ function* onUpdateOrder({ payload: order }) {
 function* onDeleteOrder({ payload: order }) {
   try {
     const response = yield call(deleteOrder, order)
-    console.log(response)
-    console.log("hello")
     yield put(deleteOrderSuccess(response.data.order))
   } catch (error) {
-    // console.log("error", error)
     yield put(deleteOrderFail(error))
   }
 }
 
-
+function* onDeleteAllOrders(){
+  try{
+    console.log('asdas')
+    const response = yield call(deleteAllOrdersCall)
+    console.log(response)
+    yield put(deleteAllOrdersSuccess())
+  } catch {
+    yield put(deleteAllOrdersFail())
+  }
+}
 
 
 function* onAddNewOrder({ payload: order }) {
@@ -353,6 +365,7 @@ function* ecommerceSaga() {
   yield takeEvery(ADD_NEW_ORDER, onAddNewOrder)
   yield takeEvery(UPDATE_ORDER, onUpdateOrder)
   yield takeEvery(DELETE_ORDER, onDeleteOrder)
+  yield takeEvery(DELETE_ALL_ORDERS, onDeleteAllOrders)
   yield takeEvery(GET_PRODUCT_COMMENTS, getProductComents)
   yield takeEvery(ON_LIKE_COMMENT, onLikeComment)
   yield takeEvery(ON_LIKE_REPLY, onLikeReply)

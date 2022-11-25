@@ -152,6 +152,8 @@ export const updateOrder = order => put(`${url.UPDATE_ORDER}/${order._id}`,order
 // delete order
 export const deleteOrder = order =>
   del(`${url.DELETE_ORDER}${order._id}`, { headers: { order } });
+
+export const deleteAllOrdersCall = () => del(url.DELETE_ALL_ORDER)
   
  
 // get cart data

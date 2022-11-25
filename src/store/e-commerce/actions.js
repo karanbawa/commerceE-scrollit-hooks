@@ -69,6 +69,8 @@ import {
   DELETE_ALL_CUSTOMERS,
   DELETE_ALL_CUSTOMERS_SUCCESS,
   DELETE_ALL_CUSTOMERS_FAIL,
+  DELETE_ALL_ORDER_FAIL,
+  DELETE_ALL_ORDER_SUCCESS,
 } from "./actionTypes"
 
 export const getProducts = () => ({

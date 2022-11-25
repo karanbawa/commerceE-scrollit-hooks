@@ -139,7 +139,7 @@ const Ecommerce = (state = INIT_STATE, action) => {
     case GET_ORDERS_SUCCESS:
       return {
         ...state,
-         orders: action.payload,
+        orders: action.payload,
       }
 
     case GET_ORDERS_FAIL:
@@ -151,7 +151,7 @@ const Ecommerce = (state = INIT_STATE, action) => {
     case ADD_ORDER_SUCCESS:
       return {
         ...state,
-        orders: [...state.orders, action.payload],
+        orders: [action.payload, ...state.orders],
       }
 
     case ADD_ORDER_FAIL:
@@ -168,7 +168,7 @@ const Ecommerce = (state = INIT_STATE, action) => {
             ? { order, ...action.payload }
             : order
         ),
-        }
+      }
 
     case UPDATE_ORDER_FAIL:
       return {
@@ -180,20 +180,20 @@ const Ecommerce = (state = INIT_STATE, action) => {
       return {
         ...state,
         orders: state.orders.filter(
-          order => order.id.toString() !== action.payload.id.toString()
+          order => order._id.toString() !== action.payload._id.toString()
         ),
       }
-      case DELETE_ALL_ORDER_SUCCESS:
-        return {
-          ...state,
-          orders: [],
-        }
-  
-      case DELETE_ALL_ORDER_FAIL:
-        return {
-          ...state,
-          error: action.payload,
-        }
+    case DELETE_ALL_ORDER_SUCCESS:
+      return {
+        ...state,
+        orders: [],
+      }
+
+    case DELETE_ALL_ORDER_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      }
 
     case DELETE_ORDER_FAIL:
       return {
