@@ -212,7 +212,7 @@ export default function EcommerceAddProduct() {
                       </Col>
                       <Col>
                         <FormGroup>
-                          <Label for="ribbon">Ribbon</Label>
+                          <Label for="ribbon">Tag</Label>
                           <Input id="ribbon" name="ribbon" />
                         </FormGroup>
                       </Col>
