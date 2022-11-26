@@ -61,12 +61,12 @@ import { select } from "redux-saga/effects"
 
 const EcommerceOrders = props => {
   const [orderList, setOrderList] = useState([])
-  const [order, setOrder] = useState([])
+  const [order, setOrder] = useState(null)
   const [productList, setProductList] = useState([])
   const [customerList, setCustomerList] = useState([])
   const [productOptions, setProductOptions] = useState([])
   const [customerRef, setCustomerRef] = useState([])
-
+  const [productRef, setProductRef] = useState([])
   const dispatch = useDispatch()
 
   const validation = useFormik({
@@ -77,8 +77,8 @@ const EcommerceOrders = props => {
       orderItems: (order && order.orderItems) || [],
       billingName:
         (order && {
-          value: order.customerId,
-          label: customerRef[order.customerId],
+          value: order.customerId._id,
+          label: order.customerId.username,
         }) ||
         {},
       shippingAddress1: (order && order.shippingAddress1) || "",
@@ -129,7 +129,7 @@ const EcommerceOrders = props => {
       if (isEdit) {
         const updateOrder = {
           ...order,
-          customerId: values.billingName.value,
+          customerId: values.billingName,
           shippingAddress1: values.shippingAddress1,
           shippingAddress2: values.shippingAddress2,
           paymentStatus: values.paymentStatus,
@@ -260,7 +260,10 @@ const EcommerceOrders = props => {
       dataField: "customerId",
       text: "Billing Name",
       sort: true,
-      formatter: (cellContent, row) => <>{customerRef[row.customerId]}</>,
+      formatter: (cellContent, row) => <>{
+        row.customerId.username
+
+        }</>,
     },
     {
       dataField: "Address",
@@ -402,6 +405,11 @@ const EcommerceOrders = props => {
     setProductOptions(
       products.map(product => ({ value: product._id, label: product.name }))
     )
+    let test = {}
+    products.forEach(product => {
+      test = { ...test, [product._id]: product.name }
+    })
+    setProductRef(test)
   }, [products])
 
   useEffect(() => {
@@ -457,6 +465,8 @@ const EcommerceOrders = props => {
     toggle()
   }
 
+  console.log(orders)
+
   var node = useRef()
   const onPaginationPageChange = page => {
     if (
@@ -510,7 +520,7 @@ const EcommerceOrders = props => {
     },
   ]
 
-  console.log(validation.values)
+  console.log(productRef)
 
   return (
     <React.Fragment>
@@ -526,7 +536,7 @@ const EcommerceOrders = props => {
         onCloseClick={() => setDeleteAllModal(false)}
       />
 
-      {Object.keys(customerRef).length ? (
+      {Object.keys(customerRef).length &&  Object.keys(productRef).length ? (
         <div className="page-content">
           <MetaTags>
             <title>Orders | Scrollit</title>
@@ -1006,18 +1016,23 @@ const EcommerceOrders = props => {
                                                     <Row className="my-2">
                                                       <Col className="col-6">
                                                         <Select
-                                                          value={validation.values.orderItems ?  {
-                                                            value:
-                                                              validation.values
-                                                                .orderItems[
-                                                                index
-                                                              ].product._id,
-                                                            label:
-                                                              validation.values
-                                                                .orderItems[
-                                                                index
-                                                              ].product.name,
-                                                          } : {value : '', label : ''}}
+                                                          value={{
+                                                                  value:
+                                                                    validation
+                                                                      .values
+                                                                      .orderItems[
+                                                                      index
+                                                                    ].product
+                                                                      ._id,
+                                                                  label:
+                                                                    validation
+                                                                      .values
+                                                                      .orderItems[
+                                                                      index
+                                                                    ].product
+                                                                      .name,
+                                                                }
+                                                          }
                                                           options={
                                                             productOptions
                                                           }
@@ -1025,38 +1040,36 @@ const EcommerceOrders = props => {
                                                             console.log(
                                                               selectedValue.value
                                                             )
-                                                            validation
-                                                              .setFieldValue(
-                                                                "orderItems",
-                                                                [
-                                                                  ...validation.values.orderItems.slice(
-                                                                    0,
-                                                                    index
-                                                                  ),
-                                                                  {
-                                                                    product:
-                                                                      productList.filter(
-                                                                        product =>
-                                                                          product._id ===
-                                                                          selectedValue.value
-                                                                      )[0],
-                                                                    quantity:
-                                                                      validation
-                                                                        .values
-                                                                        .orderItems[
-                                                                        index
-                                                                      ]
-                                                                        .quantity,
-                                                                  },
-                                                                  ...validation.values.orderItems.slice(
-                                                                    index + 1,
+                                                            validation.setFieldValue(
+                                                              "orderItems",
+                                                              [
+                                                                ...validation.values.orderItems.slice(
+                                                                  0,
+                                                                  index
+                                                                ),
+                                                                {
+                                                                  product:
+                                                                    productList.filter(
+                                                                      product =>
+                                                                        product._id ===
+                                                                        selectedValue.value
+                                                                    )[0],
+                                                                  quantity:
                                                                     validation
                                                                       .values
-                                                                      .orderItems
-                                                                      .length
-                                                                  ),
-                                                                ]
-                                                              )
+                                                                      .orderItems[
+                                                                      index
+                                                                    ].quantity,
+                                                                },
+                                                                ...validation.values.orderItems.slice(
+                                                                  index + 1,
+                                                                  validation
+                                                                    .values
+                                                                    .orderItems
+                                                                    .length
+                                                                ),
+                                                              ]
+                                                            )
                                                           }}
                                                         />
                                                       </Col>
@@ -1550,4 +1563,3 @@ EcommerceOrders.propTypes = {
 }
 
 export default withRouter(EcommerceOrders)
-

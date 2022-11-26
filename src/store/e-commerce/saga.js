@@ -110,6 +110,7 @@ import {
   importCustomers,
   deleteEveryCustomer,
 } from "helpers/backend_helper"
+import showToast from "helpers/toast_helper"
 
 function* fetchProducts() {
   try {
@@ -258,7 +259,7 @@ function* onUpdateOrder({ payload: order }) {
   try {
     const response = yield call(updateOrder, order)
     console.log(response)
-    yield put(updateOrderSuccess(response.data.order))
+    yield put(updateOrderSuccess(order))
   } catch (error) {
     yield put(updateOrderFail(error))
     console.log(error)
@@ -293,6 +294,7 @@ function* onAddNewOrder({ payload: order }) {
   try {
     const response = yield call(addNewOrder, order)
     console.log(response)
+    showToast('order created successfully','order created')
      yield put(addOrderSuccess(response.data.order))
   } catch (error) {
     yield put(addOrderFail(error))

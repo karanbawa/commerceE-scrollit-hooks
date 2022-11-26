@@ -146,7 +146,7 @@ export const addNewOrder = order => post(`${url.ADD_NEW_ORDER}`, order)
 //update order
 export const updateOrder = order =>
   put(`${url.UPDATE_ORDER}${order._id}`, {
-    customerId: order.customerId,
+    customerId: order.customerId.value,
     shippingAddress1: order.shippingAddress1,
     shippingAddress2: order.shippingAddress2,
     paymentStatus: order.paymentStatus,
@@ -158,10 +158,10 @@ export const updateOrder = order =>
     phone: order.phone,
     zip: order.zip,
     methodIcon: order.methodIcon,
-    // orderItems: order.orderItems.map(product => ({
-    //   product: product.product._id,
-    //   quantity: product.quantity,
-    // })),
+    orderItems: order.orderItems.map(product => ({
+      product: product.product._id,
+      quantity: product.quantity,
+    })),
   })
 
 // delete order

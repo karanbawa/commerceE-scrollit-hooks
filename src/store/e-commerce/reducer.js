@@ -165,7 +165,7 @@ const Ecommerce = (state = INIT_STATE, action) => {
         ...state,
         orders: state.orders.map(order =>
           order._id === action.payload._id.toString()
-            ? { order, ...action.payload }
+            ? action.payload
             : order
         ),
       }
