@@ -510,7 +510,7 @@ const EcommerceOrders = props => {
     },
   ]
 
-  // console.log(orderList)
+  console.log(validation.values)
 
   return (
     <React.Fragment>
@@ -1006,7 +1006,7 @@ const EcommerceOrders = props => {
                                                     <Row className="my-2">
                                                       <Col className="col-6">
                                                         <Select
-                                                          value={{
+                                                          value={validation.values.orderItems ?  {
                                                             value:
                                                               validation.values
                                                                 .orderItems[
@@ -1017,7 +1017,7 @@ const EcommerceOrders = props => {
                                                                 .orderItems[
                                                                 index
                                                               ].product.name,
-                                                          }}
+                                                          } : {value : '', label : ''}}
                                                           options={
                                                             productOptions
                                                           }
@@ -1550,3 +1550,4 @@ EcommerceOrders.propTypes = {
 }
 
 export default withRouter(EcommerceOrders)
+
