@@ -170,7 +170,6 @@ function* onAddNewProductInList({ payload: product }) {
 
 function* fetchOrders() {
   try {
-    console.log("hello")
     const response = yield call(getOrders)
     console.log(response)
     yield put(getOrdersSuccess(response.data))
