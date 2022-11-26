@@ -1057,12 +1057,6 @@ const EcommerceOrders = props => {
                                                                   ),
                                                                 ]
                                                               )
-                                                              .then((a, b) => {
-                                                                console.log(
-                                                                  a,
-                                                                  b
-                                                                )
-                                                              })
                                                           }}
                                                         />
                                                       </Col>
