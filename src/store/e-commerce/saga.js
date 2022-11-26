@@ -174,12 +174,10 @@ function* fetchOrders() {
     const response = yield call(getOrders)
     console.log(response)
     yield put(getOrdersSuccess(response.data))
-    
   } catch (error) {
     yield put(getOrdersFail(error))
   }
 }
-
 
 function* fetchCartData() {
   try {
@@ -258,8 +256,12 @@ function* fetchShops() {
 function* onUpdateOrder({ payload: order }) {
   try {
     const response = yield call(updateOrder, order)
-    console.log(response)
-    yield put(updateOrderSuccess(order))
+    yield put(
+      updateOrderSuccess({
+        ...response.data,
+        orderItems: order.orderItems,
+      })
+    )
   } catch (error) {
     yield put(updateOrderFail(error))
     console.log(error)
@@ -267,10 +269,11 @@ function* onUpdateOrder({ payload: order }) {
 }
 
 function* onDeleteOrder({ payload: order }) {
-  console.log('delete called')
+  console.log("delete called")
   try {
     const response = yield call(deleteOrder, order)
     console.log(response)
+    showToast("Order deleted sucessfully", "Order Deletion")
     yield put(deleteOrderSuccess(order))
   } catch (error) {
     console.log(error)
@@ -278,29 +281,31 @@ function* onDeleteOrder({ payload: order }) {
   }
 }
 
-function* onDeleteAllOrders(){
-  try{
+function* onDeleteAllOrders() {
+  try {
     const response = yield call(deleteAllOrdersCall)
     console.log(response)
+    showToast("All orders deleted sucessfully", "All Orders Deletion")
     yield put(deleteAllOrdersSuccess())
   } catch {
     yield put(deleteAllOrdersFail())
   }
 }
 
-
 function* onAddNewOrder({ payload: order }) {
   console.log(order)
   try {
     const response = yield call(addNewOrder, order)
     console.log(response)
-    showToast('order created successfully','order created')
-     yield put(addOrderSuccess(response.data.order))
+    showToast(
+      `order created successfully with order id of ${response.data.order._id}`,
+      "Order creation successfully"
+    )
+    yield put(addOrderSuccess(response.data.order))
   } catch (error) {
     yield put(addOrderFail(error))
   }
 }
-
 
 function* getProductComents() {
   try {

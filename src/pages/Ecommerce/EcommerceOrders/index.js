@@ -260,10 +260,7 @@ const EcommerceOrders = props => {
       dataField: "customerId",
       text: "Billing Name",
       sort: true,
-      formatter: (cellContent, row) => <>{
-        row.customerId.username
-
-        }</>,
+      formatter: (cellContent, row) => <>{row.customerId.username}</>,
     },
     {
       dataField: "Address",
@@ -271,7 +268,12 @@ const EcommerceOrders = props => {
       sort: true,
       formatter: (cellContent, row) => (
         <>
-          <p className="mb-1">{row.shippingAddress1}</p>
+          <p
+            className="mb-1"
+            style={{ wordWrap: "break-word", whiteSpace: "initial" }}
+          >
+            {row.shippingAddress1}
+          </p>
           <p className="mb-0">{row.shippingAddress2}</p>
         </>
       ),
@@ -465,8 +467,6 @@ const EcommerceOrders = props => {
     toggle()
   }
 
-  console.log(orders)
-
   var node = useRef()
   const onPaginationPageChange = page => {
     if (
@@ -520,8 +520,6 @@ const EcommerceOrders = props => {
     },
   ]
 
-  console.log(productRef)
-
   return (
     <React.Fragment>
       <EcommerceOrdersModal isOpen={modal1} toggle={toggleViewModal} />
@@ -536,7 +534,7 @@ const EcommerceOrders = props => {
         onCloseClick={() => setDeleteAllModal(false)}
       />
 
-      {Object.keys(customerRef).length &&  Object.keys(productRef).length ? (
+      {Object.keys(customerRef).length && Object.keys(productRef).length ? (
         <div className="page-content">
           <MetaTags>
             <title>Orders | Scrollit</title>
@@ -1017,22 +1015,17 @@ const EcommerceOrders = props => {
                                                       <Col className="col-6">
                                                         <Select
                                                           value={{
-                                                                  value:
-                                                                    validation
-                                                                      .values
-                                                                      .orderItems[
-                                                                      index
-                                                                    ].product
-                                                                      ._id,
-                                                                  label:
-                                                                    validation
-                                                                      .values
-                                                                      .orderItems[
-                                                                      index
-                                                                    ].product
-                                                                      .name,
-                                                                }
-                                                          }
+                                                            value:
+                                                              validation.values
+                                                                .orderItems[
+                                                                index
+                                                              ].product._id,
+                                                            label:
+                                                              validation.values
+                                                                .orderItems[
+                                                                index
+                                                              ].product.name,
+                                                          }}
                                                           options={
                                                             productOptions
                                                           }
