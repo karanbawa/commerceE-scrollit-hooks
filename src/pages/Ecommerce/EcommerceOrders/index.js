@@ -75,7 +75,12 @@ const EcommerceOrders = props => {
 
     initialValues: {
       orderItems: (order && order.orderItems) || [],
-      billingName: (order && order.billingName) || {},
+      billingName:
+        (order && {
+          value: order.customerId,
+          label: customerRef[order.customerId],
+        }) ||
+        {},
       shippingAddress1: (order && order.shippingAddress1) || "",
       shippingAddress2: (order && order.shippingAddress2) || "",
       paymentStatus: (order && order.paymentStatus) || "Paid",
@@ -445,9 +450,8 @@ const EcommerceOrders = props => {
   }
 
   const handleOrderClick = arg => {
-    console.log(arg)
     setOrder(arg)
-
+    console.log(arg)
     setIsEdit(true)
 
     toggle()
@@ -505,8 +509,8 @@ const EcommerceOrders = props => {
       order: "desc",
     },
   ]
-  
-  console.log(orders)
+
+  // console.log(orderList)
 
   return (
     <React.Fragment>
