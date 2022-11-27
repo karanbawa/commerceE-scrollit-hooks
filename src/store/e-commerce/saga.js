@@ -142,7 +142,6 @@ function* fetchProductList() {
 function* onUpdateProductInList({ payload: product }) {
   try {
     const response = yield call(updateProductInList, product)
-    console.log(product)
     yield put(updateProductInListSuccess(product))
   } catch (error) {
     yield put(updateProductInListFail(error))
@@ -152,10 +151,8 @@ function* onUpdateProductInList({ payload: product }) {
 function* onDeleteProductInList({ payload: product }) {
   try {
     const response = yield call(deleteProductInList, product)
-    console.log("response", response)
     yield put(deleteProductInListSuccess(product))
   } catch (error) {
-    console.log("error", error)
     yield put(deleteProductInListFail(error))
   }
 }
@@ -172,7 +169,6 @@ function* onAddNewProductInList({ payload: product }) {
 function* fetchOrders() {
   try {
     const response = yield call(getOrders)
-    console.log(response)
     yield put(getOrdersSuccess(response.data))
   } catch (error) {
     yield put(getOrdersFail(error))
@@ -218,7 +214,6 @@ function* onDeleteCustomer({ payload: customer }) {
 function* onDeleteAllCustomers() {
   try {
     const response = yield call(deleteEveryCustomer)
-    console.log(response)
     yield put(deleteAllCustomersSuccess())
   } catch (error) {
     yield put(deleteAllCustomersFail(error))
@@ -237,7 +232,6 @@ function* onImportCustomers({ payload: customers }) {
 function* onAddNewCustomer({ payload: customer }) {
   try {
     const response = yield call(addNewCustomer, customer)
-    console.log(response)
     yield put(addCustomerSuccess(customer))
   } catch (error) {
     yield put(addCustomerFail(error))
@@ -264,19 +258,15 @@ function* onUpdateOrder({ payload: order }) {
     )
   } catch (error) {
     yield put(updateOrderFail(error))
-    console.log(error)
   }
 }
 
 function* onDeleteOrder({ payload: order }) {
-  console.log("delete called")
   try {
     const response = yield call(deleteOrder, order)
-    console.log(response)
     showToast("Order deleted sucessfully", "Order Deletion")
     yield put(deleteOrderSuccess(order))
   } catch (error) {
-    console.log(error)
     yield put(deleteOrderFail(error))
   }
 }
@@ -284,7 +274,6 @@ function* onDeleteOrder({ payload: order }) {
 function* onDeleteAllOrders() {
   try {
     const response = yield call(deleteAllOrdersCall)
-    console.log(response)
     showToast("All orders deleted sucessfully", "All Orders Deletion")
     yield put(deleteAllOrdersSuccess())
   } catch {
@@ -293,10 +282,8 @@ function* onDeleteAllOrders() {
 }
 
 function* onAddNewOrder({ payload: order }) {
-  console.log(order)
   try {
     const response = yield call(addNewOrder, order)
-    console.log(response)
     showToast(
       `order created successfully with order id of ${response.data.order._id}`,
       "Order creation successfully"
