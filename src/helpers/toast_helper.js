@@ -17,8 +17,6 @@ const showToast = (message, title, toastType='success') => {
     extendedTimeOut: 1000,
   }
 
-  console.log('in toast!')
-
   if (toastType === "info") toastr.info(message, title);
     else if (toastType === "warning") toastr.warning(message, title);
     else if (toastType === "error") toastr.error(message, title);
