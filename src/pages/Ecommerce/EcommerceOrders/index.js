@@ -168,7 +168,6 @@ const EcommerceOrders = props => {
       toggle()
     },
     handleError: e => {
-      console.log(e)
     },
   })
 
@@ -461,7 +460,6 @@ const EcommerceOrders = props => {
 
   const handleOrderClick = arg => {
     setOrder(arg)
-    console.log(arg)
     setIsEdit(true)
 
     toggle()
@@ -685,10 +683,6 @@ const EcommerceOrders = props => {
                                                   {"Please select billing name"}
                                                 </div>
                                               ) : null}
-                                              {/* {console.log(
-                                                validation.touched.billingName,
-                                                validation.touched.shippingAddress1
-                                              )} */}
                                             </div>
                                             <Modal
                                               isOpen={nestedModal}
@@ -1030,9 +1024,6 @@ const EcommerceOrders = props => {
                                                             productOptions
                                                           }
                                                           onChange={selectedValue => {
-                                                            console.log(
-                                                              selectedValue.value
-                                                            )
                                                             validation.setFieldValue(
                                                               "orderItems",
                                                               [
@@ -1069,10 +1060,6 @@ const EcommerceOrders = props => {
                                                       <Col className="col-4">
                                                         <Input
                                                           onChange={e => {
-                                                            console.log(
-                                                              validation.values
-                                                                .orderItems
-                                                            )
                                                             validation.setFieldValue(
                                                               "orderItems",
                                                               [
