@@ -167,8 +167,7 @@ const EcommerceOrders = props => {
       }
       toggle()
     },
-    handleError: e => {
-    },
+    handleError: e => {},
   })
 
   const validation2 = useFormik({
@@ -272,8 +271,14 @@ const EcommerceOrders = props => {
             style={{ wordWrap: "break-word", whiteSpace: "initial" }}
           >
             {row.shippingAddress1}
+            <span>, {row.city}</span>
+            <span>, {row.country}</span>
           </p>
-          <p className="mb-0">{row.shippingAddress2}</p>
+          <p className="mb-0">
+            {row.shippingAddress2}
+            <span>, {row.city}</span>
+            <span>, {row.country}</span>
+          </p>
         </>
       ),
     },
@@ -281,11 +286,13 @@ const EcommerceOrders = props => {
       dataField: "city",
       text: "city",
       sort: true,
+      hidden: true,
     },
     {
       dataField: "country",
       text: "country",
       sort: true,
+      hidden: true,
     },
 
     {
@@ -403,15 +410,24 @@ const EcommerceOrders = props => {
 
   useEffect(() => {
     setProductList(products)
+    // setProductOptions(
+    //   products.map(product => ({ value: product._id, label: product.name }))
+    // )
     setProductOptions(
-      products.map(product => ({ value: product._id, label: product.name }))
+      products
+        .filter(product =>
+          validation.values.orderItems.every(
+            entry => entry.product._id !== product._id
+          )
+        )
+        .map(product => ({ value: product._id, label: product.name }))
     )
     let test = {}
     products.forEach(product => {
       test = { ...test, [product._id]: product.name }
     })
     setProductRef(test)
-  }, [products])
+  }, [products, validation.values])
 
   useEffect(() => {
     setOrderList(orders)
@@ -517,6 +533,8 @@ const EcommerceOrders = props => {
       order: "desc",
     },
   ]
+
+  console.log(productList)
 
   return (
     <React.Fragment>
