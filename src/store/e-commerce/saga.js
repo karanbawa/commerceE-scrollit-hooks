@@ -25,6 +25,7 @@ import {
   ADD_NEW_PRODUCT_IN_LIST,
   IMPORT_CUSTOMERS,
   DELETE_ALL_CUSTOMERS,
+  DELETE_ALL_ORDERS,
 } from "./actionTypes"
 import {
   getCartDataFail,
@@ -73,6 +74,9 @@ import {
   importCustomerFail,
   deleteAllCustomersSuccess,
   deleteAllCustomersFail,
+  deleteAllOrders,
+  deleteAllOrdersSuccess,
+  deleteAllOrdersFail,
 } from "./actions"
 
 //Include Both Helper File with needed methods
@@ -90,6 +94,7 @@ import {
   onLikeReply as onLikeReplyApi,
   onAddReply as onAddReplyApi,
   onAddComment as onAddCommentApi,
+  deleteAllOrdersCall,
 } from "helpers/fakebackend_helper"
 
 import {
@@ -104,6 +109,7 @@ import {
   importCustomers,
   deleteEveryCustomer,
 } from "helpers/backend_helper"
+import showToast from "helpers/toast_helper"
 
 function* fetchProducts() {
   try {
@@ -135,7 +141,6 @@ function* fetchProductList() {
 function* onUpdateProductInList({ payload: product }) {
   try {
     const response = yield call(updateProductInList, product)
-    console.log(product)
     yield put(updateProductInListSuccess(product))
   } catch (error) {
     yield put(updateProductInListFail(error))
@@ -145,10 +150,8 @@ function* onUpdateProductInList({ payload: product }) {
 function* onDeleteProductInList({ payload: product }) {
   try {
     const response = yield call(deleteProductInList, product)
-    console.log("response", response)
     yield put(deleteProductInListSuccess(product))
   } catch (error) {
-    console.log("error", error)
     yield put(deleteProductInListFail(error))
   }
 }
@@ -165,7 +168,7 @@ function* onAddNewProductInList({ payload: product }) {
 function* fetchOrders() {
   try {
     const response = yield call(getOrders)
-    yield put(getOrdersSuccess(response))
+    yield put(getOrdersSuccess(response.data))
   } catch (error) {
     yield put(getOrdersFail(error))
   }
@@ -246,7 +249,12 @@ function* fetchShops() {
 function* onUpdateOrder({ payload: order }) {
   try {
     const response = yield call(updateOrder, order)
-    yield put(updateOrderSuccess(response))
+    yield put(
+      updateOrderSuccess({
+        ...response.data,
+        orderItems: order.orderItems,
+      })
+    )
   } catch (error) {
     yield put(updateOrderFail(error))
   }
@@ -255,18 +263,31 @@ function* onUpdateOrder({ payload: order }) {
 function* onDeleteOrder({ payload: order }) {
   try {
     const response = yield call(deleteOrder, order)
-    console.log("response", response)
-    yield put(deleteOrderSuccess(response))
+    showToast("Order deleted sucessfully", "Order Deletion")
+    yield put(deleteOrderSuccess(order))
   } catch (error) {
-    console.log("error", error)
     yield put(deleteOrderFail(error))
+  }
+}
+
+function* onDeleteAllOrders() {
+  try {
+    const response = yield call(deleteAllOrdersCall)
+    showToast("All orders deleted sucessfully", "All Orders Deletion")
+    yield put(deleteAllOrdersSuccess())
+  } catch {
+    yield put(deleteAllOrdersFail())
   }
 }
 
 function* onAddNewOrder({ payload: order }) {
   try {
     const response = yield call(addNewOrder, order)
-    yield put(addOrderSuccess(response))
+    showToast(
+      `order created successfully with order id of ${response.data.order._id}`,
+      "Order creation successfully"
+    )
+    yield put(addOrderSuccess(response.data.order))
   } catch (error) {
     yield put(addOrderFail(error))
   }
@@ -339,6 +360,7 @@ function* ecommerceSaga() {
   yield takeEvery(ADD_NEW_ORDER, onAddNewOrder)
   yield takeEvery(UPDATE_ORDER, onUpdateOrder)
   yield takeEvery(DELETE_ORDER, onDeleteOrder)
+  yield takeEvery(DELETE_ALL_ORDERS, onDeleteAllOrders)
   yield takeEvery(GET_PRODUCT_COMMENTS, getProductComents)
   yield takeEvery(ON_LIKE_COMMENT, onLikeComment)
   yield takeEvery(ON_LIKE_REPLY, onLikeReply)

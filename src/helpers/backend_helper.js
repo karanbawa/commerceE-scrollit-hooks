@@ -43,3 +43,5 @@ export const importCustomers = customers =>
   post(url.IMPORT_CUSTOMERS, customers)
 
 export const deleteEveryCustomer = () => del(`${url.DELETE_ALL_CUSTOMERS}`)
+
+

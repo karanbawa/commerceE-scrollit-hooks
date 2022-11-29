@@ -9,6 +9,8 @@ import {
   UPDATE_CUSTOMER_FAIL,
   DELETE_CUSTOMER_SUCCESS,
   DELETE_CUSTOMER_FAIL,
+  DELETE_ALL_ORDER_SUCCESS,
+  DELETE_ALL_ORDER_FAIL,
   GET_ORDERS_FAIL,
   GET_ORDERS_SUCCESS,
   GET_PRODUCTS_FAIL,
@@ -149,7 +151,7 @@ const Ecommerce = (state = INIT_STATE, action) => {
     case ADD_ORDER_SUCCESS:
       return {
         ...state,
-        orders: [...state.orders, action.payload],
+        orders: [action.payload, ...state.orders],
       }
 
     case ADD_ORDER_FAIL:
@@ -162,8 +164,8 @@ const Ecommerce = (state = INIT_STATE, action) => {
       return {
         ...state,
         orders: state.orders.map(order =>
-          order.id === action.payload.id.toString()
-            ? { order, ...action.payload }
+          order._id === action.payload._id.toString()
+            ? action.payload
             : order
         ),
       }
@@ -178,8 +180,19 @@ const Ecommerce = (state = INIT_STATE, action) => {
       return {
         ...state,
         orders: state.orders.filter(
-          order => order.id.toString() !== action.payload.id.toString()
+          order => order._id.toString() !== action.payload._id.toString()
         ),
+      }
+    case DELETE_ALL_ORDER_SUCCESS:
+      return {
+        ...state,
+        orders: [],
+      }
+
+    case DELETE_ALL_ORDER_FAIL:
+      return {
+        ...state,
+        error: action.payload,
       }
 
     case DELETE_ORDER_FAIL:

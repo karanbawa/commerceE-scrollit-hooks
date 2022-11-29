@@ -254,7 +254,6 @@ const EcommerceProductList = props => {
   }
 
   const handleDeleteOrder = () => {
-    console.log(product)
     if (product._id) {
       dispatch(deleteProductInList(product))
       onPaginationPageChange(1)
