@@ -18,27 +18,61 @@ import { Link } from "react-router-dom";
 import profileImg from "../../assets/images/profile-img.png";
 import logoImg from "../../assets/images/logo.svg";
 
+
 const Register = props => {
   const dispatch = useDispatch();
 
   const validation = useFormik({
+
+
     // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
 
     initialValues: {
+      firstName: '',
+      lastName: '',
       email: '',
-      username: '',
+      phoneNumber: '',
       password: '',
+      confirmPassword: ''
     },
+
     validationSchema: Yup.object({
-      email: Yup.string().required("Please Enter Your Email"),
-      username: Yup.string().required("Please Enter Your Username"),
-      password: Yup.string().required("Please Enter Your Password"),
+      firstName: Yup.string().required("Please Enter Your firstname").min(3, 'firstname must be at least 3 characters')
+        .max(15, 'firstname must not exceed 15 characters'),
+      lastName: Yup.string().required("Please Enter Your lastname").min(3, 'lastname must be at least 3 characters')
+        .max(15, 'lastname must not exceed 15 characters'),
+      email: Yup.string().required("Please Enter Your Email")
+        .matches(/^[a-z0-9._%+-]+@[a-z0-9,-]+\.[a-z]{2,4}$/,
+          "Invalid email"
+        ),
+      phoneNumber: Yup.string().required("Please Enter Your Phonenumber").matches(
+        /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/,
+        "Phonenumber must be the 10 digits of number"
+      ),
+      password: Yup.string().required("Please Enter Your Password").matches(
+        ("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"),
+        "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
+      ),
+      confirmPassword: Yup.string().required("Please Enter Your confirmpassword").oneOf([Yup.ref("password"), null], "Confirm Password does not match")
     }),
+
+
     onSubmit: (values) => {
-      dispatch(registerUser(values));
-    }
+      const signupObj={
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.email,
+        phoneNumber: values.phoneNumber,
+        password: values.password
+      }
+    // try{
+    dispatch(registerUser(signupObj))
+  }   
   });
+ 
+
+
 
   const { user, registrationError, loading } = useSelector(state => ({
     user: state.Account.user,
@@ -46,14 +80,9 @@ const Register = props => {
     loading: state.Account.loading,
   }));
 
-  // handleValidSubmit
-  const handleValidSubmit = values => {
-    dispatch(registerUser(values));
-  };
+ 
 
-  useEffect(() => {
-    dispatch(apiError(""));
-  }, []);
+
 
   return (
     <React.Fragment>
@@ -103,22 +132,51 @@ const Register = props => {
                       className="form-horizontal"
                       onSubmit={(e) => {
                         e.preventDefault();
+
                         validation.handleSubmit();
                         return false;
                       }}
                     >
-                      {user && user ? (
-                        <Alert color="success">
-                          Register User Successfully
-                        </Alert>
-                      ) : null}
-
-                      {registrationError && registrationError ? (
-                        <Alert color="danger">{registrationError}</Alert>
-                      ) : null}
+                     
 
                       <div className="mb-3">
-                        <Label className="form-label">Email</Label>
+                        <Label className="form-label">First Name <span style={{color:"red"}}> * </span></Label>
+                        <Input
+                          name="firstName"
+                          type="text"
+                          placeholder="Enter first name"
+                          onChange={validation.handleChange}
+                          onBlur={validation.handleBlur}
+                          value={validation.values.firstName || ""}
+                          invalid={
+                            validation.touched.firstName && validation.errors.firstName ? true : false
+                          }
+                        />
+                        {validation.touched.firstName && validation.errors.firstName ? (
+                          <FormFeedback type="invalid">{validation.errors.firstName}</FormFeedback>
+                        ) : null}
+                      </div>
+
+                      <div className="mb-3">
+                        <Label className="form-label">Last Name <span style={{color:"red"}}>* </span></Label>
+                        <Input
+                          name="lastName"
+                          type="text"
+                          placeholder="Enter last name"
+                          onChange={validation.handleChange}
+                          onBlur={validation.handleBlur}
+                          value={validation.values.lastName || ""}
+                          invalid={
+                            validation.touched.lastName && validation.errors.lastName ? true : false
+                          }
+                        />
+                        {validation.touched.lastName && validation.errors.lastName ? (
+                          <FormFeedback type="invalid">{validation.errors.lastName}</FormFeedback>
+                        ) : null}
+                      </div>
+
+                      <div className="mb-3">
+                        <Label className="form-label">Email <span style={{color:"red"}}>*</span></Label>
                         <Input
                           id="email"
                           name="email"
@@ -131,6 +189,7 @@ const Register = props => {
                           invalid={
                             validation.touched.email && validation.errors.email ? true : false
                           }
+
                         />
                         {validation.touched.email && validation.errors.email ? (
                           <FormFeedback type="invalid">{validation.errors.email}</FormFeedback>
@@ -138,24 +197,29 @@ const Register = props => {
                       </div>
 
                       <div className="mb-3">
-                        <Label className="form-label">Username</Label>
+                        <Label className="form-label">Phone Number <span style={{color:"red"}}>* </span></Label>
                         <Input
-                          name="username"
+                          id="phoneNumber"
+                          name="phoneNumber"
+                          className="form-control"
+                          placeholder="Enter phone number"
                           type="text"
-                          placeholder="Enter username"
                           onChange={validation.handleChange}
                           onBlur={validation.handleBlur}
-                          value={validation.values.username || ""}
+                          value={validation.values.phoneNumber || ""}
                           invalid={
-                            validation.touched.username && validation.errors.username ? true : false
+                            validation.touched.phoneNumber && validation.errors.phoneNumber ? true : false
                           }
                         />
-                        {validation.touched.username && validation.errors.username ? (
-                          <FormFeedback type="invalid">{validation.errors.username}</FormFeedback>
+                        {validation.touched.phoneNumber && validation.errors.phoneNumber ? (
+                          <FormFeedback type="invalid">{validation.errors.phoneNumber}</FormFeedback>
                         ) : null}
                       </div>
+
+
+
                       <div className="mb-3">
-                        <Label className="form-label">Password</Label>
+                        <Label className="form-label">Password <span style={{color:"red"}}>*</span></Label>
                         <Input
                           name="password"
                           type="password"
@@ -172,12 +236,30 @@ const Register = props => {
                         ) : null}
                       </div>
 
+                      <div className="mb-3">
+                        <Label className="form-label">Confirm Password <span style={{color:"red"}}>*</span></Label>
+                        <Input
+                          name="confirmPassword"
+                          type="password"
+                          placeholder="Enter Confirm Password"
+                          onChange={validation.handleChange}
+                          onBlur={validation.handleBlur}
+                          value={validation.values.confirmPassword || ""}
+                          invalid={
+                            validation.touched.confirmPassword && validation.errors.confirmPassword ? true : false
+                          }
+                        />
+                        {validation.touched.confirmPassword && validation.errors.confirmPassword ? (
+                          <FormFeedback type="invalid">{validation.errors.confirmPassword}</FormFeedback>
+                        ) : null}
+                      </div>
+
                       <div className="mt-4">
                         <button
                           className="btn btn-primary btn-block "
                           type="submit"
                         >
-                          Register
+                          Sign up
                         </button>
                       </div>
 

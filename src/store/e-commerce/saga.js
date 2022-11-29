@@ -72,7 +72,6 @@ import {
   addProductInListFail,
   importCustomerSuccess,
   importCustomerFail,
-  deleteAllCustomers,
   deleteAllCustomersSuccess,
   deleteAllCustomersFail,
   deleteAllOrders,
