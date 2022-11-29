@@ -16,8 +16,7 @@ const isUserAuthenticated = () => {
 
 // Register Method
 const postFakeRegister = data => {
-  return axios
-    .post(url.POST_FAKE_REGISTER, data)
+  return post(url.POST_FAKE_REGISTER, data)
     .then(response => {
       if (response.status >= 200 || response.status <= 299) return response.data
       throw response.data
@@ -48,6 +47,7 @@ const postFakeRegister = data => {
 // Login Method
 const postFakeLogin = data => post(url.POST_FAKE_LOGIN, data)
 
+
 // postForgetPwd
 const postFakeForgetPwd = data => post(url.POST_FAKE_PASSWORD_FORGET, data)
 
@@ -55,6 +55,8 @@ const postFakeForgetPwd = data => post(url.POST_FAKE_PASSWORD_FORGET, data)
 const postJwtProfile = data => post(url.POST_EDIT_JWT_PROFILE, data)
 
 const postFakeProfile = data => post(url.POST_EDIT_PROFILE, data)
+
+
 
 // Register Method
 const postJwtRegister = (url, data) => {
@@ -86,6 +88,8 @@ const postJwtRegister = (url, data) => {
       throw message
     })
 }
+
+export const signup = data => post(url.SIGNUP,data);
 
 // Login Method
 const postJwtLogin = data => post(url.POST_SIGNIN_JWT_LOGIN, data)
