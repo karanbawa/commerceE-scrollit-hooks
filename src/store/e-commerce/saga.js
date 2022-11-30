@@ -249,6 +249,7 @@ function* fetchShops() {
 function* onUpdateOrder({ payload: order }) {
   try {
     const response = yield call(updateOrder, order)
+    showToast('Order updated successfully!','Order updated')
     yield put(
       updateOrderSuccess({
         ...response.data,
@@ -257,6 +258,7 @@ function* onUpdateOrder({ payload: order }) {
     )
   } catch (error) {
     yield put(updateOrderFail(error))
+    showToast(`Order failed to Update ${error}`,'Error updating','error')
   }
 }
 
@@ -267,6 +269,7 @@ function* onDeleteOrder({ payload: order }) {
     yield put(deleteOrderSuccess(order))
   } catch (error) {
     yield put(deleteOrderFail(error))
+    showToast(`Order failed to delete ${error}`,'Error deleting','error')
   }
 }
 
@@ -277,6 +280,7 @@ function* onDeleteAllOrders() {
     yield put(deleteAllOrdersSuccess())
   } catch {
     yield put(deleteAllOrdersFail())
+    showToast(`Order failed to delete ${error}`,'Error deleting','error')
   }
 }
 
@@ -290,6 +294,7 @@ function* onAddNewOrder({ payload: order }) {
     yield put(addOrderSuccess(response.data.order))
   } catch (error) {
     yield put(addOrderFail(error))
+    showToast(`Failed to add order ${error}`,'Error Adding Order','error')
   }
 }
 
