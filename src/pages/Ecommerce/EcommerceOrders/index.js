@@ -534,8 +534,6 @@ const EcommerceOrders = props => {
     },
   ]
 
-  console.log(productList)
-
   return (
     <React.Fragment>
       <EcommerceOrdersModal isOpen={modal1} toggle={toggleViewModal} />
