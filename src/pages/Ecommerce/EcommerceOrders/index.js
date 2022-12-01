@@ -534,6 +534,8 @@ const EcommerceOrders = props => {
     },
   ]
 
+  console.log(orders)
+
   return (
     <React.Fragment>
       <EcommerceOrdersModal isOpen={modal1} toggle={toggleViewModal} />
@@ -554,7 +556,11 @@ const EcommerceOrders = props => {
             <title>Orders | Scrollit</title>
           </MetaTags>
           <Container fluid>
-            <Breadcrumbs title="Ecommerce" breadcrumbItem="Orders" />
+            <Breadcrumbs
+              title="Ecommerce"
+              breadcrumbItem="Orders"
+              count={orderList.length}
+            />
             <Row>
               <Col xs="12">
                 <Card>
