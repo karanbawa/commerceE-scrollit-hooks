@@ -6,24 +6,19 @@ import {
   Badge,
   Button,
   Card,
-  CardBody,
   CardFooter,
-  CardHeader,
-  Col,
-  Row,
 } from "reactstrap"
-import "./CollectionProductPreview-styles.scss"
+import "./productImage-styles.scss"
 
-export default function CollectionProductPreview({
+export default function productImage({
   id,
-  text,
-  img,
+  image,
   index,
-  moveCollectionProductPreview,
+  moveImage,
 }) {
   const ref = useRef(null)
   const [{ handlerId }, drop] = useDrop({
-    accept: "CollectionProductPreview",
+    accept: "productImage",
     collect(monitor) {
       return {
         handlerId: monitor.getHandlerId(),
@@ -38,12 +33,12 @@ export default function CollectionProductPreview({
       if (dragIndex === hoverIndex) {
         return
       }
-      moveCollectionProductPreview(dragIndex, hoverIndex)
+      moveImage(dragIndex, hoverIndex)
       item.index = hoverIndex
     },
   })
   const [{ isDragging }, drag] = useDrag({
-    type: "CollectionProductPreview",
+    type: "productImage",
     item: () => {
       return { id, index }
     },
@@ -78,10 +73,9 @@ export default function CollectionProductPreview({
   )
 }
 
-CollectionProductPreview.propTypes = {
+productImage.propTypes = {
   id: PropTypes.any,
-  text: PropTypes.string,
   index: PropTypes.any,
-  moveCollectionProductPreview: PropTypes.func,
-  img: PropTypes.string,
+  moveImage: PropTypes.func,
+  image: PropTypes.string,
 }

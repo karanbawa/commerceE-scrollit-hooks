@@ -1,5 +1,5 @@
 import { Tooltip } from "chart.js"
-import { point } from "leaflet"
+import { LatLng, point } from "leaflet"
 import React, { useEffect } from "react"
 import { useState } from "react"
 import { MetaTags } from "react-meta-tags"
@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 import {
   Button,
+  ButtonGroup,
   Card,
   CardBody,
   CardHeader,
@@ -24,6 +25,10 @@ import {
   Label,
   ListGroup,
   ListGroupItem,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   Row,
   UncontrolledDropdown,
   UncontrolledTooltip,
@@ -31,20 +36,31 @@ import {
 import { addCollection, getCollections } from "store/actions"
 import * as convert from "convert-units"
 import RichTextEditor from "react-rte"
+import AddInfoSectionModal from "./AddInfoSectionModal"
+import Creatable from "react-select/creatable"
 
 export default function EcommerceAddProduct() {
   const dispatch = useDispatch()
-  // states for data
-  const [productName, setProductName] = useState("")
+
+  // ---STATES FOR PRODUCT DATA--
+
+  // Images
   const [productMedia, setProductMedia] = useState([])
+
+  // Product information
+  const [productName, setProductName] = useState("")
+  const [productTag, setProductTag] = useState("")
+  const [descCont, setDescCont] = useState({
+    value: RichTextEditor.createEmptyValue(),
+  })
+
+  // Collections
   const [collectionList, setCollectionList] = useState([])
   const [newCollection, setNewCollection] = useState({
     name: "",
   })
   const [productCollections, setProductCollection] = useState(["all-products"])
-  const [descCont, setDescCont] = useState({
-    value: RichTextEditor.createEmptyValue(),
-  })
+
   const [priceDetails, setPriceDetails] = useState({
     price: 0,
     discount: 0,
@@ -66,14 +82,20 @@ export default function EcommerceAddProduct() {
     total: 0,
     tunits: "g",
     base: 0,
-    bunits: "g",
+    bunits: "mcg",
   })
   const [customTextDetails, setCustomTextDetails] = useState({
     title: "",
     charLin: 500,
     mandatoryField: false,
   })
-
+  const [basePricePerUnit, setBasePricePerUnit] = useState(0)
+  const [additionalInfoSections, setAdditionalInfoSections] = useState([])
+  const [infosection, setInfosection] = useState({
+    title: "",
+    id: "",
+    description: "",
+  })
   // states for toggles
   const [inventoryShipping, setInventoryShipping] = useState(false)
   const [onSale, setOnSale] = useState(false)
@@ -82,6 +104,16 @@ export default function EcommerceAddProduct() {
   const [showInWebstie, setShowInWebsite] = useState(false)
   const [preOrder, setPreorder] = useState(false)
   const [customText, setCustomText] = useState(false)
+  const [infoModal, setInfoModal] = useState(false)
+  const [addProductOption, setAddProductOption] = useState(false)
+  const [editVariantsModal, setEditVariantsModal] = useState(false)
+  const infoModalToggle = () => setInfoModal(!infoModal)
+  const addProductOptionToggle = () => setAddProductOption(!addProductOption)
+  const editVariantsModalToggle = () => setEditVariantsModal(!editVariantsModal)
+
+  const [showOptionAs, setShowOptionAs] = useState("list")
+  const [optionType, setOptionType] = useState('')
+  const [optionValue, setOptionValue] = useState([])
 
   const { collections } = useSelector(state => ({
     collections: state.ecommerce.collections,
@@ -99,14 +131,38 @@ export default function EcommerceAddProduct() {
 
   const desChnage = value => {
     setDescCont({ value })
-    console.log(value.toString("html"))
   }
 
   console.log({
     name: productName,
+    tag: productTag,
     productItemsSummary: descCont.value.toString("html"),
+    additionalInfo: additionalInfoSections.map((section, index) => ({
+      title: section.title,
+      description: section.description.toString("html"),
+      index: index + 1,
+    })),
     price: priceDetails.price,
+    costAndProfitData: {
+      itemCost: priceDetails.cost,
+    },
+    formattedPricePerUnit: priceDetails.salePrice,
+    pricePerUnitData: {
+      totalMeasurementUnit: perUnitDetails.tunits,
+      totalQuantity: perUnitDetails.total,
+      baseQuantity: perUnitDetails.base,
+      baseMeasurementUnit: perUnitDetails.bunits,
+    },
     currency: "INR",
+    customTextFields: [
+      customText
+        ? {
+            inputLimit: customTextDetails.charLin,
+            isMandatory: customTextDetails.mandatoryField,
+            title: customTextDetails.title.length,
+          }
+        : null,
+    ],
     discount: onSale
       ? {
           mode: priceDetails.isPercent ? "PERCENT" : "AMOUNT",
@@ -115,6 +171,23 @@ export default function EcommerceAddProduct() {
       : { mode: "PERCENT", value: 0 },
     isVisible: showInWebstie,
   })
+
+  useEffect(() => {
+    try {
+      const s =
+        (onSale
+          ? priceDetails.salePrice
+          : priceDetails.price /
+            parseFloat(
+              convert(perUnitDetails.total)
+                .from(perUnitDetails.tunits)
+                .to(perUnitDetails.bunits)
+            )) * perUnitDetails.base
+      setBasePricePerUnit(s ? s : 0.0)
+    } catch {
+      console.log(e)
+    }
+  }, [perUnitDetails, priceDetails])
 
   return (
     <React.Fragment>
@@ -193,7 +266,7 @@ export default function EcommerceAddProduct() {
               <Row>
                 <Card className="p-0">
                   <CardHeader>
-                    <CardTitle>Product info</CardTitle>
+                    <CardTitle>Product information</CardTitle>
                   </CardHeader>
                   <CardBody>
                     <Row>
@@ -213,25 +286,79 @@ export default function EcommerceAddProduct() {
                       <Col>
                         <FormGroup>
                           <Label for="ribbon">Tag</Label>
-                          <Input id="ribbon" name="ribbon" />
+                          <Input
+                            id="ribbon"
+                            name="ribbon"
+                            value={productTag}
+                            onChange={e => {
+                              setProductTag(e.target.value)
+                            }}
+                          />
                         </FormGroup>
                       </Col>
                     </Row>
                     <Row>
                       <Label for="description">Description</Label>
                       <Col>
-                        {/* <Input
-                          id="description"
-                          name="text"
-                          type="textarea"
-                          className="col-10"
-                        /> */}
                         <RichTextEditor
                           value={descCont.value}
                           onChange={desChnage}
                         />
                       </Col>
                     </Row>
+                  </CardBody>
+                </Card>
+              </Row>
+              <Row>
+                <Card className="p-0">
+                  <CardHeader>
+                    <CardTitle>Additional information sections</CardTitle>
+                  </CardHeader>
+                  <CardBody className="p-0">
+                    <ListGroup flush>
+                      {additionalInfoSections.length ? (
+                        additionalInfoSections.map(section => (
+                          <ListGroupItem
+                            onClick={() => {
+                              setInfosection(section)
+                              infoModalToggle()
+                            }}
+                            key={section.id}
+                            tag="button"
+                            style={{ textAlign: "start" }}
+                          >
+                            <Row className="d-flex">
+                              <Col
+                                className="col-4"
+                                style={{ fontWeight: 500 }}
+                              >
+                                {section.title}
+                              </Col>
+                              <Col>
+                                {section.description.toString("markdown")}
+                              </Col>
+                            </Row>
+                          </ListGroupItem>
+                        ))
+                      ) : (
+                        <div className="p-2 mx-3 mt-2">
+                          Share information like return policy or care
+                          instructions with your customers.
+                        </div>
+                      )}
+                      <ListGroupItem
+                        tag={"button"}
+                        onClick={() => {
+                          setInfosection(null)
+                          infoModalToggle()
+                        }}
+                        className="text-primary"
+                        style={{ textAlign: "start" }}
+                      >
+                        <i className="mdi mdi-plus me-1" /> Add information
+                        section
+                      </ListGroupItem>
+                    </ListGroup>
                   </CardBody>
                 </Card>
               </Row>
@@ -464,7 +591,18 @@ export default function EcommerceAddProduct() {
                                 </Label>
                                 <Row>
                                   <Col xs="8">
-                                    <Input id="pqunits" />
+                                    <Input
+                                      id="pqunits"
+                                      type="number"
+                                      min={0}
+                                      value={perUnitDetails.total}
+                                      onChange={e => {
+                                        setPerUnitDetails({
+                                          ...perUnitDetails,
+                                          total: parseInt(e.target.value),
+                                        })
+                                      }}
+                                    />
                                   </Col>
                                   <Col>
                                     <Input
@@ -563,7 +701,18 @@ export default function EcommerceAddProduct() {
                                 </Label>
                                 <Row>
                                   <Col>
-                                    <Input id="baseunits" />
+                                    <Input
+                                      id="baseunits"
+                                      type="number"
+                                      min={0}
+                                      value={perUnitDetails.base}
+                                      onChange={e => {
+                                        setPerUnitDetails({
+                                          ...perUnitDetails,
+                                          base: parseInt(e.target.value),
+                                        })
+                                      }}
+                                    />
                                   </Col>
                                   <Col>
                                     <Input type="select">
@@ -584,7 +733,7 @@ export default function EcommerceAddProduct() {
                               <div style={{ fontWeight: 600 }}>
                                 Base Price per unit
                               </div>
-                              <div>&#8377; 0.00</div>
+                              <div>&#8377; {basePricePerUnit}</div>
                             </Row>
                           </div>
                         ) : null}
@@ -609,6 +758,7 @@ export default function EcommerceAddProduct() {
                             <Input
                               id="costofgoods"
                               type="number"
+                              min={0}
                               value={priceDetails.cost}
                               onChange={e => {
                                 const cos = parseInt(e.target.value)
@@ -726,6 +876,12 @@ export default function EcommerceAddProduct() {
                             <Input
                               id="cus-title"
                               placeholder="e.g., 'What would you like engraved on your watch?'"
+                              onChange={e => {
+                                setCustomTextDetails({
+                                  ...customTextDetails,
+                                  title: e.target.value,
+                                })
+                              }}
                             />
                           </Col>
                           <Col xs="3">
@@ -756,6 +912,7 @@ export default function EcommerceAddProduct() {
                                       !customTextDetails.mandatoryField,
                                   })
                                 }}
+                                value={customTextDetails.mandatoryField}
                               ></Input>
                             </FormGroup>
                             <div className="mx-2">Mandatory Field</div>
@@ -785,7 +942,12 @@ export default function EcommerceAddProduct() {
                       Does your product come in different options, like size,
                       color or material? Add them here.
                     </CardText>
-                    <Button className="btn-success btn-rounded">
+                    <Button
+                      className="btn-success btn-rounded"
+                      onClick={() => {
+                        addProductOptionToggle()
+                      }}
+                    >
                       <i className="mdi mdi-plus me-1" />
                       Add Options
                     </Button>
@@ -1138,6 +1300,87 @@ export default function EcommerceAddProduct() {
               </Row>
             </Col>
           </Row>
+          <Modal centered toggle={infoModalToggle} isOpen={infoModal}>
+            <AddInfoSectionModal
+              toggle={infoModalToggle}
+              setAdditionalInfoSections={setAdditionalInfoSections}
+              additionalInfoSections={additionalInfoSections}
+              section={infosection}
+            />
+          </Modal>
+          <Modal
+            centered
+            toggle={addProductOptionToggle}
+            isOpen={addProductOption}
+          >
+            <ModalHeader toggle={addProductOptionToggle}>
+              Add Product Option
+            </ModalHeader>
+            <ModalBody>
+              <Row>
+                <Col className="col-7">
+                  <Row>
+                    <Label>Type in an option name</Label>
+                    <Input placeholder="e.g. Size or Colour"></Input>
+                  </Row>
+                </Col>
+                <Col>
+                  <Row>
+                    <Label>Show in product page:</Label>
+                    <ButtonGroup>
+                      <Button
+                        outline
+                        active={showOptionAs === "list"}
+                        onClick={() => {
+                          setShowOptionAs("list")
+                        }}
+                      >
+                        List
+                      </Button>
+                      <Button
+                        outline
+                        active={showOptionAs === "color"}
+                        onClick={() => {
+                          setShowOptionAs("color")
+                        }}
+                      >
+                        Color
+                      </Button>
+                    </ButtonGroup>
+                  </Row>
+                </Col>
+              </Row>
+              <Row>
+                <Label>Type in choices for this option</Label>
+                {showOptionAs === "list" ? (
+                  <Creatable
+                    isMulti
+                    isClearable
+                    value={optionValue}
+                    onChange={changedValue => setOptionValue(changedValue)}
+                    options={{value: ''}}
+                  />
+                ) : (
+                  <Creatable isMulti />
+                )}
+              </Row>
+              <div className="d-flex justify-content-end">
+                <Button className="mx-2">Cancel</Button>
+                <Button className="btn-success">Add</Button>
+              </div>
+            </ModalBody>
+            <ModalFooter
+              className="justify-content-center text-primary"
+              style={{ cursor: "pointer" }}
+            >
+              Watch how to add and manage product options
+            </ModalFooter>
+          </Modal>
+          <Modal toggle={editVariantsModalToggle} isOpen={editVariantsModal}>
+            <ModalHeader toggle={editVariantsModalToggle}>
+              Manage Variants
+            </ModalHeader>
+          </Modal>
         </Container>
       </div>
     </React.Fragment>
