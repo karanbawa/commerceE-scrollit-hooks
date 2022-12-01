@@ -260,8 +260,9 @@ const EcommerceOrders = props => {
       sort: true,
       formatter: (cellContent, row) => <>{row.customerId.username}</>,
     },
+    { dataField: "srs", text: "srs", sort: true, hidden: true },
     {
-      dataField: "Address",
+      dataField: "shippingAddress1",
       text: "Address",
       sort: true,
       formatter: (cellContent, row) => (
@@ -534,7 +535,13 @@ const EcommerceOrders = props => {
     },
   ]
 
-  console.log(orders)
+  useEffect(() => {
+    if (orderList.length && customerList.length) {
+      setOrderList(
+        orderList.map(order => ({ ...order, srs: order.customerId.username }))
+      )
+    }
+  }, [orders, customers])
 
   return (
     <React.Fragment>
