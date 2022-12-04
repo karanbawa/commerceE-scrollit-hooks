@@ -38,6 +38,7 @@ import * as convert from "convert-units"
 import RichTextEditor from "react-rte"
 import AddInfoSectionModal from "./AddInfoSectionModal"
 import Creatable from "react-select/creatable"
+import AddProductVariants from "./AddProductVariants"
 
 export default function EcommerceAddProduct() {
   const dispatch = useDispatch()
@@ -107,12 +108,14 @@ export default function EcommerceAddProduct() {
   const [infoModal, setInfoModal] = useState(false)
   const [addProductOption, setAddProductOption] = useState(false)
   const [editVariantsModal, setEditVariantsModal] = useState(false)
+  const [variants, setVariants] = useState({})
+  const [optionCategoryName, setOptionCategoryName] = useState("")
   const infoModalToggle = () => setInfoModal(!infoModal)
   const addProductOptionToggle = () => setAddProductOption(!addProductOption)
   const editVariantsModalToggle = () => setEditVariantsModal(!editVariantsModal)
 
   const [showOptionAs, setShowOptionAs] = useState("list")
-  const [optionType, setOptionType] = useState('')
+  const [optionType, setOptionType] = useState("")
   const [optionValue, setOptionValue] = useState([])
 
   const { collections } = useSelector(state => ({
@@ -188,6 +191,8 @@ export default function EcommerceAddProduct() {
       console.log(e)
     }
   }, [perUnitDetails, priceDetails])
+
+  console.log(variants)
 
   return (
     <React.Fragment>
@@ -938,19 +943,47 @@ export default function EcommerceAddProduct() {
                 <Card className="p-0">
                   <CardBody>
                     <CardTitle>Product options</CardTitle>
-                    <CardText className="text-wrap" style={{ maxWidth: "80%" }}>
-                      Does your product come in different options, like size,
-                      color or material? Add them here.
-                    </CardText>
-                    <Button
-                      className="btn-success btn-rounded"
-                      onClick={() => {
-                        addProductOptionToggle()
-                      }}
-                    >
-                      <i className="mdi mdi-plus me-1" />
-                      Add Options
-                    </Button>
+                    {Object.keys(variants).length ? (
+                      <ListGroup>
+                        {Object.keys(variants).map((variant, index) => (
+                          <ListGroupItem key={index}>
+                            <Row>
+                              <Col>{variant}</Col>
+                              {/* <Col>{variants[variant]}</Col> */}
+                            </Row>
+                          </ListGroupItem>
+                        ))}
+                        <ListGroupItem
+                          className="text-primary text-sm-start"
+                          tag="button"
+                          onClick={() => {
+                            addProductOptionToggle()
+                          }}
+                        >
+                          <i className="mdi mdi-plus me-1" /> Add Another Option
+                        </ListGroupItem>
+                      </ListGroup>
+                    ) : (
+                      <div>
+                        <CardText
+                          className="text-wrap"
+                          style={{ maxWidth: "80%" }}
+                        >
+                          Does your product come in different options, like
+                          size, color or material? Add them here.
+                        </CardText>
+
+                        <Button
+                          className="btn-success btn-rounded"
+                          onClick={() => {
+                            addProductOptionToggle()
+                          }}
+                        >
+                          <i className="mdi mdi-plus me-1" />
+                          Add Options
+                        </Button>
+                      </div>
+                    )}
                   </CardBody>
                 </Card>
               </Row>
@@ -1313,73 +1346,17 @@ export default function EcommerceAddProduct() {
             toggle={addProductOptionToggle}
             isOpen={addProductOption}
           >
-            <ModalHeader toggle={addProductOptionToggle}>
-              Add Product Option
-            </ModalHeader>
-            <ModalBody>
-              <Row>
-                <Col className="col-7">
-                  <Row>
-                    <Label>Type in an option name</Label>
-                    <Input placeholder="e.g. Size or Colour"></Input>
-                  </Row>
-                </Col>
-                <Col>
-                  <Row>
-                    <Label>Show in product page:</Label>
-                    <ButtonGroup>
-                      <Button
-                        outline
-                        active={showOptionAs === "list"}
-                        onClick={() => {
-                          setShowOptionAs("list")
-                        }}
-                      >
-                        List
-                      </Button>
-                      <Button
-                        outline
-                        active={showOptionAs === "color"}
-                        onClick={() => {
-                          setShowOptionAs("color")
-                        }}
-                      >
-                        Color
-                      </Button>
-                    </ButtonGroup>
-                  </Row>
-                </Col>
-              </Row>
-              <Row>
-                <Label>Type in choices for this option</Label>
-                {showOptionAs === "list" ? (
-                  <Creatable
-                    isMulti
-                    isClearable
-                    value={optionValue}
-                    onChange={changedValue => setOptionValue(changedValue)}
-                    options={{value: ''}}
-                  />
-                ) : (
-                  <Creatable isMulti />
-                )}
-              </Row>
-              <div className="d-flex justify-content-end">
-                <Button className="mx-2">Cancel</Button>
-                <Button className="btn-success">Add</Button>
-              </div>
-            </ModalBody>
-            <ModalFooter
-              className="justify-content-center text-primary"
-              style={{ cursor: "pointer" }}
-            >
-              Watch how to add and manage product options
-            </ModalFooter>
+            <AddProductVariants
+              addProductOptionToggle={addProductOptionToggle}
+              variants={variants}
+              setVariants={setVariants}
+            />
           </Modal>
           <Modal toggle={editVariantsModalToggle} isOpen={editVariantsModal}>
             <ModalHeader toggle={editVariantsModalToggle}>
               Manage Variants
             </ModalHeader>
+            <ModalBody></ModalBody>
           </Modal>
         </Container>
       </div>
