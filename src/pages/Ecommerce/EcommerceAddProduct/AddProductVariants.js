@@ -18,10 +18,16 @@ export default function AddProductVariants({
   addProductOptionToggle,
   variants,
   setVariants,
+  editVariant,
+  setEditVariant,
 }) {
-  const [optionCategoryName, setOptionCategoryName] = useState("")
+  const [optionCategoryName, setOptionCategoryName] = useState(
+    editVariant ? Object.keys(editVariant)[0] : ""
+  )
   const [showOptionAs, setShowOptionAs] = useState("list")
-  const [optionValue, setOptionValue] = useState([])
+  const [optionValue, setOptionValue] = useState(
+    editVariant ? editVariant[Object.keys(editVariant)[0]] : []
+  )
   const [inputValue, setInputValue] = useState("")
 
   const createOption = label => ({
@@ -43,7 +49,7 @@ export default function AddProductVariants({
   return (
     <React.Fragment>
       <ModalHeader toggle={addProductOptionToggle}>
-        Add Product Option
+        {editVariant ? "Update Product Option" : "Add Product Option"}
       </ModalHeader>
       <ModalBody>
         <Row>
@@ -120,19 +126,29 @@ export default function AddProductVariants({
           >
             Cancel
           </Button>
-          <Button
-            className="btn-success"
-            onClick={() => {
-              setVariants(previous => 
-                ({...previous, [optionCategoryName]: optionValue }))
-              addProductOptionToggle()
+          {editVariant ? (
+            <Button className="btn-success"
+            onClick={()=>{
+              
             }}
-            disabled={
-              !(Object.keys(optionValue).length && optionCategoryName.length)
-            }
-          >
-            Add
-          </Button>
+            >Update</Button>
+          ) : (
+            <Button
+              className="btn-success"
+              onClick={() => {
+                setVariants(previous => ({
+                  ...previous,
+                  [optionCategoryName]: optionValue,
+                }))
+                addProductOptionToggle()
+              }}
+              disabled={
+                !(Object.keys(optionValue).length && optionCategoryName.length)
+              }
+            >
+              Add
+            </Button>
+          )}
         </div>
       </ModalBody>
       <ModalFooter
@@ -147,6 +163,8 @@ export default function AddProductVariants({
 
 AddProductVariants.propTypes = {
   addProductOptionToggle: PropTypes.func,
-  variants : PropTypes.object,
-  setVariants : PropTypes.func
+  variants: PropTypes.object,
+  setVariants: PropTypes.func,
+  editVariant: PropTypes.object,
+  setEditVariant: PropTypes.func,
 }

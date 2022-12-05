@@ -109,14 +109,15 @@ export default function EcommerceAddProduct() {
   const [addProductOption, setAddProductOption] = useState(false)
   const [editVariantsModal, setEditVariantsModal] = useState(false)
   const [variants, setVariants] = useState({})
-  const [optionCategoryName, setOptionCategoryName] = useState("")
   const infoModalToggle = () => setInfoModal(!infoModal)
-  const addProductOptionToggle = () => setAddProductOption(!addProductOption)
+  const addProductOptionToggle = () => {
+    if (addProductOption) {
+      setEditVariant(null)
+    }
+    setAddProductOption(!addProductOption)
+  }
   const editVariantsModalToggle = () => setEditVariantsModal(!editVariantsModal)
-
-  const [showOptionAs, setShowOptionAs] = useState("list")
-  const [optionType, setOptionType] = useState("")
-  const [optionValue, setOptionValue] = useState([])
+  const [editVariant, setEditVariant] = useState(null)
 
   const { collections } = useSelector(state => ({
     collections: state.ecommerce.collections,
@@ -947,10 +948,32 @@ export default function EcommerceAddProduct() {
                       <ListGroup>
                         {Object.keys(variants).map((variant, index) => (
                           <ListGroupItem key={index}>
-                            <Row>
-                              <Col>{variant}</Col>
-                              {/* <Col>{variants[variant]}</Col> */}
-                            </Row>
+                            <div className="d-flex">
+                              <div>{variant}</div>
+                              <div>
+                                {variants[variant].map((option, index) => (
+                                  <span key={index}>{option.label}</span>
+                                ))}
+                              </div>
+                              <div>
+                                <i
+                                  onClick={() => {
+                                    setEditVariant({
+                                      [variant]: variants[variant],
+                                    })
+                                    addProductOptionToggle()
+                                  }}
+                                  className="fas fa-pencil-alt text-success me-1"
+                                />
+                                <i
+                                  onClick={() => {
+                                    delete variants[variant]
+                                    setVariants({ ...variants })
+                                  }}
+                                  className="fas fa-trash-alt text-danger me-1"
+                                />
+                              </div>
+                            </div>
                           </ListGroupItem>
                         ))}
                         <ListGroupItem
@@ -1350,6 +1373,8 @@ export default function EcommerceAddProduct() {
               addProductOptionToggle={addProductOptionToggle}
               variants={variants}
               setVariants={setVariants}
+              editVariant={editVariant}
+              setEditVariant={setEditVariant}
             />
           </Modal>
           <Modal toggle={editVariantsModalToggle} isOpen={editVariantsModal}>
