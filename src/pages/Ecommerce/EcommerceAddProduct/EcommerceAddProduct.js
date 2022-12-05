@@ -948,14 +948,24 @@ export default function EcommerceAddProduct() {
                       <ListGroup>
                         {Object.keys(variants).map((variant, index) => (
                           <ListGroupItem key={index}>
-                            <div className="d-flex">
-                              <div>{variant}</div>
-                              <div>
+                            <Row>
+                              <Col
+                                className="col-3"
+                                style={{ fontWeight: 500 }}
+                              >
+                                {variant}
+                              </Col>
+                              <Col>
                                 {variants[variant].map((option, index) => (
-                                  <span key={index}>{option.label}</span>
+                                  <span key={index}>
+                                    {option.label}
+                                    {index === variants[variant].length - 1
+                                      ? ""
+                                      : ", "}
+                                  </span>
                                 ))}
-                              </div>
-                              <div>
+                              </Col>
+                              <Col className="col-2">
                                 <i
                                   onClick={() => {
                                     setEditVariant({
@@ -963,7 +973,8 @@ export default function EcommerceAddProduct() {
                                     })
                                     addProductOptionToggle()
                                   }}
-                                  className="fas fa-pencil-alt text-success me-1"
+                                  className="fas fa-pencil-alt text-success me-2"
+                                  style={{cursor: 'pointer'}}
                                 />
                                 <i
                                   onClick={() => {
@@ -971,9 +982,10 @@ export default function EcommerceAddProduct() {
                                     setVariants({ ...variants })
                                   }}
                                   className="fas fa-trash-alt text-danger me-1"
+                                  style={{cursor: 'pointer'}}
                                 />
-                              </div>
-                            </div>
+                              </Col>
+                            </Row>
                           </ListGroupItem>
                         ))}
                         <ListGroupItem

@@ -1,5 +1,6 @@
 import React from "react"
 import {
+  Alert,
   Button,
   ButtonGroup,
   Col,
@@ -52,6 +53,15 @@ export default function AddProductVariants({
         {editVariant ? "Update Product Option" : "Add Product Option"}
       </ModalHeader>
       <ModalBody>
+        {editVariant ? (
+          Object.keys(variants)
+            .filter(variant => variant !== Object.keys(editVariant)[0])
+            .includes(optionCategoryName) ? (
+            <Alert>Already Exists</Alert>
+          ) : null
+        ) : Object.keys(variants).includes(optionCategoryName) ? (
+          <Alert>Already Exists</Alert>
+        ) : null}
         <Row>
           <Col className="col-7">
             <Row>
@@ -127,11 +137,9 @@ export default function AddProductVariants({
             Cancel
           </Button>
           {editVariant ? (
-            <Button className="btn-success"
-            onClick={()=>{
-              
-            }}
-            >Update</Button>
+            <Button className="btn-success" onClick={() => {}}>
+              Update
+            </Button>
           ) : (
             <Button
               className="btn-success"
@@ -143,7 +151,20 @@ export default function AddProductVariants({
                 addProductOptionToggle()
               }}
               disabled={
-                !(Object.keys(optionValue).length && optionCategoryName.length)
+                (!(
+                  Object.keys(optionValue).length && optionCategoryName.length
+                ) ||
+                (editVariant
+                  ? Object.keys(variants)
+                      .filter(
+                        variant => variant !== Object.keys(editVariant)[0]
+                      )
+                      .includes(optionCategoryName)
+                    ? true
+                    : false
+                  : Object.keys(variants).includes(optionCategoryName)
+                  ? true
+                  : false))
               }
             >
               Add
