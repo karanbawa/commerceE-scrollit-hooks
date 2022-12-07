@@ -30,6 +30,7 @@ import {
   ModalFooter,
   ModalHeader,
   Row,
+  Table,
   UncontrolledDropdown,
   UncontrolledTooltip,
 } from "reactstrap"
@@ -109,6 +110,8 @@ export default function EcommerceAddProduct() {
   const [addProductOption, setAddProductOption] = useState(false)
   const [editVariantsModal, setEditVariantsModal] = useState(false)
   const [variants, setVariants] = useState({})
+  const [manageVariantsAndInventory, setManageVariantsAndInventory] =
+    useState(false)
   const infoModalToggle = () => setInfoModal(!infoModal)
   const addProductOptionToggle = () => {
     if (addProductOption) {
@@ -193,7 +196,11 @@ export default function EcommerceAddProduct() {
     }
   }, [perUnitDetails, priceDetails])
 
-  console.log(variants)
+  useEffect(() => {
+    const options = Object.values(variants)
+    const combinations = []
+    console.log()
+  },[variants])
 
   return (
     <React.Fragment>
@@ -942,8 +949,10 @@ export default function EcommerceAddProduct() {
               </Row>
               <Row>
                 <Card className="p-0">
-                  <CardBody>
+                  <CardHeader>
                     <CardTitle>Product options</CardTitle>
+                  </CardHeader>
+                  <CardBody className="p-0">
                     {Object.keys(variants).length ? (
                       <ListGroup>
                         {Object.keys(variants).map((variant, index) => (
@@ -965,7 +974,7 @@ export default function EcommerceAddProduct() {
                                   </span>
                                 ))}
                               </Col>
-                              <Col className="col-2">
+                              <Col className="col-1">
                                 <i
                                   onClick={() => {
                                     setEditVariant({
@@ -974,7 +983,7 @@ export default function EcommerceAddProduct() {
                                     addProductOptionToggle()
                                   }}
                                   className="fas fa-pencil-alt text-success me-2"
-                                  style={{cursor: 'pointer'}}
+                                  style={{ cursor: "pointer" }}
                                 />
                                 <i
                                   onClick={() => {
@@ -982,7 +991,7 @@ export default function EcommerceAddProduct() {
                                     setVariants({ ...variants })
                                   }}
                                   className="fas fa-trash-alt text-danger me-1"
-                                  style={{cursor: 'pointer'}}
+                                  style={{ cursor: "pointer" }}
                                 />
                               </Col>
                             </Row>
@@ -997,9 +1006,27 @@ export default function EcommerceAddProduct() {
                         >
                           <i className="mdi mdi-plus me-1" /> Add Another Option
                         </ListGroupItem>
+                        <ListGroupItem>
+                          <div className="d-flex">
+                            <FormGroup switch>
+                              <Input
+                                className="me-2"
+                                type="checkbox"
+                                checked={manageVariantsAndInventory}
+                                onClick={() => {
+                                  setManageVariantsAndInventory(
+                                    !manageVariantsAndInventory
+                                  )
+                                }}
+                              ></Input>
+                            </FormGroup>
+                            {"  "}
+                            Manage pricing and inventory for variants
+                          </div>
+                        </ListGroupItem>
                       </ListGroup>
                     ) : (
-                      <div>
+                      <div className="p-3">
                         <CardText
                           className="text-wrap"
                           style={{ maxWidth: "80%" }}
@@ -1022,91 +1049,87 @@ export default function EcommerceAddProduct() {
                   </CardBody>
                 </Card>
               </Row>
-              <Row>
-                <Card className="p-0">
-                  <CardHeader>
-                    <CardTitle>Inventory and Shipping</CardTitle>
-                  </CardHeader>
-                  <CardBody>
-                    <Row>
-                      <Col>
-                        <div className="d-flex">
-                          <FormGroup switch>
-                            <Input
-                              type="checkbox"
-                              checked={inventoryShipping}
-                              onClick={() => {
-                                setInventoryShipping(!inventoryShipping)
-                              }}
-                            ></Input>
-                          </FormGroup>
-                          <div>Track Inventory</div>
-                          <i
-                            href="#"
-                            id="inventory-info"
-                            className="mdi mdi-information me-2 mx-1"
-                          />
-                          <UncontrolledTooltip
-                            placement="top"
-                            target="inventory-info"
-                          >
-                            Track this products inventory by adding stock
-                            quantities per variant.
-                          </UncontrolledTooltip>
-                        </div>
-                      </Col>
-                    </Row>
-                    <Row className="my-3">
-                      {inventoryShipping ? (
+              {manageVariantsAndInventory ? (
+                <Row>
+                  <Card className="p-0">
+                    <CardHeader>
+                      <CardTitle>Manage Variants</CardTitle>
+                    </CardHeader>
+                    <CardBody className="p-0">
+                      <div className="table-responsive">
+                        <Table>
+                          <thead className="table-light">
+                            <tr>
+                              <th>Variant</th>
+                              <th>Price difference</th>
+                              <th>Vairant Price</th>
+                              <th>Status</th>
+                              <th>Visibility</th>
+                            </tr>
+                          </thead>
+                        </Table>
+                      </div>
+                    </CardBody>
+                  </Card>
+                </Row>
+              ) : (
+                <Row>
+                  <Card className="p-0">
+                    <CardHeader>
+                      <CardTitle>Inventory and Shipping</CardTitle>
+                    </CardHeader>
+                    <CardBody>
+                      <Row>
                         <Col>
-                          <Label for="inv-set">Inventory</Label>
-                          <Input id="inv-set" type="number" />
-                        </Col>
-                      ) : (
-                        <Col>
-                          <Label for="status-set">Status</Label>
-                          <Input id="status-set" type="select">
-                            <option>In stock</option>
-                            <option>Out of stock</option>
-                          </Input>
-                        </Col>
-                      )}
-                      <Col>
-                        <Label for="sku">
-                          SKU
-                          <i
-                            id="cost-info"
-                            className="mdi mdi-information me-2 mx-1"
-                          />
-                          <UncontrolledTooltip placement="top" target="sku">
-                            A “Stock Keeping Unit” is a unique code you can
-                            create for each product or variant you have in your
-                            store. Using SKUs helps with tracking inventory.
-                          </UncontrolledTooltip>
-                        </Label>
-                        <Input
-                          value={inventoryDetails.SKU}
-                          onChange={e => {
-                            setInventoryDetails({
-                              ...inventoryDetails,
-                              SKU: e.target.value,
-                            })
-                          }}
-                          id="sku"
-                        />
-                      </Col>
-                      <Col>
-                        <div>
-                          <Label for="shpwgt">
-                            Shipping Weight
+                          <div className="d-flex">
+                            <FormGroup switch>
+                              <Input
+                                type="checkbox"
+                                checked={inventoryShipping}
+                                onClick={() => {
+                                  setInventoryShipping(!inventoryShipping)
+                                }}
+                              ></Input>
+                            </FormGroup>
+                            <div>Track Inventory</div>
                             <i
-                              id="shwgt-info"
+                              href="#"
+                              id="inventory-info"
                               className="mdi mdi-information me-2 mx-1"
                             />
                             <UncontrolledTooltip
                               placement="top"
-                              target="shwgt-info"
+                              target="inventory-info"
                             >
+                              Track this products inventory by adding stock
+                              quantities per variant.
+                            </UncontrolledTooltip>
+                          </div>
+                        </Col>
+                      </Row>
+                      <Row className="my-3">
+                        {inventoryShipping ? (
+                          <Col>
+                            <Label for="inv-set">Inventory</Label>
+                            <Input id="inv-set" type="number" />
+                          </Col>
+                        ) : (
+                          <Col>
+                            <Label for="status-set">Status</Label>
+                            <Input id="status-set" type="select">
+                              <option>In stock</option>
+                              <option>Out of stock</option>
+                            </Input>
+                          </Col>
+                        )}
+                        <Col>
+                          <Label for="sku">
+                            SKU
+                            <i
+                              id="cost-info"
+                              className="mdi mdi-information me-2 mx-1"
+                            />
+                            <UncontrolledTooltip placement="top" target="sku">
                               A “Stock Keeping Unit” is a unique code you can
                               create for each product or variant you have in
                               your store. Using SKUs helps with tracking
@@ -1114,21 +1137,51 @@ export default function EcommerceAddProduct() {
                             </UncontrolledTooltip>
                           </Label>
                           <Input
-                            id="shpwgt"
-                            value={parseInt(inventoryDetails.shippingWeight)}
+                            value={inventoryDetails.SKU}
                             onChange={e => {
                               setInventoryDetails({
                                 ...inventoryDetails,
-                                shippingWeight: parseInt(e.target.value),
+                                SKU: e.target.value,
                               })
                             }}
+                            id="sku"
                           />
-                        </div>
-                      </Col>
-                    </Row>
-                  </CardBody>
-                </Card>
-              </Row>
+                        </Col>
+                        <Col>
+                          <div>
+                            <Label for="shpwgt">
+                              Shipping Weight
+                              <i
+                                id="shwgt-info"
+                                className="mdi mdi-information me-2 mx-1"
+                              />
+                              <UncontrolledTooltip
+                                placement="top"
+                                target="shwgt-info"
+                              >
+                                A “Stock Keeping Unit” is a unique code you can
+                                create for each product or variant you have in
+                                your store. Using SKUs helps with tracking
+                                inventory.
+                              </UncontrolledTooltip>
+                            </Label>
+                            <Input
+                              id="shpwgt"
+                              value={parseInt(inventoryDetails.shippingWeight)}
+                              onChange={e => {
+                                setInventoryDetails({
+                                  ...inventoryDetails,
+                                  shippingWeight: parseInt(e.target.value),
+                                })
+                              }}
+                            />
+                          </div>
+                        </Col>
+                      </Row>
+                    </CardBody>
+                  </Card>
+                </Row>
+              )}
               <Row>
                 <Card className="p-0">
                   <CardHeader>
