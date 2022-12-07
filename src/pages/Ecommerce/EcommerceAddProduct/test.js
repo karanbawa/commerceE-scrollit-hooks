@@ -1,17 +1,23 @@
-const options = [
+const optionsRef = [
   ["large", "small", "medium"],
   ["black", "white", "green", "yellow"],
-  ["luxury", "pricy", "cheap"],
+  ["luxury", "pricy", "cheap"], ['new','old']
 ]
 
-const combinations = []
-
-function combine(array1, array2){
-    const as = []
-    for (let i of array1){
-        for(let j of array2){
-            as.push([i,j])
+function Combine(options, result=[]){
+    if(!result.length){
+        return Combine(options,options.pop())
+    } else if (!options.length){
+        return result
+    }else {
+        const as = []
+        for(let option of options.pop()){
+            for(let oldOptions of result){
+                as.push(`${oldOptions} | ${option}`)
+            }
         }
+        return Combine(options, as)
     }
-    return as
 }
+
+console.log(Combine(optionsRef))
