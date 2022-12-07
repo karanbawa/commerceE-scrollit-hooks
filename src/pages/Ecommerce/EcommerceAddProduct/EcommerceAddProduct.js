@@ -38,8 +38,23 @@ import { addCollection, getCollections } from "store/actions"
 import * as convert from "convert-units"
 import RichTextEditor from "react-rte"
 import AddInfoSectionModal from "./AddInfoSectionModal"
-import Creatable from "react-select/creatable"
 import AddProductVariants from "./AddProductVariants"
+
+function Combine(options, result=[]){
+  if(!result.length){
+      return Combine(options,options.pop())
+  } else if (!options.length){
+      return result
+  }else {
+      const as = []
+      for(let option of options.pop()){
+          for(let oldOptions of result){
+              as.push(`${oldOptions} | ${option}`)
+          }
+      }
+      return Combine(options, as)
+  }
+}
 
 export default function EcommerceAddProduct() {
   const dispatch = useDispatch()
@@ -197,9 +212,7 @@ export default function EcommerceAddProduct() {
   }, [perUnitDetails, priceDetails])
 
   useEffect(() => {
-    const options = Object.values(variants)
-    const combinations = []
-    console.log()
+    
   },[variants])
 
   return (
