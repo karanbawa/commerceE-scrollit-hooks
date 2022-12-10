@@ -197,9 +197,8 @@ export default function EcommerceAddProduct() {
   }, [perUnitDetails, priceDetails])
 
   useEffect(() => {
-    const options = Object.values(variants)
-    const combinations = []
-    console.log()
+    const combinations = (Object.values(variants))
+    
   },[variants])
 
   return (

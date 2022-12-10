@@ -137,8 +137,17 @@ export default function AddProductVariants({
             Cancel
           </Button>
           {editVariant ? (
-            <Button className="btn-success" onClick={() => {}}>
-              Update
+            <Button className="btn-success" onClick={() => {
+              if(Object.keys(variants).includes(optionCategoryName)){
+                variants[optionCategoryName] = optionValue
+                setVariants({...variants})
+              } else {
+                delete variants[Object.keys(editVariant)[0]]
+                variants[optionCategoryName] = optionValue
+                setVariants({...variants})
+              }
+              addProductOptionToggle()
+            }}> Update
             </Button>
           ) : (
             <Button
