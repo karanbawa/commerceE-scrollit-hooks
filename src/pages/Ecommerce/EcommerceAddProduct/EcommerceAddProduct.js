@@ -1025,9 +1025,9 @@ export default function EcommerceAddProduct() {
                 <Card className="p-0">
                   <CardHeader className="d-flex justify-content-between">
                     <CardTitle>Product options</CardTitle>
-                    <div style={{ verticalAlign: "middle" }}>
+                    {Object.keys(variants).length ? <div style={{ verticalAlign: "middle" }} onClick={connectImagesModalToggle}>
                       <i className="fas fa-image text-primary" /> Connect Images
-                    </div>
+                    </div> : null}
                   </CardHeader>
                   <CardBody className="p-0">
                     {Object.keys(variants).length ? (
@@ -1557,8 +1557,8 @@ export default function EcommerceAddProduct() {
               <CardTitle>Manage Variants</CardTitle>
             </ModalHeader>
           </Modal>
-          <Modal toggle={connectImagesModalToggle} isOpen={connectImagesModal}>
-            <ModalHeader toggle={connectImagesModal}>
+          <Modal centered toggle={connectImagesModalToggle} isOpen={connectImagesModal}>
+            <ModalHeader toggle={connectImagesModalToggle}>
               <CardTitle>Connect Images to an option</CardTitle>
             </ModalHeader>
             <ConnectImagesModal variants={variants} />
