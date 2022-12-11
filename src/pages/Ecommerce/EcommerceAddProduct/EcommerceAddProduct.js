@@ -39,20 +39,28 @@ import * as convert from "convert-units"
 import RichTextEditor from "react-rte"
 import AddInfoSectionModal from "./AddInfoSectionModal"
 import AddProductVariants from "./AddProductVariants"
+import { useRef } from "react"
+import paginationFactory, {
+  PaginationListStandalone,
+  PaginationProvider,
+} from "react-bootstrap-table2-paginator"
+import BootstrapTable from "react-bootstrap-table-next"
+import ToolkitProvider from "react-bootstrap-table2-toolkit"
+import ConnectImagesModal from "./ConnectImagesModal"
 
-function Combine(options, result=[]){
-  if(!result.length){
-      return Combine(options,options.pop())
-  } else if (!options.length){
-      return result
-  }else {
-      const as = []
-      for(let option of options.pop()){
-          for(let oldOptions of result){
-              as.push(`${oldOptions} | ${option}`)
-          }
+function Combine(options, result = []) {
+  if (!result.length) {
+    return Combine(options, options.pop())
+  } else if (!options.length) {
+    return result
+  } else {
+    const as = []
+    for (let option of options.pop()) {
+      for (let oldOptions of result) {
+        as.push(`${oldOptions} | ${option}`)
       }
-      return Combine(options, as)
+    }
+    return Combine(options, as)
   }
 }
 
@@ -113,6 +121,9 @@ export default function EcommerceAddProduct() {
     id: "",
     description: "",
   })
+
+  const [variantTable, setVariantTable] = useState([])
+
   // states for toggles
   const [inventoryShipping, setInventoryShipping] = useState(false)
   const [onSale, setOnSale] = useState(false)
@@ -127,6 +138,7 @@ export default function EcommerceAddProduct() {
   const [variants, setVariants] = useState({})
   const [manageVariantsAndInventory, setManageVariantsAndInventory] =
     useState(false)
+  const [connectImagesModal, setConnectImagesModal] = useState(false)
   const infoModalToggle = () => setInfoModal(!infoModal)
   const addProductOptionToggle = () => {
     if (addProductOption) {
@@ -135,6 +147,8 @@ export default function EcommerceAddProduct() {
     setAddProductOption(!addProductOption)
   }
   const editVariantsModalToggle = () => setEditVariantsModal(!editVariantsModal)
+  const connectImagesModalToggle = () =>
+    setConnectImagesModal(!connectImagesModal)
   const [editVariant, setEditVariant] = useState(null)
 
   const { collections } = useSelector(state => ({
@@ -155,44 +169,79 @@ export default function EcommerceAddProduct() {
     setDescCont({ value })
   }
 
-  console.log({
-    name: productName,
-    tag: productTag,
-    productItemsSummary: descCont.value.toString("html"),
-    additionalInfo: additionalInfoSections.map((section, index) => ({
-      title: section.title,
-      description: section.description.toString("html"),
-      index: index + 1,
-    })),
-    price: priceDetails.price,
-    costAndProfitData: {
-      itemCost: priceDetails.cost,
+  const pageOptions = {
+    sizePerPage: 5,
+    totalSize: variantTable.length, // replace later with size(orders),
+    custom: true,
+  }
+
+  var node = useRef()
+  const onPaginationPageChange = page => {
+    if (
+      node &&
+      node.current &&
+      node.current.props &&
+      node.current.props.pagination &&
+      node.current.props.pagination.options
+    ) {
+      node.current.props.pagination.options.onPageChange(page)
+    }
+  }
+
+  const variantsTableColumns = [
+    {
+      dataField: "variantName",
+      text: "Variant",
+      sort: true,
     },
-    formattedPricePerUnit: priceDetails.salePrice,
-    pricePerUnitData: {
-      totalMeasurementUnit: perUnitDetails.tunits,
-      totalQuantity: perUnitDetails.total,
-      baseQuantity: perUnitDetails.base,
-      baseMeasurementUnit: perUnitDetails.bunits,
+    {
+      dataField: "priceDifference",
+      text: "Price difference (+/-)",
+      sort: true,
     },
-    currency: "INR",
-    customTextFields: [
-      customText
-        ? {
-            inputLimit: customTextDetails.charLin,
-            isMandatory: customTextDetails.mandatoryField,
-            title: customTextDetails.title.length,
-          }
-        : null,
-    ],
-    discount: onSale
-      ? {
-          mode: priceDetails.isPercent ? "PERCENT" : "AMOUNT",
-          value: priceDetails.discount,
-        }
-      : { mode: "PERCENT", value: 0 },
-    isVisible: showInWebstie,
-  })
+    { dataField: "variantPrice", text: "Variant Price", sort: true },
+    { dataField: "status", text: "Status", sort: true },
+    { dataField: "visibility", text: "Visibility", sort: true },
+  ]
+
+  // console.log({
+  //   name: productName,
+  //   tag: productTag,
+  //   productItemsSummary: descCont.value.toString("html"),
+  //   additionalInfo: additionalInfoSections.map((section, index) => ({
+  //     title: section.title,
+  //     description: section.description.toString("html"),
+  //     index: index + 1,
+  //   })),
+  //   price: priceDetails.price,
+  //   costAndProfitData: {
+  //     itemCost: priceDetails.cost,
+  //   },
+  //   formattedPricePerUnit: priceDetails.salePrice,
+  //   pricePerUnitData: {
+  //     totalMeasurementUnit: perUnitDetails.tunits,
+  //     totalQuantity: perUnitDetails.total,
+  //     baseQuantity: perUnitDetails.base,
+  //     baseMeasurementUnit: perUnitDetails.bunits,
+  //   },
+  //   currency: "INR",
+  //   customTextFields: [
+  //     customText
+  //       ? {
+  //           inputLimit: customTextDetails.charLin,
+  //           isMandatory: customTextDetails.mandatoryField,
+  //           title: customTextDetails.title.length,
+  //         }
+  //       : null,
+  //   ],
+  //   discount: onSale
+  //     ? {
+  //         mode: priceDetails.isPercent ? "PERCENT" : "AMOUNT",
+  //         value: priceDetails.discount,
+  //       }
+  //     : { mode: "PERCENT", value: 0 },
+  //   isVisible: showInWebstie,
+  // })
 
   useEffect(() => {
     try {
@@ -206,14 +255,26 @@ export default function EcommerceAddProduct() {
                 .to(perUnitDetails.bunits)
             )) * perUnitDetails.base
       setBasePricePerUnit(s ? s : 0.0)
-    } catch {
-      console.log(e)
-    }
+    } catch {}
   }, [perUnitDetails, priceDetails])
 
   useEffect(() => {
-    const combinations = (Object.values(variants))    
-  },[variants])
+    if (Object.keys(variants).length) {
+      setVariantTable(
+        Combine(Object.values(variants).map(op => op.map(o => o.value)))
+          .sort()
+          .map(combination => ({
+            variantName: combination,
+            visibility: true,
+            priceDifference: 0,
+            variantPrice: 0,
+            status: "In Stock",
+          }))
+      )
+    }
+  }, [variants])
+
+  console.log(variantTable)
 
   return (
     <React.Fragment>
@@ -962,8 +1023,11 @@ export default function EcommerceAddProduct() {
               </Row>
               <Row>
                 <Card className="p-0">
-                  <CardHeader>
+                  <CardHeader className="d-flex justify-content-between">
                     <CardTitle>Product options</CardTitle>
+                    <div style={{ verticalAlign: "middle" }}>
+                      <i className="fas fa-image text-primary" /> Connect Images
+                    </div>
                   </CardHeader>
                   <CardBody className="p-0">
                     {Object.keys(variants).length ? (
@@ -1065,23 +1129,56 @@ export default function EcommerceAddProduct() {
               {manageVariantsAndInventory ? (
                 <Row>
                   <Card className="p-0">
-                    <CardHeader>
+                    <CardHeader className="d-flex justify-content-between">
                       <CardTitle>Manage Variants</CardTitle>
+                      <Button outline>Edit</Button>
                     </CardHeader>
-                    <CardBody className="p-0">
-                      <div className="table-responsive">
-                        <Table>
-                          <thead className="table-light">
-                            <tr>
-                              <th>Variant</th>
-                              <th>Price difference</th>
-                              <th>Vairant Price</th>
-                              <th>Status</th>
-                              <th>Visibility</th>
-                            </tr>
-                          </thead>
-                        </Table>
-                      </div>
+                    <CardBody>
+                      <PaginationProvider
+                        pagination={paginationFactory(pageOptions)}
+                        keyField="variantName"
+                        columns={variantsTableColumns}
+                        data={variantTable}
+                      >
+                        {({ paginationProps, paginationTableProps }) => (
+                          <ToolkitProvider
+                            keyField="variantName"
+                            data={variantTable || []}
+                            columns={variantsTableColumns}
+                            bootstrap4
+                          >
+                            {toolkitProps => (
+                              <React.Fragment>
+                                <Row>
+                                  <Col xl="12">
+                                    <div className="table-responsive">
+                                      <BootstrapTable
+                                        responsive
+                                        bordered={false}
+                                        striped={false}
+                                        classes={
+                                          "table align-middle table-nowrap"
+                                        }
+                                        keyField="variantName"
+                                        {...toolkitProps.baseProps}
+                                        {...paginationTableProps}
+                                        ref={node}
+                                      />
+                                    </div>
+                                  </Col>
+                                </Row>
+                                <Row className="align-items-md-center mt-30">
+                                  <Col className="pagination pagination-rounded justify-content-end mb-2 inner-custom-pagination">
+                                    <PaginationListStandalone
+                                      {...paginationProps}
+                                    />
+                                  </Col>
+                                </Row>
+                              </React.Fragment>
+                            )}
+                          </ToolkitProvider>
+                        )}
+                      </PaginationProvider>
                     </CardBody>
                   </Card>
                 </Row>
@@ -1457,9 +1554,14 @@ export default function EcommerceAddProduct() {
           </Modal>
           <Modal toggle={editVariantsModalToggle} isOpen={editVariantsModal}>
             <ModalHeader toggle={editVariantsModalToggle}>
-              Manage Variants
+              <CardTitle>Manage Variants</CardTitle>
             </ModalHeader>
-            <ModalBody></ModalBody>
+          </Modal>
+          <Modal toggle={connectImagesModalToggle} isOpen={connectImagesModal}>
+            <ModalHeader toggle={connectImagesModal}>
+              <CardTitle>Connect Images to an option</CardTitle>
+            </ModalHeader>
+            <ConnectImagesModal variants={variants} />
           </Modal>
         </Container>
       </div>
