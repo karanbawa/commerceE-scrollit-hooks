@@ -135,10 +135,12 @@ export default function EcommerceAddProduct() {
   const [infoModal, setInfoModal] = useState(false)
   const [addProductOption, setAddProductOption] = useState(false)
   const [editVariantsModal, setEditVariantsModal] = useState(false)
+  const [allOptions, setAllOptions] = useState([])
   const [variants, setVariants] = useState({})
   const [manageVariantsAndInventory, setManageVariantsAndInventory] =
     useState(false)
   const [connectImagesModal, setConnectImagesModal] = useState(false)
+  const [optionMedia, setOptionMedia]= useState({})
   const infoModalToggle = () => setInfoModal(!infoModal)
   const addProductOptionToggle = () => {
     if (addProductOption) {
@@ -271,10 +273,9 @@ export default function EcommerceAddProduct() {
             status: "In Stock",
           }))
       )
+      setAllOptions(Object.values(variants).flat())
     }
   }, [variants])
-
-  console.log(variantTable)
 
   return (
     <React.Fragment>
