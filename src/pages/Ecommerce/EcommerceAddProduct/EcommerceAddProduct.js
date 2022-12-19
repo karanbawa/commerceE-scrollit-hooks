@@ -47,6 +47,8 @@ import paginationFactory, {
 import BootstrapTable from "react-bootstrap-table-next"
 import ToolkitProvider from "react-bootstrap-table2-toolkit"
 import ConnectImagesModal from "./ConnectImagesModal"
+import Dropzone from "react-dropzone"
+import "../../../assets/scss/custom/pages/_addproductV3.scss"
 
 function Combine(options, result = []) {
   if (!result.length) {
@@ -66,6 +68,9 @@ function Combine(options, result = []) {
 
 export default function EcommerceAddProduct() {
   const dispatch = useDispatch()
+
+  const dragItem = React.createRef(null)
+  const dragOverItem = React.createRef(null)
 
   // ---STATES FOR PRODUCT DATA--
 
@@ -152,6 +157,7 @@ export default function EcommerceAddProduct() {
   const connectImagesModalToggle = () =>
     setConnectImagesModal(!connectImagesModal)
   const [editVariant, setEditVariant] = useState(null)
+  const [selectedFiles, setSelectedFiles] = useState([])
 
   const { collections } = useSelector(state => ({
     collections: state.ecommerce.collections,
@@ -277,6 +283,44 @@ export default function EcommerceAddProduct() {
     }
   }, [variants])
 
+  const remove = fileIndex => {
+    const newFiles = [...selectedFiles]
+    newFiles.splice(fileIndex, 1)
+    setSelectedFiles(newFiles)
+  }
+
+  const handleSort = () => {
+    let _selectedFiles = [...selectedFiles]
+
+    const draggedItemContent = _selectedFiles.splice(dragItem.current, 1)[0]
+
+    _selectedFiles.splice(dragOverItem.current, 0, draggedItemContent)
+
+    dragItem.current = null
+    dragOverItem.current = null
+    setSelectedFiles(selectedFiles)
+  }
+
+  const formatBytes = (bytes, decimals = 2) => {
+    if (bytes === 0) return "0 Bytes"
+    const k = 1024
+    const dm = decimals < 0 ? 0 : decimals
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i]
+  }
+
+  const handleAcceptedFiles = files => {
+    files.map(file =>
+      Object.assign(file, {
+        preview: URL.createObjectURL(file),
+        formattedSize: formatBytes(file.size),
+      })
+    )
+    setSelectedFiles(prevState => prevState.concat(files))
+  }
+
   return (
     <React.Fragment>
       <MetaTags>
@@ -343,10 +387,127 @@ export default function EcommerceAddProduct() {
                     <CardTitle>Images</CardTitle>
                   </CardHeader>
                   <CardBody>
-                    {productMedia.length ? (
-                      <div></div>
+                    {selectedFiles.length != 0 ? (
+                      <div>
+                        <Row className="d-flex ">
+                          <Col className="d-flex justify-content-start mx-3  col-3  ">
+                            <div
+                              draggable
+                              onDragStart={e => (dragItem.current = 0)}
+                              onDragEnter={e => (dragOverItem.current = 0)}
+                              onDragEnd={handleSort}
+                              onDragOver={e => e.preventDefault()}
+                              className="product-lg-img"
+                            >
+                              <div className="overlay-big">
+                                <h1 className="cross-big">
+                                  {" "}
+                                  <i className="bx bx-move cross-arrow " />
+                                </h1>
+                                <button
+                                  className="remove-btn-big"
+                                  onClick={() => {
+                                    remove(0)
+                                  }}
+                                >
+                                  x
+                                </button>
+                              </div>
+                              <img
+                                src={selectedFiles[0]?.preview}
+                                alt=""
+                                height={237}
+                                width={237}
+                                className="product-lg-img"
+                              />
+                            </div>
+                          </Col>
+                          <Col className="d-flex flex-wrap justify-content-start  col-6  ">
+                            {selectedFiles.slice(1).map((item, index) => {
+                              return (
+                                <div
+                                  key={index}
+                                  draggable
+                                  onDragStart={e =>
+                                    (dragItem.current = index + 1)
+                                  }
+                                  onDragEnter={e =>
+                                    (dragOverItem.current = index + 1)
+                                  }
+                                  onDragEnd={handleSort}
+                                  onDragOver={e => e.preventDefault()}
+                                  className="product-images-sm"
+                                >
+                                  <div className="overlay">
+                                    <h1>
+                                      <i className=" bx bx-move cross-arrow" />
+                                    </h1>
+                                    <button
+                                      className="remove-btn"
+                                      onClick={e => remove(index + 1)}
+                                    >
+                                      <i className="bx bx-x" />
+                                    </button>
+                                  </div>
+                                  <img
+                                    src={item.preview}
+                                    alt=""
+                                    height={104}
+                                    width={104}
+                                    className="mx-3 img-cont-sm"
+                                  />
+                                </div>
+                              )
+                            })}
+                            <div className=" dropzone-custom mx-3">
+                              <Dropzone
+                                onDrop={acceptedFiles => {
+                                  handleAcceptedFiles(acceptedFiles)
+                                }}
+                              >
+                                {({ getRootProps, getInputProps }) => (
+                                  <div>
+                                    <div
+                                      className="dz-message needsclick"
+                                      {...getRootProps()}
+                                    >
+                                      <input {...getInputProps()} />
+                                      <h1 className="plus-sign">+</h1>
+                                    </div>
+                                  </div>
+                                )}
+                              </Dropzone>
+                            </div>
+                          </Col>
+                        </Row>
+                      </div>
                     ) : (
-                      <div>There are no images</div>
+                      <div className="d-flex justify-content-center">
+                        <div className=" dropzone-big mx-2 ">
+                          <Dropzone
+                            onDrop={acceptedFiles => {
+                              handleAcceptedFiles(acceptedFiles)
+                            }}
+                          >
+                            {({ getRootProps, getInputProps }) => (
+                              <div>
+                                <div
+                                  className="dz-message needsclick"
+                                  {...getRootProps()}
+                                >
+                                  <input {...getInputProps()} />
+                                  <div className="d-flex align-items-center justify-content-center mt-3 mb-3">
+                                    <i className="bx bx-images plus-sign mx-2 "></i>
+                                    <h3 className="font-weight-light opacity-50">
+                                      Add Images
+                                    </h3>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </Dropzone>
+                        </div>
+                      </div>
                     )}
                   </CardBody>
                 </Card>
