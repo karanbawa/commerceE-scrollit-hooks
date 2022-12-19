@@ -5,22 +5,6 @@ import { Button, Col, Input, ModalBody, ModalFooter, Row } from "reactstrap"
 import Select from "react-select"
 import FileResizer from "react-image-file-resizer"
 
-const resizeFile = file =>
-  new Promise(resolve => {
-    FileResizer.imageFileResizer(
-      file,
-      300,
-      300,
-      "JPEG",
-      100,
-      0,
-      uri => {
-        setCollectionImage(uri)
-      },
-      "base64"
-    )
-  })
-
 export default function ConnectImagesModal({
   variants,
   optionMedia,
@@ -34,6 +18,29 @@ export default function ConnectImagesModal({
   const [toast, setToast] = useState(false)
   const [toastDetails, setToastDetails] = useState({ title: "", message: "" })
   const toggleToast = () => setToast(!toast)
+  const [productImage, setProductImage] = useState("")
+
+  const resizeFile = (file, option) =>
+    new Promise(resolve => {
+      FileResizer.imageFileResizer(
+        file,
+        300,
+        300,
+        "JPEG",
+        100,
+        0,
+        uri => {
+          if(optionMedia[option]){
+            optionMedia[option].push(uri)
+          } else {
+            optionMedia[option] = [uri]
+          }
+        },
+        "base64"
+      )
+    })
+
+  // console.log(optionMedia)
 
   return (
     <React.Fragment>
@@ -63,28 +70,44 @@ export default function ConnectImagesModal({
           <Row key={index} className="p-2">
             <Col className="col-3">{option.value}</Col>
             <Col>
+              {optionMedia[option]
+                ? optionMedia[option].map((os, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        backgroundImage: os,
+                      }}
+                    ></div>
+                  ))
+                : null}
+            </Col>
+            <Col>
               <Input
                 key={index}
                 type="file"
                 onChange={async e => {
-                  if (
-                    ["jpeg", "jpg", "png"].includes(
-                      e.target.files[0].name.split(".").pop()
-                    )
-                  ) {
-                    setToastDetails({
-                      title: "Image Uploaded",
-                      message: `${e.target.files[0].name} has been uploaded.`,
-                    })
-                    setToast(true)
-                    const image = await resizeFile(e.target.files[0])
-                  } else {
-                    setToastDetails({
-                      title: "Invalid image",
-                      message:
-                        "Please upload images with jpg, jpeg or png extension",
-                    })
-                    setToast(true)
+                  if(e.target.files.length){
+                    if (
+                      ["jpeg", "jpg", "png"].includes(
+                        e.target.files[0].name.split(".").pop()
+                      )
+                    ) {
+                      setToastDetails({
+                        title: "Image Uploaded",
+                        message: `${e.target.files[0].name} has been uploaded.`,
+                      })
+                      setToast(true)
+                      const image = await resizeFile(e.target.files[0],option)
+                    } else {
+                      setToastDetails({
+                        title: "Invalid image",
+                        message:
+                          "Please upload images with jpg, jpeg or png extension",
+                      })
+                      setToast(true)
+                    }
                   }
                 }}
               />
