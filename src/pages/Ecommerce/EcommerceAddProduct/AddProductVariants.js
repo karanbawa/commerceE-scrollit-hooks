@@ -32,7 +32,7 @@ export default function AddProductVariants({
   const [inputValue, setInputValue] = useState("")
 
   const createOption = label => ({
-    label,
+    label : label,
     value: label,
     color: "green",
   })
@@ -47,6 +47,18 @@ export default function AddProductVariants({
         event.preventDefault()
     }
   }
+
+  const keyHandleDownForColor = event => {
+    if (!inputValue) return
+    switch (event.key) {
+      case "Enter":
+      case "Tab":
+        setOptionValue(prev => [...prev, createOption(inputValue)])
+        setInputValue("")
+        event.preventDefault()
+    }
+  }
+
   return (
     <React.Fragment>
       <ModalHeader toggle={addProductOptionToggle}>
@@ -124,6 +136,12 @@ export default function AddProductVariants({
               isClearable
               value={optionValue}
               onChange={changedValue => setOptionValue(changedValue)}
+              components={{ DropdownIndicator: null }}
+              menuIsOpen={false}
+              inputValue={inputValue}
+              onInputChange={newValue => setInputValue(newValue)}
+              onKeyDown={keyHandleDown}
+              styles={{multiValueLabel: (styles, {data}) => ({...styles, color : data.color})}}
             />
           )}
         </Row>
