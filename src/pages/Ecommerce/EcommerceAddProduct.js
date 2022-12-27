@@ -647,7 +647,7 @@ export class EcommerceAddProduct extends Component {
                                     src={item.preview}
                                     alt=""
                                     height={45}
-                                    width45
+                                    width={45}
                                   />
                                 </td>
                               ) : (
