@@ -150,6 +150,14 @@ const EcommerceProductList = props => {
       dataField: "category",
       text: "Category",
       sort: true,
+      formatter: (cellContent, row) => (
+        // Replace with Switch
+        <div>
+          {cellContent.map(item => (
+            <div key={item._id}>{item.name}</div>
+          ))}
+        </div>
+      ),
     },
     {
       dataField: "displayProduct",
@@ -287,8 +295,11 @@ const EcommerceProductList = props => {
         </MetaTags>
         <Container fluid>
           <div>
-            <Breadcrumbs title="Ecommerce" count={productList.length} breadcrumbItem="Product List" />
-            <div>{}</div>
+            <Breadcrumbs
+              title="Ecommerce"
+              count={productList.length}
+              breadcrumbItem="Product List"
+            />
           </div>
 
           <Row>

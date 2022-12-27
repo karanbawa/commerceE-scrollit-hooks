@@ -42,9 +42,17 @@ import {
   IMPORT_CUSTOMERS_SUCCESS,
   DELETE_ALL_CUSTOMERS_SUCCESS,
   DELETE_ALL_CUSTOMERS_FAIL,
+  GET_COLLECTIONS_SUCCESS,
+  GET_COLLECTIONS_FAIL,
+  DELETE_COLLECTION_SUCCESS,
+  UPDATE_COLLECTION_SUCCESS,
+  UPDATE_COLLECTION_FAIL,
+  ADD_COLLECTION,
+  ADD_COLLECTION_SUCCESS,
 } from "./actionTypes"
 
 const INIT_STATE = {
+  collections: [],
   products: [],
   product: {},
   productList: [],
@@ -54,10 +62,54 @@ const INIT_STATE = {
   shops: [],
   error: {},
   productComments: [],
+  inventoryItems: [],
 }
 
 const Ecommerce = (state = INIT_STATE, action) => {
   switch (action.type) {
+    case GET_COLLECTIONS_SUCCESS:
+      return {
+        ...state,
+        collections: action.payload
+      }
+
+    case GET_COLLECTIONS_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      }
+
+    case UPDATE_COLLECTION_SUCCESS:
+      return {
+        ...state,
+        collections: state.collections.map(collection =>
+          collection._id === action.payload._id.toString()
+            ? { ...collection, ...action.payload }
+            : collection
+        ),
+      }
+
+    case UPDATE_COLLECTION_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      }
+
+    case DELETE_COLLECTION_SUCCESS:
+      console.log(action.payload)
+      return {
+        ...state,
+        collections: state.collections.filter(
+          collection => collection._id.toString() !== action.payload.toString()
+        ),
+      }
+
+    case ADD_COLLECTION_SUCCESS:
+      return {
+        ...state,
+        collections: [...state.collections, action.payload],
+      }
+
     case GET_PRODUCTS_SUCCESS:
       return {
         ...state,

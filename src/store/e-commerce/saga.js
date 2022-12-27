@@ -25,6 +25,10 @@ import {
   ADD_NEW_PRODUCT_IN_LIST,
   IMPORT_CUSTOMERS,
   DELETE_ALL_CUSTOMERS,
+  GET_COLLECTIONS,
+  ADD_COLLECTION,
+  UPDATE_COLLECTION,
+  DELETE_COLLECTION,
   DELETE_ALL_ORDERS,
 } from "./actionTypes"
 import {
@@ -74,9 +78,17 @@ import {
   importCustomerFail,
   deleteAllCustomersSuccess,
   deleteAllCustomersFail,
+  getCollectionsSuccess,
+  getCollectionsFail,
+  updateCollectionSuccess,
+  updateCollectionFail,
+  deleteCollectionSuccess,
+  deleteCollectionFail,
+  addCollectionSuccess,
+  addCollectionFail,
   deleteAllOrders,
   deleteAllOrdersSuccess,
-  deleteAllOrdersFail,
+  deleteAllOrdersFail
 } from "./actions"
 
 //Include Both Helper File with needed methods
@@ -108,6 +120,10 @@ import {
   deleteCustomer,
   importCustomers,
   deleteEveryCustomer,
+  getCollections,
+  updateCollection,
+  deleteColletion,
+  addCollection,
 } from "helpers/backend_helper"
 import showToast from "helpers/toast_helper"
 
@@ -298,6 +314,57 @@ function* onAddNewOrder({ payload: order }) {
   }
 }
 
+function* fetchCollections() {
+  try {
+    const products = yield call(getProductList)
+    const response = yield call(getCollections)
+    yield put(
+      getCollectionsSuccess([
+        {
+          name: "All Products",
+          _id: "all-products",
+          icon: "ballot",
+          color: "#7A8D96",
+          productIds: products.data.products.map(product => product._id),
+        },
+        ...response.data,
+      ])
+    )
+  } catch (error) {
+    yield put(getCollectionsFail)
+  }
+}
+
+function* onUpdateCollection({ payload: collection }) {
+  try {
+    const response = yield call(updateCollection, collection)
+    yield put(updateCollectionSuccess(collection))
+  } catch (error) {
+    yield put(updateCollectionFail(error))
+  }
+}
+
+function* onDeleteCollection({ payload: collectionId }) {
+  try {
+    const response = yield call(deleteColletion, collectionId)
+    console.log("response", response)
+    yield put(deleteCollectionSuccess(collectionId))
+  } catch (error) {
+    console.log("error", error)
+    yield put(deleteCollectionFail(error))
+  }
+}
+
+function* onAddCollection({ payload: collection }) {
+  try {
+    const response = yield call(addCollection, collection)
+    yield put(addCollectionSuccess(response.data.category))
+    console.log(response.data)
+  } catch (error) {
+    yield put(addCollectionFail(error))
+  }
+}
+
 function* getProductComents() {
   try {
     // todo - add product Id to the payload and api
@@ -353,6 +420,10 @@ function* ecommerceSaga() {
   yield takeEvery(UPDATE_PRODUCT_IN_LIST, onUpdateProductInList)
   yield takeEvery(DELETE_PRODUCT_IN_LIST, onDeleteProductInList)
   yield takeEvery(ADD_NEW_PRODUCT_IN_LIST, onAddNewProductInList)
+  yield takeEvery(GET_COLLECTIONS, fetchCollections)
+  yield takeEvery(ADD_COLLECTION, onAddCollection)
+  yield takeEvery(UPDATE_COLLECTION, onUpdateCollection)
+  yield takeEvery(DELETE_COLLECTION, onDeleteCollection)
   yield takeEvery(GET_ORDERS, fetchOrders)
   yield takeEvery(GET_CART_DATA, fetchCartData)
   yield takeEvery(GET_CUSTOMERS, fetchCustomers)

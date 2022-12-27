@@ -333,6 +333,10 @@ const Navbar = props => {
                         })}
                       >
                         <Link
+                          to="/ecommerce-collections"
+                          className="dropdown-item"
+                        > {props.t("Collections")} </Link>
+                        <Link
                           to="/ecommerce-products"
                           className="dropdown-item"
                         >

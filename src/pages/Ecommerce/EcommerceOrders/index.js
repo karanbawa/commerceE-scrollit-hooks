@@ -170,48 +170,8 @@ const EcommerceOrders = props => {
     handleError: e => {},
   })
 
-  const validation2 = useFormik({
-    // enableReinitialize : use this flag when initial values needs to be changed
-    enableReinitialize: true,
-
-    initialValues: {
-      username: "",
-      phone: "",
-      email: "",
-      address: "",
-      rating: "",
-      walletBalance: "",
-      joiningDate: "",
-    },
-    validationSchema: Yup.object({
-      username: Yup.string().required("Please Enter Your Name"),
-      phone: Yup.string().required("Please Enter Your Phone"),
-      email: Yup.string().required("Please Enter Your Email"),
-      address: Yup.string().required("Please Enter Your Address"),
-      rating: Yup.string().required("Please Enter Your Rating"),
-      walletBalance: Yup.string().required("Please Enter Your Wallet Balance"),
-      joiningDate: Yup.string().required("Please Enter Your Joining Date"),
-    }),
-    onSubmit: values => {
-      const newCustomer = {
-        username: values["username"],
-        phone: values["phone"],
-        email: values["email"],
-        address: values["address"],
-        rating: values["rating"],
-        walletBalance: values["walletBalance"],
-        joiningDate: values["joiningDate"],
-      }
-      dispatch(addNewCustomer(newCustomer))
-      validation2.resetForm()
-      toggleNested()
-    },
-  })
-
-  const { orders, products, customers } = useSelector(state => ({
-    orders: state.ecommerce.orders,
-    products: state.ecommerce.productList,
-    customers: state.ecommerce.customers,
+  const { orders } = useSelector(state => ({
+    orders: state.ecommerce.orders
   }))
 
   const handleChange = e => {
