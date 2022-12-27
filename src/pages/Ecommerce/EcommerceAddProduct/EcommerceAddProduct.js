@@ -69,8 +69,9 @@ function Combine(options, result = []) {
 export default function EcommerceAddProduct() {
   const dispatch = useDispatch()
 
-  const dragItem = React.createRef(null)
-  const dragOverItem = React.createRef(null)
+  const [selectedFiles, setSelectedFiles] = useState([])
+  const dragItem = useRef(null)
+  const dragOverItem = useRef(null)
 
   // ---STATES FOR PRODUCT DATA--
 
@@ -157,7 +158,6 @@ export default function EcommerceAddProduct() {
   const connectImagesModalToggle = () =>
     setConnectImagesModal(!connectImagesModal)
   const [editVariant, setEditVariant] = useState(null)
-  const [selectedFiles, setSelectedFiles] = useState([])
 
   const { collections } = useSelector(state => ({
     collections: state.ecommerce.collections,
@@ -211,6 +211,12 @@ export default function EcommerceAddProduct() {
     { dataField: "status", text: "Status", sort: true },
     { dataField: "visibility", text: "Visibility", sort: true },
   ]
+
+  const addProductHandler = e => {
+    e.preventDefault()
+    console.log("daaaaa")
+    console.log("data", selectedFiles)
+  }
 
   // console.log({
   //   name: productName,
@@ -283,24 +289,6 @@ export default function EcommerceAddProduct() {
     }
   }, [variants])
 
-  const remove = fileIndex => {
-    const newFiles = [...selectedFiles]
-    newFiles.splice(fileIndex, 1)
-    setSelectedFiles(newFiles)
-  }
-
-  const handleSort = () => {
-    let _selectedFiles = [...selectedFiles]
-
-    const draggedItemContent = _selectedFiles.splice(dragItem.current, 1)[0]
-
-    _selectedFiles.splice(dragOverItem.current, 0, draggedItemContent)
-
-    dragItem.current = null
-    dragOverItem.current = null
-    setSelectedFiles(selectedFiles)
-  }
-
   const formatBytes = (bytes, decimals = 2) => {
     if (bytes === 0) return "0 Bytes"
     const k = 1024
@@ -311,14 +299,62 @@ export default function EcommerceAddProduct() {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i]
   }
 
-  const handleAcceptedFiles = files => {
-    files.map(file =>
-      Object.assign(file, {
-        preview: URL.createObjectURL(file),
-        formattedSize: formatBytes(file.size),
-      })
+  // const handleAcceptedFiles = files => {
+  //   files.map(file =>
+  //     Object.assign(file, {
+  //       preview: URL.createObjectURL(file),
+  //       formattedSize: formatBytes(file.size),
+  //     })
+  //   )
+  //   setSelectedFiles(prevState => prevState.concat(files))
+  // }
+
+  const handleAcceptedFiles = acceptedFiles => {
+    setSelectedFiles(
+      selectedFiles.concat(
+        acceptedFiles
+          .filter(file => {
+            if (file.type.startsWith("image/") && file.size <= 5000000) {
+              try {
+                const img = new Image()
+                img.src = file.preview
+                return true
+              } catch (error) {
+                alert(`Invalid image file: ${file.name}`)
+                return false
+              }
+            }
+            if (!file.type.startsWith("image/")) {
+              alert(`Invalid file type: ${file.type}`)
+            } else {
+              alert(`File is too large: ${file.name}`)
+            }
+            return false
+          })
+          .map(file => ({
+            ...file,
+            preview: file.preview ? file.preview : URL.createObjectURL(file),
+          }))
+      )
     )
-    setSelectedFiles(prevState => prevState.concat(files))
+  }
+
+  const handleSort = () => {
+    const source = dragItem.current
+    const target = dragOverItem.current
+    if (source === null || target === null) return
+    if (source === target) return
+    const newFiles = [...selectedFiles]
+    newFiles.splice(target, 0, newFiles.splice(source, 1)[0])
+    setSelectedFiles(newFiles)
+    dragItem.current = null
+    dragOverItem.current = null
+  }
+
+  const remove = index => {
+    const newFiles = [...selectedFiles]
+    newFiles.splice(index, 1)
+    setSelectedFiles(newFiles)
   }
 
   return (
@@ -332,7 +368,7 @@ export default function EcommerceAddProduct() {
             <Col>
               <Row>
                 <Col>
-                  <Link to={"/ecommerce-products"}>Products</Link> &gt; Untitled
+                  <Link to="/ecommerce-products">Products</Link> &gt; Untitled
                   Product
                 </Col>
               </Row>
@@ -362,17 +398,14 @@ export default function EcommerceAddProduct() {
                     </DropdownItem>
                   </DropdownMenu>
                 </UncontrolledDropdown>
-                <Button
-                  type="button"
-                  className="btn-rounded  mb-2 me-2"
-                  outline
-                >
+                <Button type="button" className="btn-rounded mb-2 me-2" outline>
                   Cancel
                 </Button>
                 <Button
-                  type="button"
+                  type="submit"
                   color="success"
-                  className="btn-rounded  mb-2 me-2"
+                  className="btn-rounded mb-2 me-2"
+                  onClick={addProductHandler}
                 >
                   Create
                 </Button>
@@ -387,10 +420,10 @@ export default function EcommerceAddProduct() {
                     <CardTitle>Images</CardTitle>
                   </CardHeader>
                   <CardBody>
-                    {selectedFiles.length != 0 ? (
+                    {selectedFiles.length > 0 ? (
                       <div>
                         <Row className="d-flex ">
-                          <Col className="d-flex justify-content-start mx-3  col-3  ">
+                          <Col className="d-flex justify-content-start width-fit-content w-30">
                             <div
                               draggable
                               onDragStart={e => (dragItem.current = 0)}
@@ -401,20 +434,17 @@ export default function EcommerceAddProduct() {
                             >
                               <div className="overlay-big">
                                 <h1 className="cross-big">
-                                  {" "}
-                                  <i className="bx bx-move cross-arrow " />
+                                  <i className="bx bx-move cross-arrow" />
                                 </h1>
                                 <button
                                   className="remove-btn-big"
-                                  onClick={() => {
-                                    remove(0)
-                                  }}
+                                  onClick={() => remove(0)}
                                 >
                                   x
                                 </button>
                               </div>
                               <img
-                                src={selectedFiles[0]?.preview}
+                                src={selectedFiles[0].preview}
                                 alt=""
                                 height={237}
                                 width={237}
@@ -422,6 +452,7 @@ export default function EcommerceAddProduct() {
                               />
                             </div>
                           </Col>
+
                           <Col className="d-flex flex-wrap justify-content-start  col-6  ">
                             {selectedFiles.slice(1).map((item, index) => {
                               return (
@@ -461,18 +492,18 @@ export default function EcommerceAddProduct() {
                             })}
                             <div className=" dropzone-custom mx-3">
                               <Dropzone
-                                onDrop={acceptedFiles => {
+                                onDrop={acceptedFiles =>
                                   handleAcceptedFiles(acceptedFiles)
-                                }}
+                                }
                               >
                                 {({ getRootProps, getInputProps }) => (
                                   <div>
-                                    <div
-                                      className="dz-message needsclick"
-                                      {...getRootProps()}
-                                    >
+                                    <div {...getRootProps()}>
                                       <input {...getInputProps()} />
-                                      <h1 className="plus-sign">+</h1>
+                                      <div className="dropzone-custom-text d-flex justify-content-center align-items-center">
+                                        <i className="bx bx-plus dropzone-icon" />
+                                        Add More
+                                      </div>
                                     </div>
                                   </div>
                                 )}
@@ -626,26 +657,24 @@ export default function EcommerceAddProduct() {
                               <Input
                                 type="number"
                                 id="price"
-                                value={String(priceDetails.price)}
+                                value={priceDetails.price}
                                 onChange={e => {
-                                  const pri = parseInt(e.target.value)
+                                  const price = parseInt(e.target.value)
                                   setPriceDetails({
                                     ...priceDetails,
-                                    price: pri,
+                                    price,
                                     salePrice: priceDetails.isPercent
                                       ? Math.round(
                                           (1 - priceDetails.discount / 100) *
-                                            pri
+                                            price
                                         )
-                                      : pri - priceDetails.discount,
+                                      : price - priceDetails.discount,
                                   })
                                 }}
                               />
                               <div
-                                className={"mx-3"}
-                                style={{
-                                  fontSize: "20px",
-                                }}
+                                className="mx-3"
+                                style={{ fontSize: "20px" }}
                               >
                                 &#8377;
                               </div>
@@ -653,8 +682,9 @@ export default function EcommerceAddProduct() {
                           </div>
                         </Col>
                       </Row>
+
                       <div className="my-3">
-                        <Row>
+                        <Row className="my-3">
                           <Col>
                             <div className="d-flex m-2">
                               <FormGroup switch>
@@ -784,6 +814,7 @@ export default function EcommerceAddProduct() {
                           </Row>
                         ) : null}
                       </div>
+                      
                       <div className="mb-3">
                         <Row>
                           <Col>
@@ -1042,7 +1073,9 @@ export default function EcommerceAddProduct() {
                             <Input
                               type="number"
                               disabled={true}
-                              value={String(priceDetails.salePrice - priceDetails.cost)}
+                              value={String(
+                                priceDetails.salePrice - priceDetails.cost
+                              )}
                               id="profit-fixed"
                             />
                             <div
@@ -1075,11 +1108,14 @@ export default function EcommerceAddProduct() {
                               id="margin"
                               disabled
                               type="number"
-                              value={String(Math.round(
-                                ((priceDetails.salePrice - priceDetails.cost) /
-                                  priceDetails.salePrice) *
-                                  100
-                              ))}
+                              value={String(
+                                Math.round(
+                                  ((priceDetails.salePrice -
+                                    priceDetails.cost) /
+                                    priceDetails.salePrice) *
+                                    100
+                                )
+                              )}
                             />
                             <div
                               className={"mx-3"}
