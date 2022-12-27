@@ -626,7 +626,7 @@ export default function EcommerceAddProduct() {
                               <Input
                                 type="number"
                                 id="price"
-                                value={priceDetails.price}
+                                value={String(priceDetails.price)}
                                 onChange={e => {
                                   const pri = parseInt(e.target.value)
                                   setPriceDetails({
@@ -661,7 +661,7 @@ export default function EcommerceAddProduct() {
                                 <Input
                                   type="checkbox"
                                   checked={onSale}
-                                  onClick={() => {
+                                  onChange={() => {
                                     setPriceDetails({
                                       ...priceDetails,
                                       discount: 0,
@@ -689,7 +689,7 @@ export default function EcommerceAddProduct() {
                                   className="me-2"
                                   type="number"
                                   id="discount"
-                                  value={priceDetails.discount}
+                                  value={String(priceDetails.discount)}
                                   onChange={e => {
                                     let dis = parseInt(e.target.value)
                                     setPriceDetails({
@@ -756,7 +756,7 @@ export default function EcommerceAddProduct() {
                                 <Input
                                   type="number"
                                   id="saleprice"
-                                  value={priceDetails.salePrice}
+                                  value={String(priceDetails.salePrice)}
                                   onChange={e => {
                                     const sal = parseInt(e.target.value)
                                     setPriceDetails({
@@ -792,7 +792,7 @@ export default function EcommerceAddProduct() {
                                 <Input
                                   type="checkbox"
                                   checked={showPricePerUnit}
-                                  onClick={() => {
+                                  onChange={() => {
                                     setShowPricePerUnit(!showPricePerUnit)
                                   }}
                                 ></Input>
@@ -844,7 +844,7 @@ export default function EcommerceAddProduct() {
                                       id="pqunits"
                                       type="number"
                                       min={0}
-                                      value={perUnitDetails.total}
+                                      value={String(perUnitDetails.total)}
                                       onChange={e => {
                                         setPerUnitDetails({
                                           ...perUnitDetails,
@@ -954,7 +954,7 @@ export default function EcommerceAddProduct() {
                                       id="baseunits"
                                       type="number"
                                       min={0}
-                                      value={perUnitDetails.base}
+                                      value={String(perUnitDetails.base)}
                                       onChange={e => {
                                         setPerUnitDetails({
                                           ...perUnitDetails,
@@ -1008,7 +1008,7 @@ export default function EcommerceAddProduct() {
                               id="costofgoods"
                               type="number"
                               min={0}
-                              value={priceDetails.cost}
+                              value={String(priceDetails.cost)}
                               onChange={e => {
                                 const cos = parseInt(e.target.value)
                                 setPriceDetails({ ...priceDetails, cost: cos })
@@ -1042,7 +1042,7 @@ export default function EcommerceAddProduct() {
                             <Input
                               type="number"
                               disabled={true}
-                              value={priceDetails.salePrice - priceDetails.cost}
+                              value={String(priceDetails.salePrice - priceDetails.cost)}
                               id="profit-fixed"
                             />
                             <div
@@ -1075,11 +1075,11 @@ export default function EcommerceAddProduct() {
                               id="margin"
                               disabled
                               type="number"
-                              value={Math.round(
+                              value={String(Math.round(
                                 ((priceDetails.salePrice - priceDetails.cost) /
                                   priceDetails.salePrice) *
                                   100
-                              )}
+                              ))}
                             />
                             <div
                               className={"mx-3"}
@@ -1138,7 +1138,7 @@ export default function EcommerceAddProduct() {
                             <Input
                               type="number"
                               id="char-lim"
-                              value={customTextDetails.charLin}
+                              value={String(customTextDetails.charLin)}
                               onChange={e => {
                                 setCustomTextDetails({
                                   ...customTextDetails,
@@ -1154,7 +1154,7 @@ export default function EcommerceAddProduct() {
                               <Input
                                 type="checkbox"
                                 checked={customTextDetails.mandatoryField}
-                                onClick={() => {
+                                onChange={() => {
                                   setCustomTextDetails({
                                     ...customTextDetails,
                                     mandatoryField:
@@ -1258,7 +1258,7 @@ export default function EcommerceAddProduct() {
                                 className="me-2"
                                 type="checkbox"
                                 checked={manageVariantsAndInventory}
-                                onClick={() => {
+                                onChange={() => {
                                   setManageVariantsAndInventory(
                                     !manageVariantsAndInventory
                                   )
@@ -1364,7 +1364,7 @@ export default function EcommerceAddProduct() {
                               <Input
                                 type="checkbox"
                                 checked={inventoryShipping}
-                                onClick={() => {
+                                onChange={() => {
                                   setInventoryShipping(!inventoryShipping)
                                 }}
                               ></Input>
@@ -1415,6 +1415,7 @@ export default function EcommerceAddProduct() {
                             </UncontrolledTooltip>
                           </Label>
                           <Input
+                            type="text"
                             value={inventoryDetails.SKU}
                             onChange={e => {
                               setInventoryDetails({
@@ -1478,7 +1479,7 @@ export default function EcommerceAddProduct() {
                         <Input
                           type="checkbox"
                           checked={preOrder}
-                          onClick={() => {
+                          onChange={() => {
                             setPreorder(!preOrder)
                           }}
                         ></Input>
@@ -1520,7 +1521,7 @@ export default function EcommerceAddProduct() {
                       <Input
                         type="checkbox"
                         checked={showInWebstie}
-                        onClick={() => {
+                        onChange={() => {
                           setShowInWebsite(!showInWebstie)
                         }}
                         className="p-1 mx-2"
@@ -1544,7 +1545,7 @@ export default function EcommerceAddProduct() {
                           checked={productCollections.includes(collection._id)}
                           disabled={collection._id === "all-products"}
                           className="mx-2"
-                          onClick={() => {
+                          onChange={() => {
                             productCollections.includes(collection._id)
                               ? setProductCollection(
                                   productCollections.filter(
