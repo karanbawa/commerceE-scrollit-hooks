@@ -12,6 +12,7 @@ import {
   UPDATE_ORDER_SUCCESS,
   UPDATE_ORDER_FAIL,
   DELETE_ORDER,
+  DELETE_ALL_ORDERS,
   DELETE_ORDER_SUCCESS,
   DELETE_ORDER_FAIL,
   GET_PRODUCTS,
@@ -80,6 +81,8 @@ import {
   DELETE_COLLECTION,
   DELETE_COLLECTION_SUCCESS,
   DELETE_COLLECTION_FAIL,
+  DELETE_ALL_ORDER_FAIL,
+  DELETE_ALL_ORDER_SUCCESS,
 } from "./actionTypes"
 
 export const getCollections = () => ({
@@ -278,6 +281,7 @@ export const deleteOrder = order => ({
   payload: order,
 })
 
+
 export const deleteOrderSuccess = order => ({
   type: DELETE_ORDER_SUCCESS,
   payload: order,
@@ -378,6 +382,18 @@ export const importCustomerFail = error => ({
 
 export const deleteAllCustomers = () => ({
   type: DELETE_ALL_CUSTOMERS,
+})
+
+export const deleteAllOrders = () => ({
+  type: DELETE_ALL_ORDERS,
+})
+
+export const deleteAllOrdersSuccess = () => ({
+  type: DELETE_ALL_ORDER_SUCCESS,
+})
+
+export const deleteAllOrdersFail = () => ({
+  type: DELETE_ALL_ORDER_FAIL,
 })
 
 export const deleteAllCustomersSuccess = () => ({

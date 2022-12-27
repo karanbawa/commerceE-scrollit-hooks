@@ -1,5 +1,5 @@
 //REGISTER
-export const POST_FAKE_REGISTER = "/post-fake-register"
+export const POST_FAKE_REGISTER = "/post-fake-register";
 
 //LOGIN
 export const POST_FAKE_LOGIN = "/post-fake-login";
@@ -12,6 +12,9 @@ export const SOCIAL_LOGIN = "/social-login";
 //PROFILE
 export const POST_EDIT_JWT_PROFILE = "/post-jwt-profile"
 export const POST_EDIT_PROFILE = "/post-fake-profile"
+
+
+export const SIGNUP = "/v1/signup/basic"
 
 //PRODUCTS
 export const GET_PRODUCTS = "/products"
@@ -59,11 +62,11 @@ export const GET_MESSAGES = "/messages"
 export const ADD_MESSAGE = "/add/messages"
 
 //ORDERS
-export const GET_ORDERS = "/orders"
-export const ADD_NEW_ORDER = "/add/order"
-export const UPDATE_ORDER = "/update/order"
-export const DELETE_ORDER = "/delete/order"
-
+export const GET_ORDERS = "/v1/orders"
+export const ADD_NEW_ORDER = "/v1/orders"
+export const UPDATE_ORDER = "/v1/orders/"
+export const DELETE_ORDER = "/v1/orders/"
+export const DELETE_ALL_ORDER = "/v1/orders/delete/all"
 //CART DATA
 export const GET_CART_DATA = "/cart"
 

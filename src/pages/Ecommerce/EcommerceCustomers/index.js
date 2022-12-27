@@ -140,8 +140,13 @@ const EcommerceCustomers = props => {
     },
     {
       dataField: "username",
-      text: "Username",
+      text: "Name",
       sort: true,
+      formatter: (cellContent, row) => (
+        <p className="mb-1 text-wrap">
+          {row.username}
+        </p>
+      )
     },
     {
       text: "Phone / Email",
@@ -159,6 +164,12 @@ const EcommerceCustomers = props => {
       dataField: "address",
       text: "Address",
       sort: true,
+      // eslint-disable-next-line react/display-name
+      formatter: (cellContent, row) => (
+        <p className="mb-1 text-wrap">
+          {row.address}
+        </p>
+      ),
     },
     {
       dataField: "rating",

@@ -56,8 +56,8 @@ import ForgetPwd from "../pages/Authentication/ForgetPassword"
 //  // Inner Authentication
 import Login1 from "../pages/AuthenticationInner/Login"
 import Login2 from "../pages/AuthenticationInner/Login2"
-import Register1 from "../pages/AuthenticationInner/Register"
-import Register2 from "../pages/AuthenticationInner/Register2"
+ import Register1 from "../pages/AuthenticationInner/Register"
+// import Register2 from "../pages/AuthenticationInner/Register2"
 import Recoverpw from "../pages/AuthenticationInner/Recoverpw"
 import Recoverpw2 from "../pages/AuthenticationInner/Recoverpw2"
 import ForgetPwd1 from "../pages/AuthenticationInner/ForgetPassword"
@@ -342,8 +342,8 @@ const publicRoutes = [
   // Authentication Inner
   { path: "/pages-login", component: Login1 },
   { path: "/pages-login-2", component: Login2 },
-  { path: "/pages-register", component: Register1 },
-  { path: "/pages-register-2", component: Register2 },
+   { path: "/pages-register", component: Register1 },
+  // { path: "/pages-register-2", component: Register2 },
   { path: "/page-recoverpw", component: Recoverpw },
   { path: "/page-recoverpw-2", component: Recoverpw2 },
   { path: "/pages-forgot-pwd", component: ForgetPwd1 },

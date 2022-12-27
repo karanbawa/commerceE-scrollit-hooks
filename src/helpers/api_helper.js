@@ -7,8 +7,9 @@ const token = accessToken;
 const apiKeys = apiKey;
 //apply base url for axios
 const API_URL = "https://api.univolenitsolutions.com";
+
 // const API_URL = "https://dummy.com";
-const axiosApi = axios.create({
+export const axiosApi = axios.create({
   baseURL: API_URL,
 });
 axiosApi.defaults.headers.common["Authorization"] = localStorage.getItem('authUser')?.data?.tokens?.accessToken ?? token;

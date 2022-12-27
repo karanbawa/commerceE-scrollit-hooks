@@ -1,5 +1,5 @@
 import { call, put, takeEvery, takeLatest } from "redux-saga/effects";
-
+import {showToastSuccess,showToastError} from '../../../helpers/toastBuilder'
 // Login Redux States
 import { LOGIN_USER, LOGOUT_USER, SOCIAL_LOGIN } from "./actionTypes";
 import { apiError, loginSuccess, logoutUserSuccess } from "./actions";
@@ -24,17 +24,12 @@ function* loginUser({ payload: { user, history } }) {
       );
       yield put(loginSuccess(response));
     } else if (process.env.REACT_APP_DEFAULTAUTH === "jwt") {
-      const response = yield call(postJwtLogin, {
-        email: user.email,
-        password: user.password,
-      });
+      const response = yield call(postJwtLogin, user);
+      showToastSuccess("User is login successfully", "SUCCESS")
       localStorage.setItem("authUser", JSON.stringify(response));
       yield put(loginSuccess(response));
     } else if (process.env.REACT_APP_DEFAULTAUTH === "fake") {
-      const response = yield call(postFakeLogin, {
-        email: user.email,
-        password: user.password,
-      });
+      const response = yield call(postFakeLogin, user);
       localStorage.setItem("authUser", JSON.stringify(response));
       yield put(loginSuccess(response));
     }
@@ -53,8 +48,30 @@ function* logoutUser({ payload: { history } }) {
       yield put(logoutUserSuccess(response));
     }
     history.push("/login");
-  } catch (error) {
-    yield put(apiError(error));
+  } catch (err) {
+    let message;
+    if (err.response && err.response.status) {
+          switch (err.response.status) {
+            case 404:
+              message = "Sorry! the page you are looking for could not be found";
+              break;
+            case 500:
+              message =
+                "Sorry! something went wrong, please contact our support team";
+              break;
+            case 401:
+              message = "User is not Registered";
+              break;
+              case 400:
+                message = "User is not Registered";
+                break;
+            default:
+              message = "Sorry! something went wrong, please contact our support team";
+              break;
+          }
+        }
+        showToastError(message,"ERROR")
+    yield put(apiError(err));
   }
 }
 

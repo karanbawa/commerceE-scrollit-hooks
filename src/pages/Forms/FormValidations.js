@@ -45,7 +45,7 @@ const FormValidations = () => {
       zip: Yup.string().required("Please Enter Your Zip"),
     }),
     onSubmit: (values) => {
-      console.log("values", values);
+      // console.log("values", values);
     }
   });
 
@@ -104,7 +104,7 @@ const FormValidations = () => {
       ),
     }),
     onSubmit: (values) => {
-      console.log("values", values);
+      // console.log("values", values);
     }
   });
   const regExp = /\b\d{5}\b/;
@@ -142,7 +142,7 @@ const FormValidations = () => {
         .required("Only Hex Value"),
     }),
     onSubmit: (values) => {
-      console.log("values", values);
+      // console.log("values", values);
     }
   });
 

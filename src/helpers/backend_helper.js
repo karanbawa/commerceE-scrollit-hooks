@@ -47,7 +47,6 @@ export const importCustomers = customers =>
 
 export const deleteEveryCustomer = () => del(`${url.DELETE_ALL_CUSTOMERS}`)
 
-// COLLECTIONS (SAME AS CATEGORIES)
 
 export const getCollections = () => get(url.GET_COLLECTIONS)
 
