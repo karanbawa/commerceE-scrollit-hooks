@@ -170,8 +170,48 @@ const EcommerceOrders = props => {
     handleError: e => {},
   })
 
-  const { orders } = useSelector(state => ({
-    orders: state.ecommerce.orders
+  const validation2 = useFormik({
+    // enableReinitialize : use this flag when initial values needs to be changed
+    enableReinitialize: true,
+
+    initialValues: {
+      username: "",
+      phone: "",
+      email: "",
+      address: "",
+      rating: "",
+      walletBalance: "",
+      joiningDate: "",
+    },
+    validationSchema: Yup.object({
+      username: Yup.string().required("Please Enter Your Name"),
+      phone: Yup.string().required("Please Enter Your Phone"),
+      email: Yup.string().required("Please Enter Your Email"),
+      address: Yup.string().required("Please Enter Your Address"),
+      rating: Yup.string().required("Please Enter Your Rating"),
+      walletBalance: Yup.string().required("Please Enter Your Wallet Balance"),
+      joiningDate: Yup.string().required("Please Enter Your Joining Date"),
+    }),
+    onSubmit: values => {
+      const newCustomer = {
+        username: values["username"],
+        phone: values["phone"],
+        email: values["email"],
+        address: values["address"],
+        rating: values["rating"],
+        walletBalance: values["walletBalance"],
+        joiningDate: values["joiningDate"],
+      }
+      dispatch(addNewCustomer(newCustomer))
+      validation2.resetForm()
+      toggleNested()
+    },
+  })
+
+  const { orders, products, customers } = useSelector(state => ({
+    orders: state.ecommerce.orders,
+    products: state.ecommerce.productList,
+    customers: state.ecommerce.customers,
   }))
 
   const handleChange = e => {
@@ -218,7 +258,7 @@ const EcommerceOrders = props => {
       dataField: "customerId",
       text: "Billing Name",
       sort: true,
-      formatter: (cellContent, row) => <>{row.customerId.username}</>,
+      formatter: (cellContent, row) => <>{row.customerId?.username}</>,
     },
     { dataField: "srs", text: "srs", sort: true, hidden: true },
     {
@@ -371,9 +411,6 @@ const EcommerceOrders = props => {
 
   useEffect(() => {
     setProductList(products)
-    // setProductOptions(
-    //   products.map(product => ({ value: product._id, label: product.name }))
-    // )
     setProductOptions(
       products
         .filter(product =>
@@ -498,7 +535,7 @@ const EcommerceOrders = props => {
   useEffect(() => {
     if (orderList.length && customerList.length) {
       setOrderList(
-        orderList.map(order => ({ ...order, srs: order.customerId.username }))
+        orderList.map(order => ({ ...order, srs: order.customerId?.username }))
       )
     }
   }, [orders, customers])
@@ -993,7 +1030,7 @@ const EcommerceOrders = props => {
                                             <div>
                                               {validation.values.orderItems.map(
                                                 (product, index) => (
-                                                  <div key={index}>
+                                                  <div key={product._id}>
                                                     <Row className="my-2">
                                                       <Col className="col-6">
                                                         <Select
