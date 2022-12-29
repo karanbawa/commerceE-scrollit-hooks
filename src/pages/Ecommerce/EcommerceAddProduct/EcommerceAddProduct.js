@@ -93,11 +93,8 @@ export default function EcommerceAddProduct() {
   const [productCollections, setProductCollection] = useState(["all-products"])
 
   const [priceDetails, setPriceDetails] = useState({
-    price: 0,
-    discount: 0,
-    salePrice: 0,
-    isPercent: true,
     cost: 0,
+    salePrice: 0,
   })
   const [inventoryDetails, setInventoryDetails] = useState({
     status: "In stock",
@@ -111,13 +108,12 @@ export default function EcommerceAddProduct() {
   })
   const [perUnitDetails, setPerUnitDetails] = useState({
     total: 0,
-    tunits: "g",
-    base: 0,
-    bunits: "mcg",
+    tunits: "",
+    pricePerUnit: 0,
   })
   const [customTextDetails, setCustomTextDetails] = useState({
     title: "",
-    charLin: 500,
+    charLin: 0,
     mandatoryField: false,
   })
   const [basePricePerUnit, setBasePricePerUnit] = useState(0)
@@ -142,10 +138,11 @@ export default function EcommerceAddProduct() {
   const [addProductOption, setAddProductOption] = useState(false)
   const [editVariantsModal, setEditVariantsModal] = useState(false)
   const [allOptions, setAllOptions] = useState([])
-  const [variants, setVariants] = useState({})
-  const [manageVariantsAndInventory, setManageVariantsAndInventory] =
-    useState(false)
-  const [connectImagesModal, setConnectImagesModal] = useState(false)
+  const [variants, setVariants] = useState({});
+  const [editVariant, setEditVariant] = useState({});
+  const [manageVariantsAndInventory, setManageVariantsAndInventory] = useState(false);
+  const [addProductOptionModalOpen, setAddProductOptionModalOpen] = useState(false);
+  const [connectImagesModalOpen, setConnectImagesModalOpenOpen] = useState(false);
   const [optionMedia, setOptionMedia] = useState({})
   const infoModalToggle = () => setInfoModal(!infoModal)
   const addProductOptionToggle = () => {
@@ -156,8 +153,7 @@ export default function EcommerceAddProduct() {
   }
   const editVariantsModalToggle = () => setEditVariantsModal(!editVariantsModal)
   const connectImagesModalToggle = () =>
-    setConnectImagesModal(!connectImagesModal)
-  const [editVariant, setEditVariant] = useState(null)
+    setConnectImagesModalOpen(!connectImagesModalOpen)
 
   const { collections } = useSelector(state => ({
     collections: state.ecommerce.collections,
@@ -217,6 +213,140 @@ export default function EcommerceAddProduct() {
     console.log("daaaaa")
     console.log("data", selectedFiles)
   }
+
+  const handleOnSaleChange = () => {
+    setOnSale(!onSale)
+    setPriceDetails({
+      ...priceDetails,
+      discount: 0,
+      salePrice: priceDetails.price,
+    })
+  }
+
+  const handleDiscountChange = e => {
+    let dis = parseInt(e.target.value)
+    setPriceDetails({
+      ...priceDetails,
+      discount: dis,
+      salePrice: priceDetails.isPercent
+        ? Math.round(priceDetails.price * (1 - dis / 100))
+        : priceDetails.price - dis,
+    })
+  }
+
+  const handleDiscountTypeChange = isPercent => {
+    setPriceDetails({
+      ...priceDetails,
+      isPercent: isPercent,
+      salePrice: isPercent
+        ? priceDetails.price * (1 - priceDetails.discount / 100)
+        : priceDetails.price - priceDetails.discount,
+    })
+  }
+
+  const handleShowPricePerUnitChange = () => {
+    setShowPricePerUnit(!showPricePerUnit)
+  }
+
+  const handleTotalChange = e => {
+    setPerUnitDetails({
+      ...perUnitDetails,
+      total: parseInt(e.target.value),
+    })
+  }
+
+  const handleUnitsChange = e => {
+    setPerUnitDetails({
+      ...perUnitDetails,
+      tunits: e.target.value,
+    })
+  }
+
+  const handlePricePerUnitChange = e => {
+    setPerUnitDetails({
+      ...perUnitDetails,
+      pricePerUnit: parseInt(e.target.value),
+    })
+  }
+
+  const handleCostChange = e => {
+    setPriceDetails({
+      ...priceDetails,
+      cost: parseInt(e.target.value),
+    })
+  }
+
+  const handleSalePriceChange = e => {
+    setPriceDetails({
+      ...priceDetails,
+      salePrice: parseInt(e.target.value),
+    })
+  }
+
+  const handleTitleChange = event => {
+    setCustomTextDetails({
+      ...customTextDetails,
+      title: event.target.value,
+    })
+  }
+
+  const handleCharLimitChange = event => {
+    setCustomTextDetails({
+      ...customTextDetails,
+      charLin: parseInt(event.target.value),
+    })
+  }
+
+  const handleMandatoryFieldChange = () => {
+    setCustomTextDetails({
+      ...customTextDetails,
+      mandatoryField: !customTextDetails.mandatoryField,
+    })
+  }
+
+  const handleAddOption = variant => {
+    setVariants({ ...variants, [variant.name]: variant.options });
+  };
+
+  const handleDeleteOption = variantName => {
+    const updatedVariants = { ...variants };
+    delete updatedVariants[variantName];
+    setVariants(updatedVariants);
+  };
+
+  const handleEditOption = variant => {
+    setEditVariant({ [variant.name]: variant.options });
+  };
+
+  const product = useSelector((state) => state.selectedProduct);
+
+  useEffect(() => {
+    if (product) {
+      setVariants(product.variants);
+    }
+  }, [product]);
+
+  // const handleAddProductOption = (newVariant) => {
+  //   setVariants({ ...variants, [newVariant.name]: newVariant.options });
+  // };
+
+  // const handleDeleteProductOption = (optionName) => {
+  //   const updatedVariants = { ...variants };
+  //   delete updatedVariants[optionName];
+  //   setVariants(updatedVariants);
+  // };
+
+  // const handleSaveProductOptions = () => {
+  //   dispatch(updateProduct({ ...product, variants }));
+  // };
+
+  // const handleConnectImages = (images) => {
+  //   dispatch(updateProduct({ ...product, images }));
+  // };
+
+
+  const profit = priceDetails.salePrice - priceDetails.cost
+  const margin = (profit / priceDetails.salePrice) * 100
 
   // console.log({
   //   name: productName,
@@ -684,340 +814,154 @@ export default function EcommerceAddProduct() {
                       </Row>
 
                       <div className="my-3">
-                        <Row className="my-3">
-                          <Col>
-                            <div className="d-flex m-2">
-                              <FormGroup switch>
-                                <Input
-                                  type="checkbox"
-                                  checked={onSale}
-                                  onChange={() => {
-                                    setPriceDetails({
-                                      ...priceDetails,
-                                      discount: 0,
-                                      salePrice: priceDetails.price,
-                                    })
-                                    setOnSale(!onSale)
-                                  }}
-                                ></Input>
-                              </FormGroup>
-                              <div
-                                style={{ fontSize: "0.9rem", fontWeight: 500 }}
-                                className="mx-1"
-                              >
-                                On Sale
-                              </div>
-                            </div>
-                          </Col>
-                        </Row>
-                        {onSale ? (
-                          <Row>
-                            <Col>
-                              <Label for="discount">Discount</Label>
-                              <div className="d-flex">
-                                <Input
-                                  className="me-2"
-                                  type="number"
-                                  id="discount"
-                                  value={String(priceDetails.discount)}
-                                  onChange={e => {
-                                    let dis = parseInt(e.target.value)
-                                    setPriceDetails({
-                                      ...priceDetails,
-                                      discount: dis,
-                                      salePrice: priceDetails.isPercent
-                                        ? Math.round(
-                                            priceDetails.price *
-                                              (1 - parseInt(dis) / 100)
-                                          )
-                                        : priceDetails.price - parseInt(dis),
-                                    })
-                                  }}
-                                />
-                                <div
-                                  onClick={() => {
-                                    setPriceDetails({
-                                      ...priceDetails,
-                                      isPercent: true,
-                                      salePrice:
-                                        priceDetails.price *
-                                        (1 - priceDetails.discount / 100),
-                                    })
-                                  }}
-                                  className={
-                                    priceDetails.isPercent
-                                      ? "text-primary mx-2"
-                                      : "mx-2"
-                                  }
-                                  style={{
-                                    fontSize: "20px",
-                                    cursor: "pointer",
-                                  }}
-                                >
-                                  %
-                                </div>
-                                <div
-                                  onClick={() => {
-                                    setPriceDetails({
-                                      ...priceDetails,
-                                      isPercent: false,
-                                      salePrice:
-                                        priceDetails.price -
-                                        priceDetails.discount,
-                                    })
-                                  }}
-                                  className={
-                                    priceDetails.isPercent
-                                      ? "mx-2"
-                                      : "text-primary mx-2"
-                                  }
-                                  style={{
-                                    fontSize: "20px",
-                                    cursor: "pointer",
-                                  }}
-                                >
-                                  &#8377;
-                                </div>
-                              </div>
-                            </Col>
-                            <Col>
-                              <Label for="saleprice">Sale Price</Label>
-                              <div className="d-flex">
-                                <Input
-                                  type="number"
-                                  id="saleprice"
-                                  value={String(priceDetails.salePrice)}
-                                  onChange={e => {
-                                    const sal = parseInt(e.target.value)
-                                    setPriceDetails({
-                                      ...priceDetails,
-                                      salePrice: sal,
-                                      discount: priceDetails.isPercent
-                                        ? ((priceDetails.price - sal) /
-                                            priceDetails.price) *
-                                          100
-                                        : priceDetails.price - sal,
-                                    })
-                                  }}
-                                />{" "}
-                                <div
-                                  className={"text-primary mx-3"}
-                                  style={{
-                                    fontSize: "20px",
-                                    cursor: "pointer",
-                                  }}
-                                >
-                                  &#8377;
-                                </div>
-                              </div>
-                            </Col>
-                          </Row>
-                        ) : null}
-                      </div>
-                      
-                      <div className="mb-3">
-                        <Row>
-                          <Col>
-                            <div className="d-flex mx-2">
-                              <FormGroup switch>
-                                <Input
-                                  type="checkbox"
-                                  checked={showPricePerUnit}
-                                  onChange={() => {
-                                    setShowPricePerUnit(!showPricePerUnit)
-                                  }}
-                                ></Input>
-                              </FormGroup>
-                              <div
-                                style={{ fontSize: "0.9rem", fontWeight: 500 }}
-                                className="mx-1"
-                              >
-                                Show price per unit
-                                <i
-                                  id="sppr-info"
-                                  className="mdi mdi-information me-2 mx-1"
-                                />
-                                <UncontrolledTooltip
-                                  placement="top"
-                                  target="sppr-info"
-                                >
-                                  Let customers see prices based on fixed
-                                  measurement units, e.g., price per 100 grams
-                                  of cheese.
-                                </UncontrolledTooltip>
-                              </div>
-                            </div>
-                          </Col>
-                        </Row>
-                        {showPricePerUnit ? (
-                          <div>
-                            <Row className="my-3">
-                              <Col>
-                                <Label for="pqunits">
-                                  Total product Quantity in units
-                                  <i
-                                    id="product-quanitiy-info"
-                                    className="mdi mdi-information me-2 mx-1"
-                                  />
-                                  <UncontrolledTooltip
-                                    placement="top"
-                                    target="product-quanitiy-info"
-                                  >
-                                    Set your product’s unit of measurement to
-                                    calculate the base price, e.g., for a
-                                    product weighing 1 kilo, you may set the
-                                    base units to 100 g.
-                                  </UncontrolledTooltip>
-                                </Label>
-                                <Row>
-                                  <Col xs="8">
-                                    <Input
-                                      id="pqunits"
-                                      type="number"
-                                      min={0}
-                                      value={String(perUnitDetails.total)}
-                                      onChange={e => {
-                                        setPerUnitDetails({
-                                          ...perUnitDetails,
-                                          total: parseInt(e.target.value),
-                                        })
-                                      }}
-                                    />
-                                  </Col>
-                                  <Col>
-                                    <Input
-                                      value={perUnitDetails.tunits}
-                                      type="select"
-                                      onChange={e => {
-                                        setPerUnitDetails({
-                                          ...perUnitDetails,
-                                          tunits: e.target.value,
-                                        })
-                                      }}
-                                    >
-                                      <option
-                                        style={{
-                                          fontWeight: 700,
-                                          backgroundColor: "whitesmoke",
-                                        }}
-                                        disabled
-                                      >
-                                        Length
-                                      </option>
-                                      {convert()
-                                        .possibilities("length")
-                                        .map(metric => (
-                                          <option key={"mn" + metric}>
-                                            {metric}
-                                          </option>
-                                        ))}
-                                      <option
-                                        style={{
-                                          fontWeight: 700,
-                                          backgroundColor: "whitesmoke",
-                                        }}
-                                        disabled
-                                      >
-                                        Mass
-                                      </option>
-                                      {convert()
-                                        .possibilities("mass")
-                                        .map(metric => (
-                                          <option key={"mn" + metric}>
-                                            {metric}
-                                          </option>
-                                        ))}
-                                      <option
-                                        disabled
-                                        style={{
-                                          fontWeight: 700,
-                                          backgroundColor: "whitesmoke",
-                                        }}
-                                      >
-                                        Volume
-                                      </option>
-                                      {convert()
-                                        .possibilities("volume")
-                                        .map(metric => (
-                                          <option key={"mn" + metric}>
-                                            {metric}
-                                          </option>
-                                        ))}
-                                      <option
-                                        style={{
-                                          fontWeight: 700,
-                                          backgroundColor: "whitesmoke",
-                                        }}
-                                        disabled
-                                      >
-                                        Area
-                                      </option>
-                                      {convert()
-                                        .possibilities("area")
-                                        .map(metric => (
-                                          <option key={"mn" + metric}>
-                                            {metric}
-                                          </option>
-                                        ))}
-                                    </Input>
-                                  </Col>
-                                </Row>
-                              </Col>
-                              <Col>
-                                <Label for="baseunits">
-                                  Base units
-                                  <i
-                                    id="base-info"
-                                    className="mdi mdi-information me-2 mx-1"
-                                  />
-                                  <UncontrolledTooltip
-                                    placement="top"
-                                    target="base-info"
-                                  >
-                                    Set your product’s total quantity in units,
-                                    e.g., if your product weighs 100 grams and
-                                    the unit is grams, then the quantity is 100.
-                                  </UncontrolledTooltip>
-                                </Label>
-                                <Row>
-                                  <Col>
-                                    <Input
-                                      id="baseunits"
-                                      type="number"
-                                      min={0}
-                                      value={String(perUnitDetails.base)}
-                                      onChange={e => {
-                                        setPerUnitDetails({
-                                          ...perUnitDetails,
-                                          base: parseInt(e.target.value),
-                                        })
-                                      }}
-                                    />
-                                  </Col>
-                                  <Col>
-                                    <Input type="select">
-                                      {convert()
-                                        .from(perUnitDetails.tunits)
-                                        .possibilities()
-                                        .map(metric => (
-                                          <option key={"syb" + metric}>
-                                            {metric}
-                                          </option>
-                                        ))}
-                                    </Input>
-                                  </Col>
-                                </Row>
-                              </Col>
-                            </Row>
-                            <Row className="">
-                              <div style={{ fontWeight: 600 }}>
-                                Base Price per unit
-                              </div>
-                              <div>&#8377; {basePricePerUnit}</div>
-                            </Row>
+                        <div className="d-flex m-2">
+                          <FormGroup switch>
+                            <Input
+                              type="checkbox"
+                              checked={onSale}
+                              onChange={handleOnSaleChange}
+                            ></Input>
+                          </FormGroup>
+                          <div
+                            style={{ fontSize: "0.9rem", fontWeight: 500 }}
+                            className="mx-1"
+                          >
+                            On Sale
                           </div>
+                        </div>
+                        {onSale ? (
+                          <>
+                            <Label for="discount">Discount</Label>
+                            <div className="d-flex">
+                              <Input
+                                className="me-2"
+                                type="number"
+                                id="discount"
+                                value={priceDetails.discount}
+                                onChange={handleDiscountChange}
+                              />
+                              <div
+                                onClick={() => handleDiscountTypeChange(true)}
+                                className={
+                                  priceDetails.isPercent
+                                    ? "text-primary mx-2"
+                                    : "mx-2"
+                                }
+                                style={{
+                                  fontSize: "20px",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                %
+                              </div>
+                              <div
+                                onClick={() => handleDiscountTypeChange(false)}
+                                className={
+                                  !priceDetails.isPercent
+                                    ? "text-primary mx-2"
+                                    : "mx-2"
+                                }
+                                style={{
+                                  fontSize: "20px",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                $
+                              </div>
+                            </div>
+                            <Label for="sale-price">Sale Price</Label>
+                            <Input
+                              type="number"
+                              id="sale-price"
+                              value={priceDetails.salePrice}
+                              readOnly
+                            />
+                          </>
                         ) : null}
                       </div>
+
+                      <div className="mb-3">
+                        <div className="d-flex mx-2">
+                          <FormGroup switch>
+                            <Input
+                              type="checkbox"
+                              checked={showPricePerUnit}
+                              onChange={handleShowPricePerUnitChange}
+                            ></Input>
+                          </FormGroup>
+                          <div
+                            style={{ fontSize: "0.9rem", fontWeight: 500 }}
+                            className="mx-1"
+                          >
+                            Show price per unit
+                            <i
+                              id="sppr-info"
+                              className="mdi mdi-information me-2 mx-1"
+                            />
+                            <UncontrolledTooltip
+                              placement="top"
+                              target="sppr-info"
+                            >
+                              Let customers see prices based on fixed
+                              measurement units, e.g., price per 100 grams of
+                              cheese.
+                            </UncontrolledTooltip>
+                          </div>
+                        </div>
+                        {showPricePerUnit ? (
+                          <>
+                            <Label for="pqunits">
+                              Total product Quantity in units
+                              <i
+                                id="product-quanitiy-info"
+                                className="mdi mdi-information me-2 mx-1"
+                              />
+                              <UncontrolledTooltip
+                                placement="top"
+                                target="product-quanitiy-info"
+                              >
+                                Set your product’s unit of measurement to
+                                calculate the base price, e.g., for a product
+                                weighing 1 kilo, you may set the base units to
+                                100 g.
+                              </UncontrolledTooltip>
+                            </Label>
+                            <Row>
+                              <Col xs="8">
+                                <Input
+                                  id="pqunits"
+                                  type="number"
+                                  min={0}
+                                  value={perUnitDetails.total}
+                                  onChange={handleTotalChange}
+                                />
+                              </Col>
+                              <Col>
+                                <Input
+                                  value={perUnitDetails.tunits}
+                                  type="select"
+                                  onChange={handleUnitsChange}
+                                >
+                                  <option value="">Select</option>
+                                  <option value="kg">kg</option>
+                                  <option value="g">g</option>
+                                  <option value="l">l</option>
+                                  <option value="ml">ml</option>
+                                </Input>
+                              </Col>
+                            </Row>
+                            <Label for="price-per-unit">Price per unit</Label>
+                            <Input
+                              id="price-per-unit"
+                              type="number"
+                              min={0}
+                              value={perUnitDetails.pricePerUnit}
+                              onChange={handlePricePerUnitChange}
+                            />
+                          </>
+                        ) : null}
+                      </div>
+
                       <Row className="my-4">
                         <Col>
                           <Label for="costofgoods">
@@ -1039,11 +983,8 @@ export default function EcommerceAddProduct() {
                               id="costofgoods"
                               type="number"
                               min={0}
-                              value={String(priceDetails.cost)}
-                              onChange={e => {
-                                const cos = parseInt(e.target.value)
-                                setPriceDetails({ ...priceDetails, cost: cos })
-                              }}
+                              value={priceDetails.cost}
+                              onChange={handleCostChange}
                             />
                             <div
                               className={" mx-3"}
@@ -1073,9 +1014,7 @@ export default function EcommerceAddProduct() {
                             <Input
                               type="number"
                               disabled={true}
-                              value={String(
-                                priceDetails.salePrice - priceDetails.cost
-                              )}
+                              value={profit}
                               id="profit-fixed"
                             />
                             <div
@@ -1108,20 +1047,14 @@ export default function EcommerceAddProduct() {
                               id="margin"
                               disabled
                               type="number"
-                              value={String(
-                                Math.round(
-                                  ((priceDetails.salePrice -
-                                    priceDetails.cost) /
-                                    priceDetails.salePrice) *
-                                    100
-                                )
-                              )}
+                              value={margin.toFixed(2)}
+                              min={0}
+                              max={100}
+                              step={0.01}
                             />
                             <div
                               className={"mx-3"}
-                              style={{
-                                fontSize: "20px",
-                              }}
+                              style={{ fontSize: "20px" }}
                             >
                               %
                             </div>
@@ -1161,12 +1094,8 @@ export default function EcommerceAddProduct() {
                             <Input
                               id="cus-title"
                               placeholder="e.g., 'What would you like engraved on your watch?'"
-                              onChange={e => {
-                                setCustomTextDetails({
-                                  ...customTextDetails,
-                                  title: e.target.value,
-                                })
-                              }}
+                              value={customTextDetails.title}
+                              onChange={handleTitleChange}
                             />
                           </Col>
                           <Col xs="3">
@@ -1175,12 +1104,7 @@ export default function EcommerceAddProduct() {
                               type="number"
                               id="char-lim"
                               value={String(customTextDetails.charLin)}
-                              onChange={e => {
-                                setCustomTextDetails({
-                                  ...customTextDetails,
-                                  charLin: parseInt(e.target.value),
-                                })
-                              }}
+                              onChange={handleCharLimitChange}
                             />
                           </Col>
                         </Row>
@@ -1190,15 +1114,9 @@ export default function EcommerceAddProduct() {
                               <Input
                                 type="checkbox"
                                 checked={customTextDetails.mandatoryField}
-                                onChange={() => {
-                                  setCustomTextDetails({
-                                    ...customTextDetails,
-                                    mandatoryField:
-                                      !customTextDetails.mandatoryField,
-                                  })
-                                }}
+                                onChange={handleMandatoryFieldChange}
                                 value={customTextDetails.mandatoryField}
-                              ></Input>
+                              />
                             </FormGroup>
                             <div className="mx-2">Mandatory Field</div>
                           </div>
@@ -1219,6 +1137,7 @@ export default function EcommerceAddProduct() {
                   </CardBody>
                 </Card>
               </Row>
+              
               <Row>
                 <Card className="p-0">
                   <CardHeader className="d-flex justify-content-between">
@@ -1765,7 +1684,7 @@ export default function EcommerceAddProduct() {
           <Modal
             centered
             toggle={connectImagesModalToggle}
-            isOpen={connectImagesModal}
+            isOpen={connectImagesModalOpen}
           >
             <ModalHeader toggle={connectImagesModalToggle}>
               <CardTitle>Connect Images to an option</CardTitle>

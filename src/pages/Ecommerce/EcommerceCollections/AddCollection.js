@@ -1,6 +1,5 @@
-import React from "react"
+import React, { useState, useCallback, useEffect } from "react"
 import update from "immutability-helper"
-import { useState } from "react"
 import PropTypes from "prop-types"
 import {
   Container,
@@ -36,10 +35,8 @@ import { Link, useHistory, useParams } from "react-router-dom"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import { DndProvider } from "react-dnd"
 import CollectionProductPreview from "./CollectionProductPreview"
-import { useCallback } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { addCollection, getProductList } from "store/actions"
-import { useEffect } from "react"
 import FileResizer from "react-image-file-resizer"
 import { CirclePicker, SketchPicker } from "react-color"
 import IconSelector from "./IconSelector"
@@ -53,7 +50,7 @@ export default function AddCollection() {
     products: state.ecommerce.productList,
   }))
 
-  //states for Modals
+  // states for Modals
   const [modal, setModal] = useState(false)
   const [modal1, setModal1] = useState(false)
   const [showColorPicker, setShowColorPicker] = useState(false)
@@ -111,7 +108,7 @@ export default function AddCollection() {
     )
   })
 
-  // rendering drag drop product cards
+  // // rendering drag drop product cards
   const renderCollectionProductPreview = useCallback(
     (CollectionProductId, index, products) => {
       const prod = products.filter(
@@ -278,10 +275,10 @@ export default function AddCollection() {
                       <Row>
                         <CardGroup>
                           {collectionProductIds.map(
-                            (CollectionProductPreview, i) =>
+                            (CollectionProductId, index) =>
                               renderCollectionProductPreview(
-                                CollectionProductPreview,
-                                i,
+                                CollectionProductId,
+                                index,
                                 products
                               )
                           )}
@@ -479,7 +476,13 @@ export default function AddCollection() {
                           {product.name}
                         </div>
                         <div className="mt-1">
-                          {product.productItemsSummary}
+                          {
+                            product.productItemsSummary.productItemsCount
+                          } items,{" "}
+                          {product.productItemsSummary.inStockProductItemsCount}{" "}
+                          in stock,{" "}
+                          {product.productItemsSummary.inventoryQuantity} total
+                          quantity
                         </div>
                       </div>
                     </div>

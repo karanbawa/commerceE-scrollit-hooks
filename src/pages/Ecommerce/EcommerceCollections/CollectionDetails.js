@@ -153,24 +153,29 @@ export default function EcommerceCollectionDetails() {
   // rendering drag drop product cards
   const renderCollectionProductPreview = useCallback(
     (CollectionProductId, index, products) => {
-      const prod = products.filter(
-        product => product._id === CollectionProductId
-      )[0]
-      console.log(prod)
-      return (
-        <CollectionProductPreview
-          key={prod._id}
-          index={index}
-          id={prod._id}
-          price={prod.price}
-          img={prod.media[0].url}
-          text={prod.name}
-          moveCollectionProductPreview={moveCollectionProductPreview}
-          collectionProductIds={collectionProductIds}
-          deleteCollectionProductPreview={deleteCollectionProductPreview}
-          mutable={collectionName !== 'All Products'}
-        />
-      )
+      const prod = products.find(product => product._id === CollectionProductId)
+      console.log("proddd ", prod)
+      console.log('CollectionProductId',CollectionProductId);
+      console.log('products ',products);
+      // if (prod) {
+      //   console.log("prod ", prod)
+        return (
+          <CollectionProductPreview
+            key={prod?._id}
+            index={index}
+            id={prod?._id}
+            price={prod?.price}
+            img={prod?.media[0]?.url}
+            text={prod?.name}
+            moveCollectionProductPreview={moveCollectionProductPreview}
+            collectionProductIds={collectionProductIds}
+            deleteCollectionProductPreview={deleteCollectionProductPreview}
+            mutable={collectionName !== "All Products"}
+          />
+        )
+      // } else {
+      //   return <div></div>
+      // }
     },
     []
   )
@@ -341,14 +346,16 @@ export default function EcommerceCollectionDetails() {
                     <DndProvider backend={HTML5Backend}>
                       <Row>
                         <CardGroup>
-                          {collectionProductIds.map(
-                            (CollectionProductPreview, i) =>
-                              renderCollectionProductPreview(
-                                CollectionProductPreview,
-                                i,
-                                products
-                              )
-                          )}
+                          {collectionProductIds.map((id, i) => {
+                            const prod = products.find(
+                              product => product._id === id
+                            )
+                            return renderCollectionProductPreview(
+                              prod,
+                              i,
+                              products
+                            )
+                          })}
                         </CardGroup>
                       </Row>
                     </DndProvider>
@@ -535,7 +542,11 @@ export default function EcommerceCollectionDetails() {
                       <div>
                         <img
                           style={{ maxWidth: "10vh" }}
-                          src={product.media[0].url}
+                          src={
+                            product.media[0] && product.media[0].url
+                              ? product.media[0].url
+                              : "/default-image.jpg"
+                          }
                         />
                       </div>
                       <div className="w-100 mx-3 m-2">
@@ -543,7 +554,13 @@ export default function EcommerceCollectionDetails() {
                           {product.name}
                         </div>
                         <div className="mt-1">
-                          {product.productItemsSummary}
+                          {product.productItemsSummary?.productItemsCount}{" "}
+                          item(s) available,{" "}
+                          {
+                            product.productItemsSummary
+                              ?.inStockProductItemsCount
+                          }{" "}
+                          in stock
                         </div>
                       </div>
                     </div>

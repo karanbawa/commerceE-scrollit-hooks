@@ -67,11 +67,11 @@ export default function AddProductVariants({
       <ModalBody>
         {editVariant ? (
           Object.keys(variants)
-            .filter(variant => variant !== Object.keys(editVariant)[0]).map(variant => (variant.toUpperCase()))
-            .includes(optionCategoryName.toUpperCase()) ? (
+            .filter(variant => variant !== Object.keys(editVariant)[0]).map(variant => (variant?.toUpperCase()))
+            .includes(optionCategoryName?.toUpperCase()) ? (
             <Alert color="danger">A product option with the same name already exists.</Alert>
           ) : null
-        ) : Object.keys(variants).map(variant => (variant.toUpperCase())).includes(optionCategoryName.toUpperCase()) ? (
+        ) : Object.keys(variants).map(variant => (variant.toUpperCase())).includes(optionCategoryName?.toUpperCase()) ? (
           <Alert color="danger">A product option with the same name already exists.</Alert>
         ) : null}
         <Row>

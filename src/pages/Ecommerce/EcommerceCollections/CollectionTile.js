@@ -1,5 +1,5 @@
-import React from "react"
-import { Link } from "react-router-dom"
+import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   Button,
   Col,
@@ -8,51 +8,55 @@ import {
   DropdownToggle,
   Row,
   UncontrolledDropdown,
-} from "reactstrap"
-import PropTypes from "prop-types"
-import { useDispatch } from "react-redux"
-import { deleteCollection } from "store/actions"
+} from 'reactstrap';
+import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { deleteCollection } from 'store/actions';
 
 function CollectionTile({ _id, name, icon, color, productIds, isMutable }) {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const handleCollectionDelete = () => {
-    dispatch(deleteCollection(_id))
-  }
-  console.log(color)
+    dispatch(deleteCollection(_id));
+  };
 
   return (
     <div className="col-4 pt-4">
       <Link
         to={`/ecommerce-collection-details/${_id}`}
-        className={`${
-          color ? "" : "bg-secondary "
-        } rounded d-flex flex-column justify-content-between`}
-        style={{ minHeight: "280px", background: color }}
+        className={`${color ? '' : 'bg-secondary '} rounded d-flex flex-column justify-content-between`}
+        style={{ minHeight: '280px', background: color }}
       >
         <Row>
           <Col className="text-sm-end m-3 mx-4">
-            <Link to="#">
-              <UncontrolledDropdown direction="left">
-                <DropdownToggle href="#" className="card-drop" tag="i">
-                    <i className="mdi mdi-dots-horizontal mdi-24px text-white" />
-                </DropdownToggle>
-                <DropdownMenu className="dropdown-menu-end">
-                  <DropdownItem href="#" onClick={() => console.log("hello!!")}>
-                    <i className="mdi mdi-file-image me-3" />
-                    Update Image
+            <UncontrolledDropdown direction="left">
+              <DropdownToggle
+                tag={Button}
+                className="card-drop"
+                color="link"
+              >
+                <i className="mdi mdi-dots-horizontal mdi-24px text-white" />
+              </DropdownToggle>
+              <DropdownMenu className="dropdown-menu-end">
+                <DropdownItem
+                  tag={Button}
+                  color="link"
+                  onClick={() => console.log('hello!!')}
+                >
+                  <i className="mdi mdi-file-image me-3" />
+                  Update Image
+                </DropdownItem>
+                {_id !== 'all-products' ? (
+                  <DropdownItem
+                    tag={Button}
+                    color="link"
+                    onClick={handleCollectionDelete}
+                  >
+                    <i className="fas fa-trash-alt me-3" />
+                    Delete
                   </DropdownItem>
-                  {!(_id === "all-products") ? (
-                    <DropdownItem
-                      href="#"
-                      onClick={() => handleCollectionDelete()}
-                    >
-                      <i className="fas fa-trash-alt me-3" />
-                      Delete
-                    </DropdownItem>
-                  ) : null}
-                </DropdownMenu>
-              </UncontrolledDropdown>
-            </Link>
+                ) : null}
+              </DropdownMenu>
+            </UncontrolledDropdown>
           </Col>
         </Row>
         <div className="m-2 position-fixed-bottom text-white p-2 mx-3 font-size-18">
@@ -61,7 +65,7 @@ function CollectionTile({ _id, name, icon, color, productIds, isMutable }) {
         </div>
       </Link>
     </div>
-  )
+  );
 }
 
 CollectionTile.propTypes = {
@@ -71,6 +75,6 @@ CollectionTile.propTypes = {
   color: PropTypes.string,
   icon: PropTypes.string,
   productIds: PropTypes.array,
-}
+};
 
-export default CollectionTile
+export default CollectionTile;
